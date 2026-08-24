@@ -1,82 +1,153 @@
-# Pomoc: https://discord.gg/badbones-s-live-chat-182615261403283459
-# Github: https://github.com/Crazy-Crew
-#
-# Problemy: https://github.com/Crazy-Crew/CrazyEnvoys/issues
-# Nowe funkcje: https://github.com/Crazy-Crew/CrazyEnvoys/issues
-#
-# Rady:
-#  1. Upewnij się, że dodajesz {prefix} na początku swoich wiadomości.
-#  2. Jeżeli chcesz użyć więcej niż jednej lini użyj list.
-# Przykłady:
-#   Linia:
-#     No-Permission: '{prefix}<red>Nie masz uprawnień, aby użyć tej komendy.'
-#   List:
-#     No-Permission:
-#       - '{prefix}<red>Nie masz uprawnień,'
-#       - '<red>aby użyć tej komendy. Spróbuj innej.'
+# Plik językowy CrazyEnvoys (pl-PL)
+# MiniMessage: <#55AAFF>hex</#55AAFF>, <gradient:#FF5555:#55AAFF>gradient</gradient>, <rainbow>tęcza</rainbow>
 player:
-  no-permission: "{prefix}<red>Nie masz uprawnień, aby użyć tej komendy."
-  no-permission-to-claim: "{prefix}<red>Nie masz uprawnień, aby otworzyć ten zrzut."
+  no-permission: '{prefix}<red>Nie masz uprawnień do użycia tej komendy.</red>'
+  no-permission-to-claim: '{prefix}<red>Nie masz uprawnień do odebrania tego zrzutu.</red>'
 envoys:
-  already-started: "{prefix}<red>Wydarzenie zrzutów już jest w trakcie działania. Zatrzymaj je, aby rozpocząć kolejne."
-  force-start: "{prefix}<gray>Zacząłeś zrzuty."
-  not-started: "{prefix}<red>W tym momencie żadne wydarzenie zrzutów nie jest aktywne."
-  force-ended: "{prefix}<red>Zakończyłeś zrzuty."
-  warning: "{prefix}<red>[<dark_red>UWAGA<red>] <gray>Wydarzenie zrzutów zacznie się za <gold>{time}."
-  started: "{prefix}<gray>Zrzuty właśnie zaczęły spadać. <gold>{amount} <gray>zrzutów spadło i będzie tam leżało przez 5m."
-  left: "{prefix}<gold>{player} <gray>znalazł zrzut. Pozostało <gold>{amount} zrzutów"
-  ended: "{prefix}<red>Wydarzenie zrzutów właśnie się zakończyło, oczekujcie nowego."
-  not-enough-players: "{prefix}<gray>Nie wystarczająco graczy, aby zacząć wydarzenie zrzutów. Tylko <gold>{amount} <gray>jest teraz aktywnych."
-  enter-editor-mode: "{prefix}<gray>Wszedłeś w tryb edycji."
-  leave-editor-mode: "{prefix}<gray>Opuściłeś tryb edycji."
-  editor-clear-locations: "{prefix}<gray>Wyczyściłeś pozycje zrzutów w edytorze."
-  editor-clear-failure: "{prefix}<gray>Musisz być edytorze, aby zmieniać pozycje zrzutów."
-  kicked-from-editor-mode: "{prefix}<red>Wydarzenie zrzutów jest aktywne. Zatrzymaj je lub poczekaj do jego."
-  add-location: "{prefix}<gray>Dodałeś lokację zrzutu."
-  remove-location: "{prefix}<red>Usunąłeś lokację zrzutu."
-  time-left: "{prefix}<gray>Aktualne wydarzenie będzie trwało jescze przez <gold>{time}<gray>."
-  time-till-event: "{prefix}<gray>Następne wydarzenie zrzutów odbędzie za <gold>{time}<gray>."
+  already-started: '{prefix}<red>Wydarzenie zrzutów już trwa.</red>'
+  force-start: '{prefix}<gray>Uruchomiono wydarzenie zrzutów.</gray>'
+  not-started: '{prefix}<red>Żadne wydarzenie zrzutów nie jest uruchomione.</red>'
+  force-ended: '{prefix}<red>Zakończono wydarzenie zrzutów.</red>'
+  warning: '{prefix}<red>[<dark_red>UWAGA</dark_red>]</red> <gray>Wydarzenie zrzutów rozpocznie się za <gold>{time}</gold>.</gray>'
+  started:
+    list:
+      - '{prefix}<gray>Wydarzenie zrzutów rozpoczęło się. Pojawiło się skrzyń: <gold>{amount}</gold>.</gray>'
+  started-player:
+    list:
+      - '{prefix}<gray>{starter} uruchomił wydarzenie zrzutów. Pojawiło się skrzyń: <gold>{amount}</gold>.</gray>'
+  left:
+    - '{prefix}<gold>{player}</gold> <gray>znalazł zrzut poziomu {tier}. Pozostało: <gold>{amount}</gold>.</gray>'
+  ended:
+    - '{prefix}<red>Wydarzenie zrzutów zakończyło się. Dziękujemy za udział.</red>'
+  not-enough-players: '{prefix}<gray>Za mało graczy online. Obecnie: <gold>{amount}</gold>.</gray>'
+  enter-editor-mode: '{prefix}<gray>Włączono tryb edycji.</gray>'
+  leave-editor-mode: '{prefix}<gray>Wyłączono tryb edycji.</gray>'
+  editor-clear-locations: '{prefix}<gray>Wyczyszczono wszystkie punkty pojawiania.</gray>'
+  editor-clear-failure: '{prefix}<red>Aby wyczyścić punkty, włącz tryb edycji.</red>'
+  kicked-from-editor-mode: '{prefix}<red>Zrzuty są aktywne. Zatrzymaj je lub poczekaj na koniec.</red>'
+  add-location: '{prefix}<gray>Dodano punkt pojawiania.</gray>'
+  remove-location: '{prefix}<red>Usunięto punkt pojawiania.</red>'
+  time-left: '{prefix}<gray>Wydarzenie zakończy się za <gold>{time}</gold>.</gray>'
+  time-till-event:
+    - '{prefix}<gray>Następne wydarzenie rozpocznie się za <gold>{time}</gold>.</gray>'
   flare:
-    used-flare: "{prefix}<gray>Rozpocząłeś wydarzenie zrzutów za pomocą flary."
-    cant-use-flares: "{prefix}<red>Nie masz uprawnień do korzystania z flary."
-    sent-flare: "{prefix}<gray>Flary przekazane graczowi <gold>{player} <gray>w ilości {amount}."
-    received-flare: "{prefix}<gray>Dostałeś flary w ilości <gold>{amount}<gray>."
-  new-center: "{prefix}<gray>Ustawiłeś nowe centrum zrzutów."
-  not-in-world-guard-region: "{prefix}<red>Musisz być w strefie wojny aby używać flar."
-  start-ignoring-messages: "{prefix}<gray>Od teraz wiadomośći zbiorowe nie będą ci wyświetlane."
-  stop-ignoring-messages: "{prefix}<gray>Od teraz będziesz widział wiadomości zbiorowe."
-  cooldown-left: "{prefix}<gray>Musisz odczekać jeszcze <gold>{time} <gray>zanim otworzysz kolejne zrzuty."
-  countdown-in-progress: "{prefix}<gray>Nie możesz otwierać rzutów prezez następne <gold>{time}s."
-  drops-available: "{prefix}<gray>Lista wszystkich zrzutów."
-  drops-possibilities: "{prefix}<gray>Lista lokacji na które mogą spadać zrzuty."
-  drops-page: "{prefix}<gray>Użyj /crazyenvoys drop [strona], aby zobaczyć więcej."
-  drops-format: "<gray>[<gold>{id}<gray>]: {world}, {x}, {y}, {z}"
-  no-spawn-locations-found: "{prefix}<red>Żadne pozycje zrzutów nie zostały znalezione, więc wydarzenie zostało zakończone, a opóźnienie zresetowane."
+    used-flare: '{prefix}<gray>Uruchomiono zrzuty za pomocą flary.</gray>'
+    cant-use-flares: '{prefix}<red>Nie masz uprawnień do używania flar.</red>'
+    sent-flare: '{prefix}<gray>Przekazano graczowi <gold>{player}</gold> flary: <gold>{amount}</gold>.</gray>'
+    received-flare: '{prefix}<gray>Otrzymano flary: <gold>{amount}</gold>.</gray>'
+  new-center: '{prefix}<gray>Ustawiono nowe centrum losowych zrzutów.</gray>'
+  not-in-world-guard-region: '{prefix}<red>Flary można użyć tylko w dozwolonym regionie.</red>'
+  start-ignoring-messages: '{prefix}<gray>Wiadomości o zbieraniu są teraz ukryte.</gray>'
+  stop-ignoring-messages: '{prefix}<gray>Wiadomości o zbieraniu są teraz widoczne.</gray>'
+  cooldown-left: '{prefix}<gray>Następny zrzut możesz odebrać za <gold>{time}</gold>.</gray>'
+  countdown-in-progress: '{prefix}<gray>Zrzuty będzie można odbierać za <gold>{time}</gold> s.</gray>'
+  drops-available: '{prefix}<gray>Dostępne zrzuty:</gray>'
+  drops-possibilities: '{prefix}<gray>Skonfigurowane punkty zrzutów:</gray>'
+  drops-page: '{prefix}<gray>Użyj /crazyenvoys drops [strona], aby zobaczyć więcej.</gray>'
+  drops-format: '<gray>[<gold>{id}</gold>]: {world}, {x}, {y}, {z}</gray>'
+  no-spawn-locations-found: '{prefix}<red>Nie znaleziono prawidłowych punktów. Wydarzenie anulowano, a czas odnowienia zresetowano.</red>'
   hologram-placeholders:
-    on-going: W trakcie
-    not-running: Brak akcji
+    on-going: 'W trakcie'
+    not-running: 'Nieaktywne'
   time-placeholders:
-    day: d
-    hour: g
-    minute: m
-    second: s
-  envoy-locations: '<yellow><b>Pozycje zrzutów: \n<red>[ID], [Świat]: [X], [Y], [Z] <reset>{locations}'
-  location-format: '\n<dark_gray>[<dark_aqua>{id}<dark_gray>] <red>{world}: {x}, {y}, {z}'
+    day: 'd'
+    hour: 'g'
+    minute: 'm'
+    second: 's'
+  envoy-locations: '<yellow><bold>Wszystkie punkty zrzutów:</bold></yellow>\n<red>[ID], [Świat]: [X], [Y], [Z]</red> {locations}'
+  location-format: '\n<dark_gray>[<blue>{id}</blue>]</dark_gray> <red>{world}: {x}, {y}, {z}</red>'
 misc:
-  command-not-found: '{prefix}<red>Prawidłowe użycie tej komendy to <yellow>{usage}.'
-  must-be-console-sender: '{prefix}<red>Musisz korzystać z konsoli, aby użyć tej komendy.'
-  player-only: "{prefix}<red>Tylko gracze mogą używać tej komendy."
-  not-online: "{prefix}<red>Ten gracz nie jest aktywny w tym momencie."
-  not-a-number: "{prefix}<red>To nie jest liczba."
-  config-reload: "{prefix}<gray>Przeładowałeś wszystkie pliki."
+  command-not-found: '{prefix}<red>Nieznana komenda: {command}.</red>'
+  correct-usage: '{prefix}<red>Poprawne użycie: <yellow>{usage}</yellow></red>'
+  lacking-flag: '{prefix}<red>Brakuje parametru {flag}. Oczekiwany format: <yellow>{usage}</yellow></red>'
+  must-be-console-sender: '{prefix}<red>Tej komendy można użyć tylko w konsoli.</red>'
+  player-only: '{prefix}<red>Tej komendy mogą używać tylko gracze.</red>'
+  not-online: '{prefix}<red>Ten gracz nie jest online.</red>'
+  not-a-number: '{prefix}<red>Ta wartość nie jest liczbą.</red>'
+  not-applicable: 'B/D'
+  config-reload: '{prefix}<gray>Przeładowano wszystkie pliki.</gray>'
   help:
-    - "<gold>/crazyenvoys help <gray>- Pokazuje te informacje."
-    - "<gold>/crazyenvoys reload <gray>- Przeładowuje wszystkie pliki związane z ustawieniami pluginu."
-    - "<gold>/crazyenvoys time <gray>- Pokazuje czas do startu lub końca wydarzenia zrzutów."
-    - "<gold>/crazyenvoys drops [page] <gray>- Pokazuje wszystkie aktualne pozycje."
-    - "<gold>/crazyenvoys ignore <gray>- Włącza ingorowanie wiadomości zbiorowych."
-    - "<gold>/crazyenvoys flare [ilość] [gracz] <gray>- Daje graczowi flary pozwalające rozpocząć event."
-    - "<gold>/crazyenvoys edit <gray>- Edytuj pozycje zrzutów za pomocą bedrock'a."
-    - "<gold>/crazyenvoys start <gray>- Zmusza do rozpoczęcia zrzutu."
-    - "<gold>/crazyenvoys stop <gray>- Zmusza do zakończenia zrzutu."
-    - "<gold>/crazyenvoys center <gray>- Ustawia centrum losowego zrzutu."
+    - '<gold>/crazyenvoys help</gold> <gray>- Pokazuje tę pomoc.</gray>'
+    - '<gold>/crazyenvoys reload</gold> <gray>- Przeładowuje pliki konfiguracji.</gray>'
+    - '<gold>/crazyenvoys time</gold> <gray>- Pokazuje czas do początku lub końca.</gray>'
+    - '<gold>/crazyenvoys drops [strona]</gold> <gray>- Pokazuje punkty zrzutów.</gray>'
+    - '<gold>/crazyenvoys ignore</gold> <gray>- Przełącza wiadomości o zbieraniu.</gray>'
+    - '<gold>/crazyenvoys flare [ilość] [gracz]</gold> <gray>- Daje graczowi flary.</gray>'
+    - '<gold>/crazyenvoys edit</gold> <gray>- Edytuje punkty zrzutów.</gray>'
+    - '<gold>/crazyenvoys start</gold> <gray>- Uruchamia wydarzenie.</gray>'
+    - '<gold>/crazyenvoys stop</gold> <gray>- Zatrzymuje wydarzenie.</gray>'
+    - '<gold>/crazyenvoys center</gold> <gray>- Ustawia centrum losowych zrzutów.</gray>'
+command:
+  migrate:
+    error: '{prefix}<red>Nie udało się zmigrować <green>{file}</green> za pomocą <green>{type}</green>: <green>{reason}</green>.</red>'
+    not-available: '{prefix}<red>Ten typ migracji jest niedostępny.</red>'
+    plugin-not-available: '{prefix}<red>Plugin {name} nie jest włączony.</red>'
+    no-envoys-available: '{prefix}<red>Brak zrzutów dostępnych do migracji.</red>'
+    success-users:
+      - '<gold><bold>Wyniki migracji</bold></gold>'
+      - '<green>Udane: {succeeded_amount}</green>'
+      - '<red>Nieudane: {failed_amount}</red>'
+      - '<gray>Czas: {time}; typ: {type}</gray>'
+    success:
+      - '<gold><bold>Wyniki migracji</bold></gold>'
+      - '<green>Udane: {succeeded_amount}</green>'
+      - '<red>Nieudane: {failed_amount}</red>'
+      - '<gray>Czas: {time}; typ: {type}</gray>'
+      - '<gray>Pliki:</gray>'
+      - '{files}'
+warnings:
+  empty-tier: '<red>Nie znaleziono nagród w poziomie {tier}. Sprawdź konfigurację.</red>'
+ui:
+  envoy-menu-title: '<red>Nagrody ze zrzutu</red>'
+  prize-load-error: '<red>Błąd nagrody: {prize}</red>'
+  flare:
+    name: '<bold><gray>(<dark_red>!</dark_red>)</gray></bold> <red>Flara</red>'
+    lore:
+      - '<gray>Kliknij PPM, aby</gray>'
+      - '<gray>uruchomić wydarzenie.</gray>'
+  grace-period:
+    unlocked: '<red>Gotowe do odebrania.</red>'
+    time-unit: ' s.'
+logs:
+  done: 'Gotowe ({time})!'
+  config-migrated: 'Pomyślnie zmigrowano {file}.'
+  prize-error: 'Błąd podczas ładowania nagrody {prize}.'
+  locations-retry: 'Nie udało się wczytać {amount} punktów; ponowienie za 10 sekund.'
+  recovery-error: 'Odzyskiwanie przy starcie zakończone z błędami: {error}'
+  hologram-enabled: 'Włączono obsługę {plugin}.'
+  center-world-missing: 'Nie znaleziono świata centrum. Wydarzenie anulowano. Centrum: {center}'
+  visuals-failed: 'Nie udało się zakończyć efektów sesji {session}.'
+  hologram-cleanup-failed: 'Nie udało się usunąć hologramu podczas czyszczenia.'
+  task-cancel-failed: 'Nie udało się anulować zadania {task}.'
+  generation-partial: 'Wygenerowano {generated}/{requested} punktów po {attempts} próbach.'
+  generation-area-limited: 'Obszar jest za mały. Liczba zrzutów: {amount}.'
+  chunk-load-failed: 'Nie udało się wczytać chunku {type} w {x},{z}.'
+  chunk-request-failed: 'Nie udało się zażądać chunku {type} w {x},{z}.'
+  no-tiers: 'Brak poziomów w folderze tiers. Usuń folder, aby odtworzyć przykłady.'
+  no-valid-locations: 'Nie udało się wygenerować prawidłowych punktów.'
+  signal-cancel-failed: 'Nie udało się anulować flary sygnałowej.'
+  location-deserialize-failed: 'Nie udało się odczytać zapisanego punktu {location}.'
+  center-repair-attempt: 'Próba naprawy centrum zrzutów.'
+  center-repair-failed: 'Nie udało się naprawić centrum. Próba zostanie ponowiona przy następnym wydarzeniu.'
+  center-repair-success: 'Centrum naprawiono; wydarzenie będzie kontynuowane.'
+  center-debug: 'Diagnostyka centrum: saved={saved}, location={location}, world-loaded={world_loaded}'
+  locations-repair-attempt: 'Próba naprawy {amount} punktów.'
+  locations-repair-success: 'Naprawiono punktów: {amount}.'
+  locations-repair-failed: 'Nie naprawiono {amount} punktów; próby nie będą ponawiane.'
+  scheduler-failed: 'Błąd zaplanowanego zadania: {context}'
+  entity-retired: 'Entity usunięta przed wykonaniem zadania: {context}'
+  start-begin-failed: 'Nie udało się rozpocząć wydarzenia.'
+  start-generation-failed: 'Nie udało się wygenerować punktów.'
+  start-spawn-failed: 'Nie udało się utworzyć zrzutów.'
+  start-activation-failed: 'Nie udało się aktywować sesji.'
+  start-processing-failed: 'Nie udało się przetworzyć wygenerowanych punktów.'
+  hologram-missing:
+    - 'Brak obsługiwanego pluginu hologramów. Dla CMI włącz moduł holograms w modules.yml.'
+    - 'Po włączeniu CMI użyj /crazyenvoys reload; w innym przypadku zrestartuj serwer.'
+  locale-directory-failed: 'Nie udało się utworzyć folderu języków {path}.'
+  locale-not-found: 'Nie znaleziono języka {locale}. Używany jest en-US.'
+  locale-migration-failed: 'Nie udało się przenieść {source} do {target}.'
+  locale-invalid: 'Nieprawidłowa nazwa języka {locale}. Używany jest en-US.'
+  locale-prepare-failed: 'Nie udało się przygotować języka {locale}.'
+  tier-templates-failed: 'Nie udało się zainstalować lokalnych szablonów poziomów.'
+  config-comments-failed: 'Nie udało się zaktualizować przetłumaczonych komentarzy config.yml.'

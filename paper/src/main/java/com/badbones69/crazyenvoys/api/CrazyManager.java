@@ -18,6 +18,7 @@ import com.badbones69.crazyenvoys.api.objects.FlareSettings;
 import com.badbones69.crazyenvoys.api.objects.LocationSettings;
 import com.badbones69.crazyenvoys.api.objects.misc.Tier;
 import com.badbones69.crazyenvoys.config.ConfigManager;
+import com.badbones69.crazyenvoys.config.TierTemplateManager;
 import com.badbones69.crazyenvoys.config.types.ConfigKeys;
 import com.badbones69.crazyenvoys.listeners.timer.CountdownTimer;
 import com.badbones69.crazyenvoys.scheduler.SchedulerAdapter;
@@ -168,6 +169,8 @@ public class CrazyManager {
         return endEnvoyEventAsync().handle((unused, throwable) -> null)
                 .thenCompose(unused -> this.scheduler.runGlobal("reload CrazyEnvoys state", () -> {
                     ConfigManager.refresh();
+                    TierTemplateManager.installLocalizedDefaults(this.plugin);
+                    this.fileManager.refresh(false);
 
                     final Calendar next = this.nextEnvoy;
                     if (next != null) Files.users.getConfiguration().set("Next-Envoy", next.getTimeInMillis());
@@ -194,7 +197,9 @@ public class CrazyManager {
         this.locationSettings.populateMap();
 
         if (!this.locationSettings.getFailedLocations().isEmpty()) {
-            this.fusion.log(Level.WARNING, "Failed to load {} locations and will reattempt in 10s.", this.locationSettings.getFailedLocations().size());
+            this.fusion.log(Level.WARNING, Messages.log_locations_retry.getMessage(Map.of(
+                    "{amount}", String.valueOf(this.locationSettings.getFailedLocations().size())
+            )));
         }
 
         loadCenter();
@@ -300,7 +305,9 @@ public class CrazyManager {
             if (this.shuttingDown.get()) return;
 
             if (throwable != null) {
-                this.fusion.log(Level.ERROR, "Folia startup recovery completed with errors: {}", throwable.getMessage());
+                this.fusion.log(Level.ERROR, Messages.log_recovery_error.getMessage(Map.of(
+                        "{error}", String.valueOf(throwable.getMessage())
+                )));
             }
 
             this.ready.set(true);
@@ -359,16 +366,14 @@ public class CrazyManager {
         }
 
         if (this.holograms == null) {
-            List.of(
-                    "There was no hologram plugin found on the server. If you are using CMI",
-                    "Please make sure you enabled the hologram module in modules.yml",
-                    "You can run /crazyenvoys reload if using CMI otherwise restart your server."
-            ).forEach(line -> this.fusion.log(Level.WARNING, line));
+            Messages.log_hologram_missing.getList().forEach(line -> this.fusion.log(Level.WARNING, line));
 
             return;
         }
 
-        this.fusion.log(Level.WARNING, "{} support has been enabled.", this.holograms.getName());
+        this.fusion.log(Level.WARNING, Messages.log_hologram_enabled.getMessage(Map.of(
+                "{plugin}", this.holograms.getName()
+        )));
     }
 
     /**
@@ -421,7 +426,9 @@ public class CrazyManager {
                         }
 
                         if (config.getProperty(ConfigKeys.envoys_random_locations) && isCenterUnloaded()) {
-                            fusion.log(Level.WARNING, "The envoy center world cannot be found, the envoy has been cancelled. Center: {}", centerString);
+                            fusion.log(Level.WARNING, Messages.log_center_world_missing.getMessage(Map.of(
+                                    "{center}", String.valueOf(centerString)
+                            )));
 
                             setNextEnvoy(getEnvoyCooldown());
 
@@ -672,7 +679,9 @@ public class CrazyManager {
             }
             if (falling.tier().getSignalFlareToggle()) startSignalFlare(session, location, falling.tier());
         } catch (Throwable throwable) {
-            this.plugin.getLogger().log(java.util.logging.Level.WARNING, "Could not finish landed envoy visuals for session " + session.id(), throwable);
+            this.plugin.getLogger().log(java.util.logging.Level.WARNING, Messages.log_visuals_failed.getMessage(Map.of(
+                    "{session}", String.valueOf(session.id())
+            )), throwable);
         }
 
         if (this.currentSession.get() != session || session.phase().get() == EventSession.Phase.STOPPING
@@ -681,7 +690,7 @@ public class CrazyManager {
             try {
                 if (this.holograms != null) this.holograms.removeHologram(MiscUtils.toString(location));
             } catch (Throwable throwable) {
-                this.plugin.getLogger().log(java.util.logging.Level.WARNING, "Could not remove a stopped landed envoy hologram", throwable);
+                this.plugin.getLogger().log(java.util.logging.Level.WARNING, Messages.log_hologram_cleanup_failed.getString(), throwable);
             }
             stopSignalFlare(location);
             session.activeCrates().remove(block);
@@ -761,7 +770,9 @@ public class CrazyManager {
         try {
             task.cancel();
         } catch (Throwable throwable) {
-            this.plugin.getLogger().log(java.util.logging.Level.WARNING, "Could not cancel envoy runtime task", throwable);
+            this.plugin.getLogger().log(java.util.logging.Level.WARNING, Messages.log_task_cancel_failed.getMessage(Map.of(
+                    "{task}", "runtime"
+            )), throwable);
         }
     }
 
@@ -776,7 +787,9 @@ public class CrazyManager {
         try {
             task.cancel();
         } catch (Throwable throwable) {
-            this.plugin.getLogger().log(java.util.logging.Level.WARNING, "Could not cancel envoy cooldown task", throwable);
+            this.plugin.getLogger().log(java.util.logging.Level.WARNING, Messages.log_task_cancel_failed.getMessage(Map.of(
+                    "{task}", "cooldown"
+            )), throwable);
         }
     }
 
@@ -816,7 +829,11 @@ public class CrazyManager {
 
             return generator.start().thenApply(locations -> {
                 if (locations.size() < maxSpawns) {
-                    this.fusion.log(Level.WARNING, "Generated {}/{} envoy locations after {} attempts.", locations.size(), maxSpawns, generator.attempts());
+                    this.fusion.log(Level.WARNING, Messages.log_generation_partial.getMessage(Map.of(
+                            "{generated}", String.valueOf(locations.size()),
+                            "{requested}", String.valueOf(maxSpawns),
+                            "{attempts}", String.valueOf(generator.attempts())
+                    )));
                 }
 
                 return locations;
@@ -859,7 +876,9 @@ public class CrazyManager {
 
             if (maxSpawns > area) {
                 maxSpawns = (int) Math.min(Integer.MAX_VALUE, area);
-                this.fusion.log(Level.WARNING, "Crate spawn amount is larger than the configured area. Spawning {} crates instead.", maxSpawns);
+                this.fusion.log(Level.WARNING, Messages.log_generation_area_limited.getMessage(Map.of(
+                        "{amount}", String.valueOf(maxSpawns)
+                )));
             }
         }
 
@@ -888,7 +907,11 @@ public class CrazyManager {
         try {
             world.getChunkAtAsync(x >> 4, z >> 4, true, false).whenComplete((chunk, throwable) -> {
                 if (throwable != null) {
-                    this.plugin.getLogger().log(java.util.logging.Level.WARNING, "Could not load configured envoy chunk at " + x + "," + z, throwable);
+                    this.plugin.getLogger().log(java.util.logging.Level.WARNING, Messages.log_chunk_load_failed.getMessage(Map.of(
+                            "{type}", "configured",
+                            "{x}", String.valueOf(x),
+                            "{z}", String.valueOf(z)
+                    )), throwable);
                     result.complete(null);
                     return;
                 }
@@ -907,7 +930,11 @@ public class CrazyManager {
                 });
             });
         } catch (Throwable throwable) {
-            this.plugin.getLogger().log(java.util.logging.Level.WARNING, "Could not request configured envoy chunk at " + x + "," + z, throwable);
+            this.plugin.getLogger().log(java.util.logging.Level.WARNING, Messages.log_chunk_request_failed.getMessage(Map.of(
+                    "{type}", "configured",
+                    "{x}", String.valueOf(x),
+                    "{z}", String.valueOf(z)
+            )), throwable);
             result.complete(null);
         }
 
@@ -956,7 +983,7 @@ public class CrazyManager {
     private StartRequest requestStart(final Player starter) {
         if (!this.ready.get() || this.tiers.isEmpty()) {
             if (this.tiers.isEmpty()) {
-                this.fusion.log(Level.ERROR, "<red>No tiers were found in the <yellow>tiers</yellow> folder, Please delete the folder to allow re-generating the examples.");
+                this.fusion.log(Level.ERROR, Messages.log_no_tiers.getString());
             }
 
             return new StartRequest(false, CompletableFuture.completedFuture(false));
@@ -970,7 +997,7 @@ public class CrazyManager {
 
         this.scheduler.runGlobal("begin envoy session " + session.id(), () -> beginStart(session))
                 .whenComplete((unused, throwable) -> {
-                    if (throwable != null) failStart(session, "Could not begin envoy event", throwable);
+                    if (throwable != null) failStart(session, Messages.log_start_begin_failed.getString(), throwable);
                 });
 
         return new StartRequest(true, session.startFuture());
@@ -984,7 +1011,7 @@ public class CrazyManager {
                     if (!isResolving(session)) return;
 
                     if (throwable != null) {
-                        failStart(session, "Could not generate envoy locations", throwable);
+                        failStart(session, Messages.log_start_generation_failed.getString(), throwable);
                         return;
                     }
 
@@ -1010,7 +1037,7 @@ public class CrazyManager {
                                 if (!isResolving(session)) return;
 
                                 if (spawnError != null) {
-                                    failStart(session, "Could not spawn envoy crates", spawnError);
+                                    failStart(session, Messages.log_start_spawn_failed.getString(), spawnError);
                                     return;
                                 }
 
@@ -1022,13 +1049,13 @@ public class CrazyManager {
                                 activateSession(session, spawned);
                                 }).whenComplete((unused, scheduleError) -> {
                                     if (scheduleError != null && isResolving(session)) {
-                                        failStart(session, "Could not activate envoy session", scheduleError);
+                                        failStart(session, Messages.log_start_activation_failed.getString(), scheduleError);
                                     }
                                 });
                             });
                 }).whenComplete((unused, scheduleError) -> {
                     if (scheduleError != null && isResolving(session)) {
-                        failStart(session, "Could not process generated envoy locations", scheduleError);
+                        failStart(session, Messages.log_start_processing_failed.getString(), scheduleError);
                     }
                 });
         });
@@ -1124,7 +1151,9 @@ public class CrazyManager {
             }
             if (tier.getSignalFlareToggle()) startSignalFlare(session, location, tier);
         } catch (Throwable throwable) {
-            this.plugin.getLogger().log(java.util.logging.Level.WARNING, "Could not finish envoy visuals for session " + session.id(), throwable);
+            this.plugin.getLogger().log(java.util.logging.Level.WARNING, Messages.log_visuals_failed.getMessage(Map.of(
+                    "{session}", String.valueOf(session.id())
+            )), throwable);
         }
 
         if (!isResolving(session)) {
@@ -1132,7 +1161,7 @@ public class CrazyManager {
             try {
                 if (this.holograms != null) this.holograms.removeHologram(MiscUtils.toString(location));
             } catch (Throwable throwable) {
-                this.plugin.getLogger().log(java.util.logging.Level.WARNING, "Could not remove a cancelled envoy hologram", throwable);
+                this.plugin.getLogger().log(java.util.logging.Level.WARNING, Messages.log_hologram_cleanup_failed.getString(), throwable);
             }
             stopSignalFlare(location);
             session.activeCrates().remove(block);
@@ -1200,7 +1229,7 @@ public class CrazyManager {
         resetWarnings();
         this.pluginManager.callEvent(new EnvoyEndEvent(EnvoyEndReason.NO_LOCATIONS_FOUND));
         Messages.no_spawn_locations_found.broadcast(this.config.getProperty(ConfigKeys.envoys_ignore_behaviour_no_spawn_locations_found));
-        this.fusion.log(Level.WARNING, "Could not generate any valid envoy locations");
+        this.fusion.log(Level.WARNING, Messages.log_no_valid_locations.getString());
         session.startFuture().complete(false);
         endEnvoyEventAsync();
     }
@@ -1344,7 +1373,7 @@ public class CrazyManager {
             try {
                 task.cancel();
             } catch (Throwable throwable) {
-                this.plugin.getLogger().log(java.util.logging.Level.WARNING, "Could not cancel envoy signal during shutdown", throwable);
+                this.plugin.getLogger().log(java.util.logging.Level.WARNING, Messages.log_signal_cancel_failed.getString(), throwable);
             }
         });
 
@@ -1411,7 +1440,7 @@ public class CrazyManager {
         try {
             task.cancel();
         } catch (Throwable throwable) {
-            this.plugin.getLogger().log(java.util.logging.Level.WARNING, "Could not stop envoy signal flare", throwable);
+            this.plugin.getLogger().log(java.util.logging.Level.WARNING, Messages.log_signal_cancel_failed.getString(), throwable);
         }
     }
 
@@ -1558,21 +1587,21 @@ public class CrazyManager {
 
     private boolean testCenter() {
         if (isCenterUnloaded()) { // Check to make sure the center exist and if not try to load it again.
-            this.fusion.log(Level.WARNING, "Attempting to fix Center location that failed.");
+            this.fusion.log(Level.WARNING, Messages.log_center_repair_attempt.getString());
             
             loadCenter();
 
             if (isCenterUnloaded()) { // If center still doesn't exist then it cancels the event.
-                this.fusion.log(Level.WARNING, "Debug Start");
-                this.fusion.log(Level.WARNING, "Center String: \"{}'", centerString);
-                this.fusion.log(Level.WARNING, "Location Object: \"{}'", String.valueOf(center));
-                this.fusion.log(Level.WARNING, "World Exist: \"{}'", center != null && center.getWorld() != null);
-                this.fusion.log(Level.WARNING, "Debug End");
-                this.fusion.log(Level.WARNING, "Failed to fix Center. Will try again next event.");
+                this.fusion.log(Level.WARNING, Messages.log_center_debug.getMessage(Map.of(
+                        "{saved}", String.valueOf(centerString),
+                        "{location}", String.valueOf(center),
+                        "{world_loaded}", String.valueOf(center != null && center.getWorld() != null)
+                )));
+                this.fusion.log(Level.WARNING, Messages.log_center_repair_failed.getString());
 
                 return false;
             } else {
-                this.fusion.log(Level.WARNING, "Center has been fixed and will continue event.");
+                this.fusion.log(Level.WARNING, Messages.log_center_repair_success.getString());
             }
         }
 
@@ -1590,7 +1619,7 @@ public class CrazyManager {
         }
 
         if (isCenterUnloaded()) {
-            this.fusion.log(Level.WARNING, "Failed to fix Center. Will try again next event.");
+            this.fusion.log(Level.WARNING, Messages.log_center_repair_failed.getString());
         }
     }
 
@@ -1793,7 +1822,11 @@ public class CrazyManager {
                 this.world.getChunkAtAsync(x >> 4, z >> 4, true, false).whenComplete((chunk, throwable) -> {
                     if (throwable != null || this.cancelled.getAsBoolean() || this.future.isDone()) {
                         if (throwable != null) {
-                            plugin.getLogger().log(java.util.logging.Level.WARNING, "Could not load random envoy chunk at " + x + "," + z, throwable);
+                            plugin.getLogger().log(java.util.logging.Level.WARNING, Messages.log_chunk_load_failed.getMessage(Map.of(
+                                    "{type}", "random",
+                                    "{x}", String.valueOf(x),
+                                    "{z}", String.valueOf(z)
+                            )), throwable);
                         }
                         result.complete(null);
                         return;
@@ -1814,7 +1847,11 @@ public class CrazyManager {
                     });
                 });
             } catch (Throwable throwable) {
-                plugin.getLogger().log(java.util.logging.Level.WARNING, "Could not request random envoy chunk at " + x + "," + z, throwable);
+                plugin.getLogger().log(java.util.logging.Level.WARNING, Messages.log_chunk_request_failed.getMessage(Map.of(
+                        "{type}", "random",
+                        "{x}", String.valueOf(x),
+                        "{z}", String.valueOf(z)
+                )), throwable);
                 result.complete(null);
             }
 
@@ -1889,7 +1926,9 @@ public class CrazyManager {
             try {
                 locations.add(Methods.getBuiltLocation(location).getBlock());
             } catch (RuntimeException exception) {
-                this.plugin.getLogger().log(java.util.logging.Level.WARNING, "Could not deserialize persisted envoy location: " + location, exception);
+                this.plugin.getLogger().log(java.util.logging.Level.WARNING, Messages.log_location_deserialize_failed.getMessage(Map.of(
+                        "{location}", location
+                )), exception);
             }
         }
 

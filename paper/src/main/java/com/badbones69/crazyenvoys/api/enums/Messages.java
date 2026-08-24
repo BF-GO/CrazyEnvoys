@@ -83,6 +83,56 @@ public enum Messages {
 
     lacking_flag(MessageKeys.lacking_flag),
 
+    empty_tier_warning(MessageKeys.empty_tier_warning),
+    not_applicable(MessageKeys.not_applicable),
+    envoy_menu_title(MessageKeys.envoy_menu_title),
+    prize_load_error_item(MessageKeys.prize_load_error_item),
+    flare_item_name(MessageKeys.flare_item_name),
+    flare_item_lore(MessageKeys.flare_item_lore, true),
+    grace_period_unlocked(MessageKeys.grace_period_unlocked),
+    grace_period_time_unit(MessageKeys.grace_period_time_unit),
+
+    log_done(MessageKeys.log_done),
+    log_config_migrated(MessageKeys.log_config_migrated),
+    log_prize_error(MessageKeys.log_prize_error),
+    log_locations_retry(MessageKeys.log_locations_retry),
+    log_recovery_error(MessageKeys.log_recovery_error),
+    log_hologram_enabled(MessageKeys.log_hologram_enabled),
+    log_center_world_missing(MessageKeys.log_center_world_missing),
+    log_visuals_failed(MessageKeys.log_visuals_failed),
+    log_hologram_cleanup_failed(MessageKeys.log_hologram_cleanup_failed),
+    log_task_cancel_failed(MessageKeys.log_task_cancel_failed),
+    log_generation_partial(MessageKeys.log_generation_partial),
+    log_generation_area_limited(MessageKeys.log_generation_area_limited),
+    log_chunk_load_failed(MessageKeys.log_chunk_load_failed),
+    log_chunk_request_failed(MessageKeys.log_chunk_request_failed),
+    log_no_tiers(MessageKeys.log_no_tiers),
+    log_no_valid_locations(MessageKeys.log_no_valid_locations),
+    log_signal_cancel_failed(MessageKeys.log_signal_cancel_failed),
+    log_location_deserialize_failed(MessageKeys.log_location_deserialize_failed),
+    log_center_repair_attempt(MessageKeys.log_center_repair_attempt),
+    log_center_repair_failed(MessageKeys.log_center_repair_failed),
+    log_center_repair_success(MessageKeys.log_center_repair_success),
+    log_locations_repair_attempt(MessageKeys.log_locations_repair_attempt),
+    log_locations_repair_success(MessageKeys.log_locations_repair_success),
+    log_locations_repair_failed(MessageKeys.log_locations_repair_failed),
+    log_scheduler_failed(MessageKeys.log_scheduler_failed),
+    log_entity_retired(MessageKeys.log_entity_retired),
+    log_start_begin_failed(MessageKeys.log_start_begin_failed),
+    log_start_generation_failed(MessageKeys.log_start_generation_failed),
+    log_start_spawn_failed(MessageKeys.log_start_spawn_failed),
+    log_start_activation_failed(MessageKeys.log_start_activation_failed),
+    log_start_processing_failed(MessageKeys.log_start_processing_failed),
+    log_hologram_missing(MessageKeys.log_hologram_missing, true),
+    log_center_debug(MessageKeys.log_center_debug),
+    log_locale_directory_failed(MessageKeys.log_locale_directory_failed),
+    log_locale_not_found(MessageKeys.log_locale_not_found),
+    log_locale_migration_failed(MessageKeys.log_locale_migration_failed),
+    log_locale_invalid(MessageKeys.log_locale_invalid),
+    log_locale_prepare_failed(MessageKeys.log_locale_prepare_failed),
+    log_tier_templates_failed(MessageKeys.log_tier_templates_failed),
+    log_config_comments_failed(MessageKeys.log_config_comments_failed),
+
     help(MessageKeys.help, true);
 
     private Property<String> property;
@@ -113,22 +163,19 @@ public enum Messages {
     }
 
     private @NotNull final CrazyEnvoys plugin = CrazyEnvoys.get();
-    private @NotNull final SettingsManager messages = ConfigManager.getMessages();
-    private @NotNull final SettingsManager config = ConfigManager.getConfig();
-    private @NotNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
     private final FusionPaper fusion = this.plugin.getFusion();
 
     public @NonNull final String getString() {
-        return this.messages.getProperty(this.property);
+        return ConfigManager.getMessages().getProperty(this.property);
     }
 
     public @NonNull final List<String> getList() {
-        return List.copyOf(this.messages.getProperty(this.listProperty));
+        return List.copyOf(ConfigManager.getMessages().getProperty(this.listProperty));
     }
 
     public void sendMessage(@NotNull final Audience sender, @NotNull final String placeholder, @NotNull final String replacement) {
-        final State state = this.config.getProperty(ConfigKeys.message_state);
+        final State state = ConfigManager.getConfig().getProperty(ConfigKeys.message_state);
 
         switch (state) {
             case send_message -> sendRichMessage(sender, placeholder, replacement);
@@ -137,7 +184,7 @@ public enum Messages {
     }
 
     public void sendMessage(@NotNull final Audience sender, @NotNull final Map<String, String> placeholders) {
-        final State state = this.config.getProperty(ConfigKeys.message_state);
+        final State state = ConfigManager.getConfig().getProperty(ConfigKeys.message_state);
 
         switch (state) {
             case send_message -> sendRichMessage(sender, placeholders);
@@ -146,7 +193,7 @@ public enum Messages {
     }
 
     public void sendMessage(@NotNull final Audience sender) {
-        final State state = this.config.getProperty(ConfigKeys.message_state);
+        final State state = ConfigManager.getConfig().getProperty(ConfigKeys.message_state);
 
         switch (state) {
             case send_message -> sendRichMessage(sender);
@@ -206,6 +253,10 @@ public enum Messages {
         return getMessage(sender, new HashMap<>());
     }
 
+    public String getMessage(@NotNull final Map<String, String> placeholders) {
+        return getMessage(Audience.empty(), placeholders);
+    }
+
     public String getMessage() {
         return getMessage(Audience.empty(), new HashMap<>());
     }
@@ -216,19 +267,20 @@ public enum Messages {
 
     public void broadcast(final boolean isIgnoring, @NonNull final String permission, @NonNull final Map<String, String> placeholders) {
         final Server server = this.plugin.getServer();
+        final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
         final SettingsManager config = ConfigManager.getConfig();
         final boolean worldMessages = config.getProperty(ConfigKeys.envoys_world_messages);
         final List<String> worlds = List.copyOf(config.getProperty(ConfigKeys.envoys_allowed_worlds));
         final Map<String, String> values = Map.copyOf(placeholders);
 
-        this.crazyManager.getScheduler().supplyGlobal("snapshot recipients for " + name(), () -> {
+        crazyManager.getScheduler().supplyGlobal("snapshot recipients for " + name(), () -> {
             sendMessage(server.getConsoleSender(), values);
             return List.copyOf(server.getOnlinePlayers());
-        }).thenAccept(players -> players.forEach(player -> this.crazyManager.getScheduler().runEntity(
+        }).thenAccept(players -> players.forEach(player -> crazyManager.getScheduler().runEntity(
                 player, "broadcast " + name() + " to " + player.getUniqueId(), () -> {
                     if (worldMessages && !worlds.contains(player.getWorld().getName())) return;
-                    if (isIgnoring && this.crazyManager.isIgnoringMessages(player.getUniqueId())) return;
+                    if (isIgnoring && crazyManager.isIgnoringMessages(player.getUniqueId())) return;
                     if (!permission.isBlank() && !player.hasPermission(permission)) return;
 
                     sendMessage(player, values);
@@ -242,18 +294,20 @@ public enum Messages {
 
     public void migrate() {
         if (this.isList) {
-            this.messages.setProperty(this.listProperty, AdvUtils.convert(this.messages.getProperty(this.listProperty), true));
+            final SettingsManager messages = ConfigManager.getMessages();
+            messages.setProperty(this.listProperty, AdvUtils.convert(messages.getProperty(this.listProperty), true));
 
             return;
         }
 
-        this.messages.setProperty(this.property, AdvUtils.convert(this.messages.getProperty(this.property), true));
+        final SettingsManager messages = ConfigManager.getMessages();
+        messages.setProperty(this.property, AdvUtils.convert(messages.getProperty(this.property), true));
     }
 
     private @NonNull String parse(@NotNull final Audience sender, @NonNull final Map<String, String> placeholders) {
         final Map<String, String> origin = new HashMap<>(placeholders);
 
-        origin.putIfAbsent("{prefix}", this.config.getProperty(ConfigKeys.command_prefix));
+        origin.putIfAbsent("{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix));
 
         return this.fusion.parse(sender, this.isList ? StringUtils.toString(getList()) : getString(), origin);
     }

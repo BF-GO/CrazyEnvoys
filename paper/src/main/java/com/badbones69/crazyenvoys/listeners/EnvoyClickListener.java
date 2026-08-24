@@ -111,7 +111,7 @@ public class EnvoyClickListener implements Listener {
             }
         }
         if (tier.getPrizes().isEmpty()) {
-            final var warning = this.fusion.asComponent("<red>No prizes were found in the tier named {tier}, Please check your configurations otherwise things will break", Map.of("{tier}", tier.getName()));
+            final var warning = this.fusion.asComponent(Messages.empty_tier_warning.getMessage(Map.of("{tier}", tier.getName())));
             this.crazyManager.getScheduler().supplyGlobal("snapshot recipients for empty tier warning", () -> {
                 this.server.getConsoleSender().sendMessage(warning);
                 return List.copyOf(this.server.getOnlinePlayers());
@@ -215,8 +215,13 @@ public class EnvoyClickListener implements Listener {
             } else {
                 if (!items.isEmpty()) {
                     GuiProperty property = this.config.getProperty(ConfigKeys.envoy_menu);
+                    String title = property.getTitle();
 
-                    new PrizeGui(player, tier, prize, property.getTitle(), property.getSize()).build();
+                    if (title.isBlank() || title.equals(ConfigKeys.envoy_menu.getDefaultValue().getTitle())) {
+                        title = Messages.envoy_menu_title.getString();
+                    }
+
+                    new PrizeGui(player, tier, prize, title, property.getSize()).build();
                 }
             }
         }

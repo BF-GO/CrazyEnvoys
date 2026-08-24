@@ -1,6 +1,7 @@
 package com.badbones69.crazyenvoys.scheduler;
 
 import com.badbones69.crazyenvoys.CrazyEnvoys;
+import com.badbones69.crazyenvoys.api.enums.Messages;
 import com.ryderbelserion.fusion.paper.builders.folia.FoliaScheduler;
 import com.ryderbelserion.fusion.paper.builders.folia.Scheduler;
 import org.bukkit.Location;
@@ -14,6 +15,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.logging.Level;
+import java.util.Map;
 
 public final class SchedulerAdapter {
 
@@ -166,13 +168,14 @@ public final class SchedulerAdapter {
     }
 
     private <T> void fail(@NotNull final String context, @NotNull final Throwable throwable, @NotNull final CompletableFuture<T> future) {
-        this.plugin.getLogger().log(Level.SEVERE, "Scheduled task failed: " + context, throwable);
+        this.plugin.getLogger().log(Level.SEVERE, Messages.log_scheduler_failed.getMessage(Map.of("{context}", context)), throwable);
         future.completeExceptionally(throwable);
     }
 
     private <T> void retire(@NotNull final String context, @NotNull final CompletableFuture<T> future) {
-        final CancellationException exception = new CancellationException("Entity retired before task ran: " + context);
-        this.plugin.getLogger().log(Level.FINE, exception.getMessage());
+        final String message = Messages.log_entity_retired.getMessage(Map.of("{context}", context));
+        final CancellationException exception = new CancellationException(message);
+        this.plugin.getLogger().log(Level.FINE, message);
         future.completeExceptionally(exception);
     }
 }

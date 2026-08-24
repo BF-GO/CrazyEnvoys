@@ -1,6 +1,7 @@
 package com.badbones69.crazyenvoys;
 
 import com.badbones69.crazyenvoys.api.CrazyManager;
+import com.badbones69.crazyenvoys.api.enums.Messages;
 import com.badbones69.crazyenvoys.api.events.EnvoyEndEvent;
 import com.badbones69.crazyenvoys.api.events.EnvoyEndEvent.EnvoyEndReason;
 import com.badbones69.crazyenvoys.api.objects.CoolDownSettings;
@@ -22,9 +23,11 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyenvoys.config.ConfigManager;
+import com.badbones69.crazyenvoys.config.TierTemplateManager;
 import com.badbones69.crazyenvoys.support.MetricsWrapper;
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 public class CrazyEnvoys extends JavaPlugin {
@@ -58,6 +61,7 @@ public class CrazyEnvoys extends JavaPlugin {
         final Path path = getDataPath();
 
         ConfigManager.load(getDataFolder(), getComponentLogger());
+        TierTemplateManager.installLocalizedDefaults(this);
 
         this.fileManager = this.fusion.getFileManager();
         this.fileManager.addPaperFile(path.resolve("users.yml"))
@@ -88,7 +92,9 @@ public class CrazyEnvoys extends JavaPlugin {
                 .thenCompose(unused -> this.crazyManager.getScheduler().runGlobal("register CrazyEnvoys commands", CommandManager::load))
                 .whenComplete((unused, throwable) -> {
                     if (throwable == null) {
-                        this.fusion.log(Level.INFO, "Done (%s)!", String.format(Locale.ROOT, "%.3fs", (double) (System.nanoTime() - this.startTime) / 1.0E9D));
+                        this.fusion.log(Level.INFO, Messages.log_done.getMessage(Map.of(
+                                "{time}", String.format(Locale.ROOT, "%.3fs", (double) (System.nanoTime() - this.startTime) / 1.0E9D)
+                        )));
                     }
                 });
     }

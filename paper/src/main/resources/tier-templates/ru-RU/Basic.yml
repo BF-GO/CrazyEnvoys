@@ -1,0 +1,62 @@
+# Стандартный обычный уровень. Технические идентификаторы материалов и команд не переводятся.
+Settings:
+  # Требовать ли право для получения груза.
+  Claim-Permission: false
+  # Необходимое право.
+  Claim-Permission-Name: 'basic.envoy.use'
+  # Сообщение по умолчанию, если у награды нет собственного Messages.
+  Prize-Message:
+    - '<gray>Вы получили <red>{reward}</red> из груза <red>{tier}</red>.</gray>'
+  # Вероятность появления уровня.
+  Spawn-Chance: 85
+  Use-Chance: true
+  # Блок груза.
+  Placed-Block: 'CHEST'
+  Bulk-Prizes:
+    Toggle: false
+    Random: true
+    Max-Bulk: 3
+  Hologram-Toggle: true
+  Hologram-Height: 1.5
+  Hologram-Range: 8
+  Hologram:
+    - '<gray><bold>(<gold>!</gold>) Обычный груз</bold></gray>'
+    - '%crazyenvoys_crates_time%'
+  Firework-Toggle: true
+  Firework-Colors: ['Gray', 'Black', 'Orange']
+  Signal-Flare:
+    Toggle: true
+    Time: '15s'
+    Colors: ['Gray', 'Black', 'Orange']
+# Доступные параметры предметов: item, amount, name, lore, glowing, damage,
+# unbreakable-item, enchantment, trim-pattern, trim-material и custom-model-data.
+Prizes:
+  '1':
+    DisplayName: '<green>$1,000</green>'
+    Chance: 10
+    Drop-Items: false
+    Messages:
+      - '<gray>Вы выиграли {reward}.</gray>'
+    Commands:
+      - 'eco give {player} 1000'
+  '2':
+    DisplayName: '<gold>16 золотых яблок</gold>'
+    Chance: 75
+    Drop-Items: false
+    Messages:
+      - '<gray>Вы выиграли {reward}.</gray>'
+    Items:
+      - 'item:golden_apple, amount:16, name:<light_purple>Сочное золотое яблоко</light_purple>, lore:<gray>Очень вкусное яблоко</gray>'
+  '3':
+    DisplayName: '<light_purple>Набор еды</light_purple>'
+    Chance: 40
+    Drop-Items: false
+    Messages:
+      - '<gray>Вы получили отличный урожай.</gray>'
+    Items:
+      - 'item:cooked_beef, amount:16'
+      - 'item:apple, amount:16'
+      - 'item:cooked_cod, amount:16'
+      - 'item:cooked_salmon, amount:16'
+      - 'item:carrot, amount:16'
+      - 'item:bread, amount:16'

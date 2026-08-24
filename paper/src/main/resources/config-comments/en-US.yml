@@ -1,0 +1,69 @@
+header:
+  - 'CrazyEnvoys configuration'
+  - 'MiniMessage supports <#RRGGBB>, gradients, rainbow, decorations, hover and click tags.'
+  - 'Values are never replaced when the language changes.'
+comments:
+  root:
+    language: 'Server language: en-US, fr-FR, pl-PL, ru-RU or a custom file in locale/.'
+    hologram-plugin: 'Hologram provider: DecentHolograms, FancyHolograms, CMI or None. Blank selects an available provider.'
+    message-state: 'Where normal messages are displayed: send_message or send_actionbar.'
+    command_prefix: 'Prefix shown before command messages.'
+    console_prefix: 'Prefix shown before console messages.'
+  envoys:
+    open-chest:
+      toggle: 'Open a prize menu instead of adding prizes directly to the inventory.'
+      menu: 'Prize menu title and size. Leave the title blank to use the locale value.'
+    falling-blocks:
+      toggle: 'Whether a block falls when an envoy spawns.'
+      type: 'Material used by the falling block.'
+      height: 'Height from which the falling block appears.'
+    generation:
+      max-drops-toggle: 'Always use max-drops-amount. With random locations disabled, configured editor locations are otherwise used.'
+      max-drops-amount: 'Maximum number of crates.'
+      min-drops-amount: 'Minimum number of crates.'
+      random-drops: 'Choose a random crate count between the minimum and maximum.'
+      random-locations:
+        toggle: 'Generate random locations around the center set by /envoys center.'
+        max-radius: 'Maximum distance from the center.'
+        min-radius: 'Minimum distance from the center.'
+    broadcast: 'Broadcast all crate locations when an event starts.'
+    schedule:
+      run-time:
+        toggle: 'Run events automatically. Disable to allow only commands and flares.'
+        value: 'How long an envoy event lasts.'
+      countdown:
+        toggle: 'Use an interval instead of a fixed time of day.'
+        time: 'Interval until the next event.'
+        timestamp: 'Fixed daily time, using hours 1-12 and minutes 0-59.'
+      ignore-empty-server: 'Allow automatic events when the server is empty.'
+    required-players:
+      default:
+        toggle: 'Require a minimum number of players for automatic and command starts.'
+        amount: 'Minimum number of online players.'
+    announce-player-pickup: 'Broadcast when a player claims a crate.'
+    grab-cooldown:
+      toggle: 'Apply a cooldown between claims by the same player.'
+      time: 'Claim cooldown duration.'
+    grace-period:
+      toggle: 'Prevent claims for a short period after crates spawn.'
+      timer: 'Grace period in seconds.'
+      message: 'Text shown when a crate can be claimed. Leave blank to use the locale.'
+      time-unit: 'Suffix shown after the grace countdown. Leave blank to use the locale.'
+    world-messages:
+      toggle: 'Restrict broadcasts to selected worlds.'
+      worlds: 'Worlds that receive broadcasts.'
+    warnings: 'Times before the next event at which warning messages are sent.'
+    ignore-behaviour: 'Choose which broadcasts can be hidden with /envoys ignore.'
+  flare:
+    required-players:
+      toggle: 'Require a minimum number of players to use a flare.'
+      amount: 'Minimum number of online players required for a flare.'
+    item:
+      name: 'Flare item name. Leave blank to use the locale.'
+      type: 'Flare item material.'
+      glowing: 'Give the flare item an enchantment glow.'
+      lore: 'Flare item lore. Leave empty to use the locale.'
+    support:
+      worldguard:
+        toggle: 'Restrict flare use to configured WorldGuard regions.'
+        regions: 'WorldGuard regions where flares can be used.'

@@ -1,0 +1,54 @@
+# Стандартный уровень титана. Технические идентификаторы материалов и команд не переводятся.
+Settings:
+  Claim-Permission: false
+  Claim-Permission-Name: 'titan.envoy.use'
+  Prize-Message:
+    - '<gray>Вы получили <dark_red>{reward}</dark_red> из груза <dark_red>{tier}</dark_red>.</gray>'
+  Spawn-Chance: 10
+  Use-Chance: true
+  Placed-Block: 'ENCHANTING_TABLE'
+  Bulk-Prizes:
+    Toggle: false
+    Random: true
+    Max-Bulk: 3
+  Hologram-Toggle: true
+  Hologram-Height: 1.5
+  Hologram-Range: 8
+  Hologram:
+    - '<gray><bold>(<dark_red>!</dark_red>) <dark_red>Груз титана</dark_red></bold></gray>'
+    - '%crazyenvoys_crates_time%'
+  Firework-Toggle: true
+  Firework-Colors: ['Gray', 'Black', 'Red']
+  Signal-Flare:
+    Toggle: true
+    Time: '40s'
+    Colors: ['Gray', 'Black', 'Red']
+# Доступные параметры предметов: item, amount, name, lore, glowing, damage,
+# unbreakable-item, enchantment, trim-pattern, trim-material и custom-model-data.
+Prizes:
+  '1':
+    DisplayName: '<green>$1,000,000</green>'
+    Chance: 50
+    Messages:
+      - '<gray>Вы нашли {reward}.</gray>'
+    Commands:
+      - 'eco give {player} 1000000'
+  '2':
+    DisplayName: '<dark_red>Меч титана</dark_red>'
+    Chance: 25
+    Drop-Items: false
+    Messages:
+      - '<gray>Поздравляем! Вы выиграли {reward}.</gray>'
+    Items:
+      - 'item:diamond_sword, amount:1, name:<dark_red>Меч титана</dark_red>, sharpness:5, unbreaking:3, knockback:2, fire_aspect:2, looting:3'
+  '3':
+    DisplayName: '<dark_red>Броня титана</dark_red>'
+    Chance: 10
+    Drop-Items: false
+    Messages:
+      - '<gray>Поздравляем! Вы выиграли комплект {reward}.</gray>'
+    Items:
+      - 'item:diamond_helmet, damage:50, trim-pattern:sentry, trim-material:quartz, amount:1, name:<dark_red>Шлем титана</dark_red>, protection:4, unbreaking:3'
+      - 'item:diamond_chestplate, damage:50, trim-pattern:dune, trim-material:redstone, amount:1, name:<dark_red>Нагрудник титана</dark_red>, protection:4, unbreaking:3'
+      - 'item:diamond_leggings, damage:50, trim-pattern:host, trim-material:copper, amount:1, name:<dark_red>Поножи титана</dark_red>, protection:4, unbreaking:3'
+      - 'item:diamond_boots, damage:50, trim-pattern:shaper, trim-material:gold, amount:1, name:<dark_red>Ботинки титана</dark_red>, protection:4, unbreaking:3'

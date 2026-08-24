@@ -1,0 +1,69 @@
+header:
+  - 'Konfiguracja CrazyEnvoys'
+  - 'MiniMessage obsługuje <#RRGGBB>, gradienty, rainbow, dekoracje, hover i click.'
+  - 'Zmiana języka nigdy nie zastępuje wartości ustawień.'
+comments:
+  root:
+    language: 'Język serwera: en-US, fr-FR, pl-PL, ru-RU lub własny plik w locale/.'
+    hologram-plugin: 'Dostawca hologramów: DecentHolograms, FancyHolograms, CMI lub None. Pusta wartość wybiera dostępny plugin.'
+    message-state: 'Miejsce wyświetlania wiadomości: send_message lub send_actionbar.'
+    command_prefix: 'Prefiks wiadomości komend.'
+    console_prefix: 'Prefiks wiadomości konsoli.'
+  envoys:
+    open-chest:
+      toggle: 'Otwierać menu nagród zamiast od razu dodawać przedmioty.'
+      menu: 'Tytuł i rozmiar menu. Pusty tytuł używa wartości języka.'
+    falling-blocks:
+      toggle: 'Czy blok ma spadać podczas pojawienia się zrzutu.'
+      type: 'Materiał spadającego bloku.'
+      height: 'Wysokość pojawienia się bloku.'
+    generation:
+      max-drops-toggle: 'Zawsze używać max-drops-amount.'
+      max-drops-amount: 'Maksymalna liczba skrzyń.'
+      min-drops-amount: 'Minimalna liczba skrzyń.'
+      random-drops: 'Losować liczbę skrzyń między minimum i maksimum.'
+      random-locations:
+        toggle: 'Losować pozycje wokół centrum ustawionego przez /envoys center.'
+        max-radius: 'Maksymalna odległość od centrum.'
+        min-radius: 'Minimalna odległość od centrum.'
+    broadcast: 'Ogłaszać wszystkie pozycje przy starcie wydarzenia.'
+    schedule:
+      run-time:
+        toggle: 'Automatycznie uruchamiać wydarzenia.'
+        value: 'Czas trwania wydarzenia.'
+      countdown:
+        toggle: 'Używać odstępu czasu zamiast stałej godziny.'
+        time: 'Odstęp do następnego wydarzenia.'
+        timestamp: 'Codzienna godzina: godziny 1-12, minuty 0-59.'
+      ignore-empty-server: 'Pozwalać na wydarzenia przy pustym serwerze.'
+    required-players:
+      default:
+        toggle: 'Wymagać minimalnej liczby graczy.'
+        amount: 'Minimalna liczba graczy online.'
+    announce-player-pickup: 'Ogłaszać odebranie skrzyni przez gracza.'
+    grab-cooldown:
+      toggle: 'Stosować przerwę między odbieraniem skrzyń.'
+      time: 'Czas przerwy między odbiorami.'
+    grace-period:
+      toggle: 'Blokować odbiór przez krótki czas po pojawieniu.'
+      timer: 'Okres ochronny w sekundach.'
+      message: 'Tekst gotowości skrzyni. Pusta wartość używa języka.'
+      time-unit: 'Przyrostek licznika. Pusta wartość używa języka.'
+    world-messages:
+      toggle: 'Ograniczyć ogłoszenia do wybranych światów.'
+      worlds: 'Światy otrzymujące ogłoszenia.'
+    warnings: 'Momenty wysyłania ostrzeżeń przed wydarzeniem.'
+    ignore-behaviour: 'Ogłoszenia ukrywane przez /envoys ignore.'
+  flare:
+    required-players:
+      toggle: 'Wymagać minimalnej liczby graczy do użycia flary.'
+      amount: 'Minimalna liczba graczy dla flary.'
+    item:
+      name: 'Nazwa flary. Pusta wartość używa języka.'
+      type: 'Materiał flary.'
+      glowing: 'Dodawać efekt świecenia.'
+      lore: 'Opis flary. Pusta lista używa języka.'
+    support:
+      worldguard:
+        toggle: 'Ograniczyć flary do skonfigurowanych regionów WorldGuard.'
+        regions: 'Dozwolone regiony WorldGuard.'

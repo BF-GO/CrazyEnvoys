@@ -6,7 +6,6 @@ import com.Zrips.CMI.Modules.Holograms.CMIHologram;
 import com.Zrips.CMI.Modules.Holograms.Settings.CMIHologramSettings;
 import com.badbones69.crazyenvoys.api.objects.misc.Tier;
 import com.badbones69.crazyenvoys.support.holograms.HologramManager;
-import net.Zrips.CMILib.Colors.CMIChatColor;
 import net.Zrips.CMILib.Container.CMILocation;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -36,7 +35,10 @@ public class CMIHologramsSupport extends HologramManager {
 
         final List<String> lines = new ArrayList<>();
 
-        tier.getHoloMessage().forEach(line -> lines.add(CMIChatColor.colorize(line)));
+        tier.getHoloMessage().forEach(line -> {
+            final String colored = color(line);
+            if (colored != null) lines.add(colored);
+        });
 
         hologram.getPages().setLines(lines);
 

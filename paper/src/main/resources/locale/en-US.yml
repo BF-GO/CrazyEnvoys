@@ -1,93 +1,154 @@
-# Support: https://discord.gg/badbones-s-live-chat-182615261403283459
-# Github: https://github.com/Crazy-Crew
-# 
-# Issues: https://github.com/Crazy-Crew/CrazyEnvoys/issues
-# Features: https://github.com/Crazy-Crew/CrazyEnvoys/issues
-# 
-# Tips:
-#  1. Make sure to use the {prefix} to add the prefix in front of messages.
-#  2. If you wish to use more than one line for a message just go from a line to a list.
-# Examples:
-#   Line:
-#     No-Permission: '{prefix}<red>You do not have permission to use that command.'
-#   List:
-#     No-Permission:
-#       - '{prefix}<red>You do not have permission'
-#       - '<red>to use that command. Please try another.'
+# CrazyEnvoys language file (en-US)
+# MiniMessage examples: <#55AAFF>hex</#55AAFF>, <gradient:#FF5555:#55AAFF>gradient</gradient>, <rainbow>rainbow</rainbow>
+# Legacy ampersand colors can be converted with /crazyenvoys migrate -mt legacy_color_all.
 player:
-    no-permission: '{prefix}<red>You do not have permission to use that command.'
-    no-permission-to-claim: '{prefix}<red>You do not have permission to claim that envoy.'
+  no-permission: '{prefix}<red>You do not have permission to use that command.</red>'
+  no-permission-to-claim: '{prefix}<red>You do not have permission to claim that envoy.</red>'
 envoys:
-    already-started: '{prefix}<red>There is already an envoy event running. Please stop
-        it to start a new one.'
-    force-start: '{prefix}<gray>You have just started the envoy.'
-    not-started: '{prefix}<red>There is no envoy event going on at this time.'
-    force-ended: '{prefix}<red>You have just ended the envoy.'
-    warning: '{prefix}<red>[<dark_red>ALERT<red>] <gray>There is an envoy event happening in <gold>{time}.'
-    started: '{prefix}<gray>An envoy event has just started. <gold>{amount} <gray>crates have
-        spawned around spawn for 5m.'
-    left: '{prefix}<gold>{player} <gray>has just found a tier envoy. There are now <gold>{amount}
-        <gray>left to find.'
-    ended: '{prefix}<red>The envoy event has ended. Thanks for playing and please come
-        back for the next one.'
-    not-enough-players: '{prefix}<gray>Not enough players are online to start the envoy
-        event. Only <gold>{amount} <gray>players are online.'
-    enter-editor-mode: '{prefix}<gray>You are now in editor mode.'
-    leave-editor-mode: '{prefix}<gray>You have now left editor mode.'
-    editor-clear-locations: '{prefix}<gray>You have cleared all the editor spawn locations.'
-    editor-clear-failure: '{prefix}<gray>You must be in Editor mode to clear the spawn
-        locations.'
-    kicked-from-editor-mode: '{prefix}<red>Sorry but an envoy is active. Please stop
-        it or wait till it''''s over.'
-    add-location: '{prefix}<gray>You have just added a spawn location.'
-    remove-location: '{prefix}<red>You have just removed a spawn location.'
-    time-left: '{prefix}<gray>The current envoy has <gold>{time}<gray> left.'
-    time-till-event: '{prefix}<gray>The next envoy will start in <gold>{time}<gray>.'
-    flare:
-        used-flare: '{prefix}<gray>You have just started an envoy event with a flare.'
-        cant-use-flares: '{prefix}<red>You do not have permission to use flares.'
-        sent-flare: '{prefix}<gray>You have just given <gold>{player} {amount} <gray>flares.'
-        received-flare: '{prefix}<gray>You have been given <gold>{amount} <gray>flares.'
-    new-center: '{prefix}<gray>You have just set a new center for the random envoy crates.'
-    not-in-world-guard-region: '{prefix}<red>You must be in the WarZone to use a flare.'
-    start-ignoring-messages: '{prefix}<gray>You are now ignoring the collecting messages.'
-    stop-ignoring-messages: '{prefix}<gray>You now see all the collecting messages.'
-    cooldown-left: '{prefix}<gray>You still have <gold>{time} <gray>till you can collect another
-        crate.'
-    countdown-in-progress: '{prefix}<gray>You cannot claim any envoys for another <gold>{time}
-        seconds.'
-    drops-available: '{prefix}<gray>List of all available envoys.'
-    drops-possibilities: '{prefix}<gray>List of location envoy''''s may spawn at.'
-    drops-page: '{prefix}<gray>Use /crazyenvoys drops [page] to see more.'
-    drops-format: '<gray>[<gold>{id}<gray>]: {world}, {x}, {y}, {z}'
-    no-spawn-locations-found: '{prefix}<red>No spawn locations were found and so the
-        event has been cancelled and the cooldown has been reset.'
-    hologram-placeholders:
-        on-going: On Going
-        not-running: Not Running
-    time-placeholders:
-        day: d
-        hour: h
-        minute: m
-        second: s
-    envoy-locations: '<yellow><b>All Envoy Locations: \n<red>[ID], [World]: [X], [Y], [Z] <reset>{locations}'
-    location-format: '\n<dark_gray>[<dark_aqua>{id}<dark_gray>] <red>{world}: {x}, {y}, {z}'
+  already-started: '{prefix}<red>There is already an envoy event running. Stop it before starting another.</red>'
+  force-start: '{prefix}<gray>You started the envoy event.</gray>'
+  not-started: '{prefix}<red>There is no envoy event running.</red>'
+  force-ended: '{prefix}<red>You ended the envoy event.</red>'
+  warning: '{prefix}<red>[<dark_red>ALERT</dark_red>]</red> <gray>An envoy event will start in <gold>{time}</gold>.</gray>'
+  started:
+    list:
+      - '{prefix}<gray>An envoy event has started. <gold>{amount}</gold> crates have spawned.</gray>'
+  started-player:
+    list:
+      - '{prefix}<gray>An envoy event was started by {starter}. <gold>{amount}</gold> crates have spawned.</gray>'
+  left:
+    - '{prefix}<gold>{player}</gold> <gray>found a {tier} envoy. <gold>{amount}</gold> remain.</gray>'
+  ended:
+    - '{prefix}<red>The envoy event has ended. Thanks for playing.</red>'
+  not-enough-players: '{prefix}<gray>Not enough players are online. Only <gold>{amount}</gold> players are online.</gray>'
+  enter-editor-mode: '{prefix}<gray>You entered editor mode.</gray>'
+  leave-editor-mode: '{prefix}<gray>You left editor mode.</gray>'
+  editor-clear-locations: '{prefix}<gray>All editor spawn locations were cleared.</gray>'
+  editor-clear-failure: '{prefix}<red>You must be in editor mode to clear spawn locations.</red>'
+  kicked-from-editor-mode: '{prefix}<red>An envoy is active. Stop it or wait for it to end.</red>'
+  add-location: '{prefix}<gray>You added a spawn location.</gray>'
+  remove-location: '{prefix}<red>You removed a spawn location.</red>'
+  time-left: '{prefix}<gray>The current envoy ends in <gold>{time}</gold>.</gray>'
+  time-till-event:
+    - '{prefix}<gray>The next envoy starts in <gold>{time}</gold>.</gray>'
+  flare:
+    used-flare: '{prefix}<gray>You started an envoy event with a flare.</gray>'
+    cant-use-flares: '{prefix}<red>You do not have permission to use flares.</red>'
+    sent-flare: '{prefix}<gray>You gave <gold>{player}</gold> <gold>{amount}</gold> flares.</gray>'
+    received-flare: '{prefix}<gray>You received <gold>{amount}</gold> flares.</gray>'
+  new-center: '{prefix}<gray>You set a new center for random envoy crates.</gray>'
+  not-in-world-guard-region: '{prefix}<red>You must be in an allowed region to use a flare.</red>'
+  start-ignoring-messages: '{prefix}<gray>You are now ignoring collection messages.</gray>'
+  stop-ignoring-messages: '{prefix}<gray>You can now see collection messages.</gray>'
+  cooldown-left: '{prefix}<gray>You must wait <gold>{time}</gold> before claiming another crate.</gray>'
+  countdown-in-progress: '{prefix}<gray>You cannot claim envoys for another <gold>{time}</gold> seconds.</gray>'
+  drops-available: '{prefix}<gray>Available envoy locations:</gray>'
+  drops-possibilities: '{prefix}<gray>Configured envoy spawn locations:</gray>'
+  drops-page: '{prefix}<gray>Use /crazyenvoys drops [page] to see more.</gray>'
+  drops-format: '<gray>[<gold>{id}</gold>]: {world}, {x}, {y}, {z}</gray>'
+  no-spawn-locations-found: '{prefix}<red>No valid spawn locations were found. The event was cancelled and its cooldown was reset.</red>'
+  hologram-placeholders:
+    on-going: 'In progress'
+    not-running: 'Not running'
+  time-placeholders:
+    day: 'd'
+    hour: 'h'
+    minute: 'm'
+    second: 's'
+  envoy-locations: '<yellow><bold>All Envoy Locations:</bold></yellow>\n<red>[ID], [World]: [X], [Y], [Z]</red> {locations}'
+  location-format: '\n<dark_gray>[<blue>{id}</blue>]</dark_gray> <red>{world}: {x}, {y}, {z}</red>'
 misc:
-    command-not-found: '{prefix}<red>The correct usage for this command is <yellow>{usage}.'
-    must-be-console-sender: '{prefix}<red>You must be using console to use this command.'
-    player-only: '{prefix}<red>Only players can use that command.'
-    not-online: '{prefix}<red>That player is not online at this time.'
-    not-a-number: '{prefix}<red>That is not a number.'
-    config-reload: '{prefix}<gray>You have just reloaded all the files.'
-    help:
-        - '<gold>/crazyenvoys help <gray>- Shows the envoy help menu.'
-        - '<gold>/crazyenvoys reload <gray>- Reloads all the config files.'
-        - '<gold>/crazyenvoys time <gray>- Shows the time till the envoy starts or ends.'
-        - '<gold>/crazyenvoys drops [page] <gray>- Shows all current crate locations.'
-        - '<gold>/crazyenvoys ignore <gray>- Shuts up the envoy collecting message.'
-        - '<gold>/crazyenvoys flare [amount] [player] <gray>- Give a player a flare to call an
-        envoy event.'
-        - '<gold>/crazyenvoys edit <gray>- Edit the crate locations with bedrock.'
-        - '<gold>/crazyenvoys start <gray>- Force starts the envoy.'
-        - '<gold>/crazyenvoys stop <gray>- Force stops the envoy.'
-        - '<gold>/crazyenvoys center <gray>- Set the center of the random crate drops.'
+  command-not-found: '{prefix}<red>{command} is not a known command.</red>'
+  correct-usage: '{prefix}<red>Correct usage: <yellow>{usage}</yellow></red>'
+  lacking-flag: '{prefix}<red>{flag} is missing. Expected format: <yellow>{usage}</yellow></red>'
+  must-be-console-sender: '{prefix}<red>This command can only be used from the console.</red>'
+  player-only: '{prefix}<red>Only players can use this command.</red>'
+  not-online: '{prefix}<red>That player is not online.</red>'
+  not-a-number: '{prefix}<red>That value is not a number.</red>'
+  not-applicable: 'N/A'
+  config-reload: '{prefix}<gray>All files were reloaded.</gray>'
+  help:
+    - '<gold>/crazyenvoys help</gold> <gray>- Shows this help.</gray>'
+    - '<gold>/crazyenvoys reload</gold> <gray>- Reloads all configuration files.</gray>'
+    - '<gold>/crazyenvoys time</gold> <gray>- Shows the time until the envoy starts or ends.</gray>'
+    - '<gold>/crazyenvoys drops [page]</gold> <gray>- Shows crate locations.</gray>'
+    - '<gold>/crazyenvoys ignore</gold> <gray>- Toggles collection messages.</gray>'
+    - '<gold>/crazyenvoys flare [amount] [player]</gold> <gray>- Gives a player flares.</gray>'
+    - '<gold>/crazyenvoys edit</gold> <gray>- Edits crate locations.</gray>'
+    - '<gold>/crazyenvoys start</gold> <gray>- Starts the envoy event.</gray>'
+    - '<gold>/crazyenvoys stop</gold> <gray>- Stops the envoy event.</gray>'
+    - '<gold>/crazyenvoys center</gold> <gray>- Sets the random-drop center.</gray>'
+command:
+  migrate:
+    error: '{prefix}<red>Could not migrate <green>{file}</green> with <green>{type}</green>: <green>{reason}</green>.</red>'
+    not-available: '{prefix}<red>This migration type is not available.</red>'
+    plugin-not-available: '{prefix}<red>Plugin {name} is not enabled and cannot be used for migration.</red>'
+    no-envoys-available: '{prefix}<red>There are no envoys available for migration.</red>'
+    success-users:
+      - '<gold><bold>Migration statistics</bold></gold>'
+      - '<green>Successful: {succeeded_amount}</green>'
+      - '<red>Failed: {failed_amount}</red>'
+      - '<gray>Time: {time}; type: {type}</gray>'
+    success:
+      - '<gold><bold>Migration statistics</bold></gold>'
+      - '<green>Successful: {succeeded_amount}</green>'
+      - '<red>Failed: {failed_amount}</red>'
+      - '<gray>Time: {time}; type: {type}</gray>'
+      - '<gray>Files:</gray>'
+      - '{files}'
+warnings:
+  empty-tier: '<red>No prizes were found in tier {tier}. Check its configuration.</red>'
+ui:
+  envoy-menu-title: '<red>Envoy Drops</red>'
+  prize-load-error: '<red>Error in prize: {prize}</red>'
+  flare:
+    name: '<bold><gray>(<dark_red>!</dark_red>)</gray></bold> <red>Flare</red>'
+    lore:
+      - '<gray>Right-click to start</gray>'
+      - '<gray>an envoy event.</gray>'
+  grace-period:
+    unlocked: '<red>Ready to claim.</red>'
+    time-unit: ' seconds.'
+logs:
+  done: 'Done ({time})!'
+  config-migrated: 'Successfully migrated {file}.'
+  prize-error: 'An error occurred while loading prize {prize}.'
+  locations-retry: 'Failed to load {amount} locations; retrying in 10 seconds.'
+  recovery-error: 'Startup recovery completed with errors: {error}'
+  hologram-enabled: '{plugin} support has been enabled.'
+  center-world-missing: 'The envoy center world was not found. Event cancelled. Center: {center}'
+  visuals-failed: 'Could not finish envoy visuals for session {session}.'
+  hologram-cleanup-failed: 'Could not remove an envoy hologram during cleanup.'
+  task-cancel-failed: 'Could not cancel envoy {task} task.'
+  generation-partial: 'Generated {generated}/{requested} envoy locations after {attempts} attempts.'
+  generation-area-limited: 'The requested crate count exceeds the configured area. Spawning {amount} crates.'
+  chunk-load-failed: 'Could not load {type} envoy chunk at {x},{z}.'
+  chunk-request-failed: 'Could not request {type} envoy chunk at {x},{z}.'
+  no-tiers: 'No tiers were found in the tiers folder. Delete the folder to regenerate examples.'
+  no-valid-locations: 'Could not generate any valid envoy locations.'
+  signal-cancel-failed: 'Could not cancel an envoy signal flare.'
+  location-deserialize-failed: 'Could not deserialize persisted envoy location {location}.'
+  center-repair-attempt: 'Attempting to repair the envoy center location.'
+  center-repair-failed: 'The envoy center could not be repaired. It will be retried at the next event.'
+  center-repair-success: 'The envoy center was repaired; the event will continue.'
+  center-debug: 'Center diagnostics: saved={saved}, location={location}, world-loaded={world_loaded}'
+  locations-repair-attempt: 'Attempting to repair {amount} failed locations.'
+  locations-repair-success: 'Successfully repaired {amount} locations.'
+  locations-repair-failed: 'Could not repair {amount} locations; they will not be retried.'
+  scheduler-failed: 'Scheduled task failed: {context}'
+  entity-retired: 'Entity retired before task ran: {context}'
+  start-begin-failed: 'Could not begin envoy event.'
+  start-generation-failed: 'Could not generate envoy locations.'
+  start-spawn-failed: 'Could not spawn envoy crates.'
+  start-activation-failed: 'Could not activate envoy session.'
+  start-processing-failed: 'Could not process generated envoy locations.'
+  hologram-missing:
+    - 'No supported hologram plugin was found. If you use CMI, enable its hologram module in modules.yml.'
+    - 'After enabling the CMI module, run /crazyenvoys reload; otherwise restart the server.'
+  locale-directory-failed: 'Could not create locale directory at {path}.'
+  locale-not-found: 'Locale {locale} was not found. Falling back to en-US.'
+  locale-migration-failed: 'Could not migrate {source} to {target}.'
+  locale-invalid: 'Invalid locale name {locale}. Falling back to en-US.'
+  locale-prepare-failed: 'Could not prepare locale {locale}.'
+  tier-templates-failed: 'Could not install localized tier templates.'
+  config-comments-failed: 'Could not update localized config comments.'

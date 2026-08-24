@@ -27,7 +27,7 @@ public class FancyHologramsSupport extends HologramManager {
 
         TextHologramData hologramData = new TextHologramData(name(id), location.clone().add(getVector(tier)));
 
-        hologramData.setText(tier.getHoloMessage());
+        hologramData.setText(tier.getHoloMessage().stream().map(this::miniMessage).toList());
 
         final Hologram hologram = this.manager.create(hologramData);
 

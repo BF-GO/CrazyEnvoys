@@ -25,7 +25,6 @@ public class ReloadCommand extends EnvoyCommand {
         this.crazyManager.endEnvoyEventAsync().handle((unused, throwable) -> null)
                 .thenCompose(unused -> this.crazyManager.getScheduler().runGlobal("reload CrazyEnvoys files", () -> {
                     this.fusion.reload();
-                    this.fileManager.refresh(false);
                 }))
                 .thenCompose(unused -> this.crazyManager.reloadAsync())
                 .whenComplete((unused, throwable) -> {

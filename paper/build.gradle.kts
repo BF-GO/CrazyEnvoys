@@ -35,6 +35,9 @@ dependencies {
     compileOnly(libs.bundles.shared)
     compileOnly(libs.bundles.cmi)
     compileOnly(libs.worldguard)
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.13.4")
 }
 
 tasks {
@@ -67,5 +70,9 @@ tasks {
         defaultCharacterEncoding = Charsets.UTF_8.name()
 
         minecraftVersion(libs.versions.minecraft.get())
+    }
+
+    test {
+        useJUnitPlatform()
     }
 }

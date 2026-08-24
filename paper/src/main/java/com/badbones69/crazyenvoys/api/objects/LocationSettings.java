@@ -3,6 +3,7 @@ package com.badbones69.crazyenvoys.api.objects;
 import com.badbones69.crazyenvoys.CrazyEnvoys;
 import com.badbones69.crazyenvoys.Methods;
 import com.badbones69.crazyenvoys.api.enums.Files;
+import com.badbones69.crazyenvoys.api.enums.Messages;
 import com.ryderbelserion.fusion.core.api.enums.Level;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import org.bukkit.block.Block;
@@ -10,6 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Map;
 
 public class LocationSettings {
 
@@ -171,7 +173,9 @@ public class LocationSettings {
 
     public void fixLocations() {
         if (!getFailedLocations().isEmpty()) {
-            this.fusion.log(Level.INFO, "Attempting to fix {} locations that failed.", getFailedLocations().size());
+            this.fusion.log(Level.INFO, Messages.log_locations_repair_attempt.getMessage(Map.of(
+                    "{amount}", String.valueOf(getFailedLocations().size())
+            )));
 
             int failed = 0;
             int fixed = 0;
@@ -186,11 +190,15 @@ public class LocationSettings {
             }
 
             if (fixed > 0) {
-                this.fusion.log(Level.INFO, "We were able to fix {} locations that failed.", fixed);
+                this.fusion.log(Level.INFO, Messages.log_locations_repair_success.getMessage(Map.of(
+                        "{amount}", String.valueOf(fixed)
+                )));
             }
 
             if (failed > 0) {
-                this.fusion.log(Level.ERROR, "We failed to fix {} locations and will not re-attempt.", failed);
+                this.fusion.log(Level.ERROR, Messages.log_locations_repair_failed.getMessage(Map.of(
+                        "{amount}", String.valueOf(failed)
+                )));
             }
         }
     }

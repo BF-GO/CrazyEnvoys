@@ -1,6 +1,7 @@
 package com.badbones69.crazyenvoys.util;
 
 import com.badbones69.crazyenvoys.CrazyEnvoys;
+import com.badbones69.crazyenvoys.api.enums.Messages;
 import com.ryderbelserion.fusion.core.api.enums.Level;
 import com.ryderbelserion.fusion.core.utils.StringUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
@@ -10,6 +11,7 @@ import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -104,9 +106,11 @@ public class ItemUtil {
                 }
             }
         } catch (final Exception exception) {
-            itemBuilder = ItemBuilder.from(ItemType.RED_TERRACOTTA).withDisplayName("<red>Error found with Prize: %s".formatted(section));
+            itemBuilder = ItemBuilder.from(ItemType.RED_TERRACOTTA).withDisplayName(
+                    Messages.prize_load_error_item.getMessage(Map.of("{prize}", section))
+            );
 
-            fusion.log(Level.ERROR, "An error has occurred with the prize %s".formatted(section), exception);
+            fusion.log(Level.ERROR, Messages.log_prize_error.getMessage(Map.of("{prize}", section)), exception);
         }
 
         return itemBuilder;

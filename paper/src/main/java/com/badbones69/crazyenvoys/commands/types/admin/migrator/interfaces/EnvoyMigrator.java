@@ -59,7 +59,7 @@ public abstract class EnvoyMigrator {
 
     public void sendMessage(@NonNull final List<String> files, final int success, final int failed) {
         Messages.successfully_migrated.sendMessage(this.sender, Map.of(
-                "{files}", files.size() > 1 ? StringUtils.toString(files) : files.isEmpty() ? "N/A" : files.getFirst(),
+                "{files}", files.size() > 1 ? StringUtils.toString(files) : files.isEmpty() ? Messages.not_applicable.getString() : files.getFirst(),
                 "{succeeded_amount}", String.valueOf(success),
                 "{failed_amount}", String.valueOf(failed),
                 "{type}", type.getName(),

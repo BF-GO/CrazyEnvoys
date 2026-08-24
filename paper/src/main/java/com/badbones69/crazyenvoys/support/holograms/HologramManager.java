@@ -2,17 +2,22 @@ package com.badbones69.crazyenvoys.support.holograms;
 
 import com.badbones69.crazyenvoys.CrazyEnvoys;
 import com.badbones69.crazyenvoys.api.objects.misc.Tier;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-@SuppressWarnings("deprecation")
 public abstract class HologramManager {
+
+    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+    private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.builder()
+            .character('§')
+            .hexColors()
+            .useUnusualXRepeatedCharacterHexFormat()
+            .build();
 
     protected CrazyEnvoys plugin = CrazyEnvoys.get();
     
@@ -41,13 +46,10 @@ public abstract class HologramManager {
     protected @Nullable final String color(@NotNull final String message) {
         if (message.isEmpty()) return null;
 
-        final Matcher matcher = Pattern.compile("#[a-fA-F\\d]{6}").matcher(message);
-        final StringBuilder buffer = new StringBuilder();
+        return LEGACY.serialize(this.plugin.getFusion().asComponent(message));
+    }
 
-        while (matcher.find()) {
-            matcher.appendReplacement(buffer, net.md_5.bungee.api.ChatColor.of(matcher.group()).toString());
-        }
-
-        return ChatColor.translateAlternateColorCodes('&', matcher.appendTail(buffer).toString());
+    protected @NotNull final String miniMessage(@NotNull final String message) {
+        return MINI_MESSAGE.serialize(this.plugin.getFusion().asComponent(message));
     }
 }

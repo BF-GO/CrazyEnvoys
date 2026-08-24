@@ -1,0 +1,69 @@
+header:
+  - 'Configuration de CrazyEnvoys'
+  - 'MiniMessage accepte <#RRGGBB>, les dégradés, rainbow, les décorations, hover et click.'
+  - 'Les valeurs ne sont jamais remplacées lors d’un changement de langue.'
+comments:
+  root:
+    language: 'Langue du serveur : en-US, fr-FR, pl-PL, ru-RU ou un fichier personnalisé dans locale/.'
+    hologram-plugin: 'Fournisseur : DecentHolograms, FancyHolograms, CMI ou None. Une valeur vide choisit un fournisseur disponible.'
+    message-state: 'Affichage des messages : send_message ou send_actionbar.'
+    command_prefix: 'Préfixe des messages de commande.'
+    console_prefix: 'Préfixe des messages de console.'
+  envoys:
+    open-chest:
+      toggle: 'Ouvrir un menu de récompenses au lieu de donner directement les objets.'
+      menu: 'Titre et taille du menu. Un titre vide utilise la langue.'
+    falling-blocks:
+      toggle: 'Faire tomber un bloc lors de l’apparition d’un largage.'
+      type: 'Matériau du bloc qui tombe.'
+      height: 'Hauteur d’apparition du bloc.'
+    generation:
+      max-drops-toggle: 'Toujours utiliser max-drops-amount.'
+      max-drops-amount: 'Nombre maximal de caisses.'
+      min-drops-amount: 'Nombre minimal de caisses.'
+      random-drops: 'Choisir un nombre aléatoire entre le minimum et le maximum.'
+      random-locations:
+        toggle: 'Générer des positions autour du centre défini par /envoys center.'
+        max-radius: 'Distance maximale du centre.'
+        min-radius: 'Distance minimale du centre.'
+    broadcast: 'Diffuser toutes les positions au démarrage.'
+    schedule:
+      run-time:
+        toggle: 'Démarrer automatiquement les événements.'
+        value: 'Durée d’un événement.'
+      countdown:
+        toggle: 'Utiliser un intervalle plutôt qu’une heure fixe.'
+        time: 'Intervalle avant le prochain événement.'
+        timestamp: 'Heure quotidienne, heures 1-12 et minutes 0-59.'
+      ignore-empty-server: 'Autoriser les événements lorsque le serveur est vide.'
+    required-players:
+      default:
+        toggle: 'Exiger un nombre minimal de joueurs.'
+        amount: 'Nombre minimal de joueurs en ligne.'
+    announce-player-pickup: 'Annoncer la récupération d’une caisse.'
+    grab-cooldown:
+      toggle: 'Appliquer un délai entre deux récupérations.'
+      time: 'Durée du délai de récupération.'
+    grace-period:
+      toggle: 'Bloquer les caisses pendant une courte période.'
+      timer: 'Période de grâce en secondes.'
+      message: 'Texte affiché quand la caisse est disponible. Vide : valeur de la langue.'
+      time-unit: 'Suffixe du compte à rebours. Vide : valeur de la langue.'
+    world-messages:
+      toggle: 'Limiter les annonces aux mondes sélectionnés.'
+      worlds: 'Mondes recevant les annonces.'
+    warnings: 'Moments où les avertissements sont envoyés avant un événement.'
+    ignore-behaviour: 'Annonces masquées par /envoys ignore.'
+  flare:
+    required-players:
+      toggle: 'Exiger un nombre minimal de joueurs pour une fusée.'
+      amount: 'Nombre minimal de joueurs pour une fusée.'
+    item:
+      name: 'Nom de la fusée. Vide : valeur de la langue.'
+      type: 'Matériau de la fusée.'
+      glowing: 'Ajouter un effet lumineux.'
+      lore: 'Description de la fusée. Liste vide : valeur de la langue.'
+    support:
+      worldguard:
+        toggle: 'Limiter les fusées aux régions WorldGuard configurées.'
+        regions: 'Régions WorldGuard autorisées.'

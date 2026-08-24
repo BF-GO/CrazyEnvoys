@@ -134,7 +134,7 @@ public class MessageKeys implements SettingsHolder {
     public static final Property<String> time_placeholder_minute = newProperty("envoys.time-placeholders.minute", "m");
     public static final Property<String> time_placeholder_second = newProperty("envoys.time-placeholders.second", "s");
 
-    public static final Property<String> envoy_locations = newProperty("envoys.envoy-locations", "<yellow><bold>All Envoy Locations:</bold></yellow> \\n<red>[ID], [World]: [X], [Y], [Z] <reset>{locations}");
+    public static final Property<String> envoy_locations = newProperty("envoys.envoy-locations", "<yellow><bold>All Envoy Locations:</bold></yellow> \\n<red>[ID], [World]: [X], [Y], [Z]</red> {locations}");
 
     public static final Property<String> location_format = newProperty("envoys.location-format", "\\n<dark_gray>[<blue>{id}<dark_gray>] <red>{world}: {x}, {y}, {z}");
 
@@ -168,6 +168,69 @@ public class MessageKeys implements SettingsHolder {
 
     @Comment("A list of available placeholders: {prefix}")
     public static final Property<String> migration_no_crates_available = newProperty("command.migrate.no-envoys-available", "{prefix}<green>There is no envoys available for migration!");
+
+    public static final Property<String> empty_tier_warning = newProperty("warnings.empty-tier", "<red>No prizes were found in the tier named {tier}. Please check its configuration.");
+
+    public static final Property<String> not_applicable = newProperty("misc.not-applicable", "N/A");
+
+    public static final Property<String> envoy_menu_title = newProperty("ui.envoy-menu-title", "<red>Envoy Drops");
+
+    public static final Property<String> prize_load_error_item = newProperty("ui.prize-load-error", "<red>Error found with prize: {prize}");
+
+    public static final Property<String> flare_item_name = newProperty("ui.flare.name", "<bold><gray>(<dark_red>!<gray>)</bold> <red>Flare");
+
+    public static final Property<List<String>> flare_item_lore = newListProperty("ui.flare.lore", List.of(
+            "<gray>Right click me to",
+            "<gray>start an envoy event."
+    ));
+
+    public static final Property<String> grace_period_unlocked = newProperty("ui.grace-period.unlocked", "<red>Ready to claim.");
+
+    public static final Property<String> grace_period_time_unit = newProperty("ui.grace-period.time-unit", " seconds.");
+
+    public static final Property<String> log_done = newProperty("logs.done", "Done ({time})!");
+    public static final Property<String> log_config_migrated = newProperty("logs.config-migrated", "Successfully migrated {file}.");
+    public static final Property<String> log_prize_error = newProperty("logs.prize-error", "An error occurred while loading prize {prize}.");
+    public static final Property<String> log_locations_retry = newProperty("logs.locations-retry", "Failed to load {amount} locations and will retry in 10 seconds.");
+    public static final Property<String> log_recovery_error = newProperty("logs.recovery-error", "Startup recovery completed with errors: {error}");
+    public static final Property<String> log_hologram_enabled = newProperty("logs.hologram-enabled", "{plugin} support has been enabled.");
+    public static final Property<String> log_center_world_missing = newProperty("logs.center-world-missing", "The envoy center world could not be found. The event was cancelled. Center: {center}");
+    public static final Property<String> log_visuals_failed = newProperty("logs.visuals-failed", "Could not finish envoy visuals for session {session}.");
+    public static final Property<String> log_hologram_cleanup_failed = newProperty("logs.hologram-cleanup-failed", "Could not remove an envoy hologram during cleanup.");
+    public static final Property<String> log_task_cancel_failed = newProperty("logs.task-cancel-failed", "Could not cancel envoy {task} task.");
+    public static final Property<String> log_generation_partial = newProperty("logs.generation-partial", "Generated {generated}/{requested} envoy locations after {attempts} attempts.");
+    public static final Property<String> log_generation_area_limited = newProperty("logs.generation-area-limited", "The crate amount exceeds the configured area. Spawning {amount} crates instead.");
+    public static final Property<String> log_chunk_load_failed = newProperty("logs.chunk-load-failed", "Could not load {type} envoy chunk at {x},{z}.");
+    public static final Property<String> log_chunk_request_failed = newProperty("logs.chunk-request-failed", "Could not request {type} envoy chunk at {x},{z}.");
+    public static final Property<String> log_no_tiers = newProperty("logs.no-tiers", "No tiers were found in the tiers folder. Delete the folder to regenerate the examples.");
+    public static final Property<String> log_no_valid_locations = newProperty("logs.no-valid-locations", "Could not generate any valid envoy locations.");
+    public static final Property<String> log_signal_cancel_failed = newProperty("logs.signal-cancel-failed", "Could not cancel an envoy signal flare.");
+    public static final Property<String> log_location_deserialize_failed = newProperty("logs.location-deserialize-failed", "Could not deserialize persisted envoy location {location}.");
+    public static final Property<String> log_center_repair_attempt = newProperty("logs.center-repair-attempt", "Attempting to repair the envoy center location.");
+    public static final Property<String> log_center_repair_failed = newProperty("logs.center-repair-failed", "The envoy center could not be repaired. Another attempt will be made at the next event.");
+    public static final Property<String> log_center_repair_success = newProperty("logs.center-repair-success", "The envoy center was repaired and the event will continue.");
+    public static final Property<String> log_locations_repair_attempt = newProperty("logs.locations-repair-attempt", "Attempting to repair {amount} failed locations.");
+    public static final Property<String> log_locations_repair_success = newProperty("logs.locations-repair-success", "Successfully repaired {amount} locations.");
+    public static final Property<String> log_locations_repair_failed = newProperty("logs.locations-repair-failed", "Could not repair {amount} locations; they will not be retried.");
+    public static final Property<String> log_scheduler_failed = newProperty("logs.scheduler-failed", "Scheduled task failed: {context}");
+    public static final Property<String> log_entity_retired = newProperty("logs.entity-retired", "Entity retired before task ran: {context}");
+    public static final Property<String> log_start_begin_failed = newProperty("logs.start-begin-failed", "Could not begin envoy event.");
+    public static final Property<String> log_start_generation_failed = newProperty("logs.start-generation-failed", "Could not generate envoy locations.");
+    public static final Property<String> log_start_spawn_failed = newProperty("logs.start-spawn-failed", "Could not spawn envoy crates.");
+    public static final Property<String> log_start_activation_failed = newProperty("logs.start-activation-failed", "Could not activate envoy session.");
+    public static final Property<String> log_start_processing_failed = newProperty("logs.start-processing-failed", "Could not process generated envoy locations.");
+    public static final Property<List<String>> log_hologram_missing = newListProperty("logs.hologram-missing", List.of(
+            "No supported hologram plugin was found. If you use CMI, enable its hologram module in modules.yml.",
+            "After enabling the CMI module, run /crazyenvoys reload; otherwise restart the server."
+    ));
+    public static final Property<String> log_center_debug = newProperty("logs.center-debug", "Center diagnostics: saved={saved}, location={location}, world-loaded={world_loaded}");
+    public static final Property<String> log_locale_directory_failed = newProperty("logs.locale-directory-failed", "Could not create locale directory at {path}.");
+    public static final Property<String> log_locale_not_found = newProperty("logs.locale-not-found", "Locale {locale} was not found. Falling back to en-US.");
+    public static final Property<String> log_locale_migration_failed = newProperty("logs.locale-migration-failed", "Could not migrate {source} to {target}.");
+    public static final Property<String> log_locale_invalid = newProperty("logs.locale-invalid", "Invalid locale name {locale}. Falling back to en-US.");
+    public static final Property<String> log_locale_prepare_failed = newProperty("logs.locale-prepare-failed", "Could not prepare locale {locale}.");
+    public static final Property<String> log_tier_templates_failed = newProperty("logs.tier-templates-failed", "Could not install localized tier templates.");
+    public static final Property<String> log_config_comments_failed = newProperty("logs.config-comments-failed", "Could not update localized config comments.");
 
     @Comment({
             "A list of available placeholders: {type}, {time}, {succeeded_amount}, {failed_amount}"
