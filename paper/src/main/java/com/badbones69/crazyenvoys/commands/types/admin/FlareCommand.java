@@ -20,15 +20,22 @@ public class FlareCommand extends EnvoyCommand {
     @Permission(value = "envoy.flare.give", def = PermissionDefault.OP)
     @Syntax("/envoys flare [amount] [player]")
     public void execute(final CommandSender sender, @ArgName("amount") @Suggestion("numbers") final int amount, @ArgName("player") @Optional @Suggestion("players") final Player player) {
-        final Map<String, String> placeholders = new HashMap<>();
+        final Player target = player != null ? player : sender instanceof Player senderPlayer ? senderPlayer : null;
+        if (target == null) {
+            Messages.not_online.sendMessage(sender);
+            return;
+        }
 
-        placeholders.put("{player}", player.getName());
-        placeholders.put("{amount}", amount + "");
+        final String senderName = sender.getName();
+        this.crazyManager.getScheduler().runEntity(target, "give envoy flare to " + target.getUniqueId(), () -> {
+            final Map<String, String> placeholders = new HashMap<>();
+            placeholders.put("{player}", target.getName());
+            placeholders.put("{amount}", Integer.toString(amount));
 
-        Messages.give_flare.sendMessage(sender, placeholders);
+            if (!senderName.equalsIgnoreCase(target.getName())) Messages.given_flare.sendMessage(target, placeholders);
+            this.flareSettings.giveFlare(target, amount);
 
-        if (!sender.getName().equalsIgnoreCase(player.getName())) Messages.given_flare.sendMessage(player, placeholders);
-
-        this.flareSettings.giveFlare(player, amount);
+            this.crazyManager.getScheduler().runForSender(sender, "confirm envoy flare grant", () -> Messages.give_flare.sendMessage(sender, placeholders));
+        });
     }
 }

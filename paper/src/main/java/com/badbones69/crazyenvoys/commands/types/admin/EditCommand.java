@@ -17,7 +17,7 @@ public class EditCommand extends EnvoyCommand {
     @Permission(value = "envoy.edit", def = PermissionDefault.OP)
     @Syntax("/envoys edit")
     public void edit(final Player player) {
-        if (this.crazyManager.isEnvoyActive()) {
+        if (this.crazyManager.isEnvoyBusy()) {
             Messages.kicked_from_editor_mode.sendMessage(player);
 
             return;
@@ -29,7 +29,7 @@ public class EditCommand extends EnvoyCommand {
             this.editorSettings.removeEditor(player);
             this.editorSettings.removeFakeBlocks(player);
 
-            inventory.remove(Material.BEDROCK); //todo() pdc
+            inventory.remove(Material.BEDROCK);
 
             Messages.leave_editor_mode.sendMessage(player);
 
@@ -37,7 +37,7 @@ public class EditCommand extends EnvoyCommand {
             this.editorSettings.addEditor(player);
             this.editorSettings.showFakeBlocks(player);
 
-            inventory.addItem(ItemType.BEDROCK.createItemStack()); //todo() pdc
+            inventory.addItem(ItemType.BEDROCK.createItemStack());
 
             Messages.enter_editor_mode.sendMessage(player);
         }

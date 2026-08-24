@@ -3,7 +3,6 @@ package com.badbones69.crazyenvoys.api.objects.misc;
 import com.ryderbelserion.fusion.paper.builders.items.ItemBuilder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Prize {
@@ -11,9 +10,9 @@ public class Prize {
     private final String prizeID;
     private int chance;
     private boolean dropItems;
-    private final List<String> messages;
-    private List<String> commands;
-    private List<ItemBuilder> builders;
+    private volatile List<String> messages;
+    private volatile List<String> commands;
+    private volatile List<ItemBuilder> builders;
     private String displayName;
     
     public Prize(String prizeID) {
@@ -21,9 +20,9 @@ public class Prize {
         this.chance = 100;
         this.dropItems = false;
         this.displayName = "";
-        this.messages = new ArrayList<>();
-        this.commands = new ArrayList<>();
-        this.builders = new ArrayList<>();
+        this.messages = List.of();
+        this.commands = List.of();
+        this.builders = List.of();
     }
 
     public String getDisplayName() {
@@ -91,7 +90,7 @@ public class Prize {
      * @return The messages that are sent to the player.
      */
     public List<String> getMessages() {
-        return this.messages;
+        return List.copyOf(this.messages);
     }
     
     /**
@@ -100,9 +99,7 @@ public class Prize {
      * @param messages The new messages the player gets. This will auto color code the messages.
      */
     public Prize setMessages(@NotNull final List<String> messages) {
-        this.messages.clear();
-
-        this.messages.addAll(messages);
+        this.messages = List.copyOf(messages);
 
         return this;
     }
@@ -111,7 +108,7 @@ public class Prize {
      * Get the list of commands the prize runs.
      */
     public List<String> getCommands() {
-        return this.commands;
+        return List.copyOf(this.commands);
     }
     
     /**
@@ -120,7 +117,7 @@ public class Prize {
      * @param commands List of commands to be run.
      */
     public Prize setCommands(@NotNull final List<String> commands) {
-        this.commands = commands;
+        this.commands = List.copyOf(commands);
 
         return this;
     }
@@ -135,11 +132,11 @@ public class Prize {
     }
 
     public List<ItemBuilder> getItemBuilders() {
-        return this.builders;
+        return List.copyOf(this.builders);
     }
     
     public Prize setItemBuilders(@NotNull final List<ItemBuilder> itemBuilders) {
-        this.builders = itemBuilders;
+        this.builders = List.copyOf(itemBuilders);
 
         return this;
     }

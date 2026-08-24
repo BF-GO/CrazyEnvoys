@@ -16,7 +16,7 @@ public class StartCommand extends EnvoyCommand {
     @Permission(value = "envoy.start", def = PermissionDefault.OP)
     @Syntax("/envoys start")
     public void start(final CommandSender sender) {
-        if (this.crazyManager.isEnvoyActive()) {
+        if (this.crazyManager.isEnvoyBusy()) {
             Messages.already_started.sendMessage(sender);
 
             return;
@@ -36,6 +36,12 @@ public class StartCommand extends EnvoyCommand {
 
         this.pluginManager.callEvent(event);
 
-        if (!event.isCancelled() && this.crazyManager.startEnvoyEvent(starter)) Messages.force_start.sendMessage(sender);
+        if (event.isCancelled()) return;
+
+        this.crazyManager.startEnvoyEventAsync(starter).whenComplete((started, throwable) -> {
+            if (throwable != null || !Boolean.TRUE.equals(started)) return;
+
+            this.crazyManager.getScheduler().runForSender(sender, "confirm forced envoy start", () -> Messages.force_start.sendMessage(sender));
+        });
     }
 }

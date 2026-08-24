@@ -5,9 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EditorSettings {
 
@@ -15,10 +15,10 @@ public class EditorSettings {
 
     private @NotNull final LocationSettings locationSettings = this.plugin.getLocationSettings();
 
-    private final List<UUID> editors = new ArrayList<>();
+    private final List<UUID> editors = new CopyOnWriteArrayList<>();
 
     public List<UUID> getEditors() {
-        return this.editors;
+        return List.copyOf(this.editors);
     }
 
     public void addEditor(Player player) {
@@ -27,6 +27,10 @@ public class EditorSettings {
 
     public void removeEditor(Player player) {
         this.editors.remove(player.getUniqueId());
+    }
+
+    public void clearEditors() {
+        this.editors.clear();
     }
 
     public boolean isEditor(Player player) {
@@ -47,7 +51,9 @@ public class EditorSettings {
 
     public void removeFakeBlocks() {
         for (Block block : this.locationSettings.getSpawnLocations()) {
-            block.getState().update();
+            this.plugin.getCrazyManager().getScheduler().runRegion(
+                    block.getLocation(), "restore configured envoy block", () -> block.getState().update()
+            );
         }
     }
 }

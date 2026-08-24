@@ -15,20 +15,22 @@ public class ReloadCommand extends EnvoyCommand {
     @Permission(value = "envoy.reload", def = PermissionDefault.OP)
     @Syntax("/envoys reload")
     public void execute(final CommandSender sender) {
-        if (this.crazyManager.isEnvoyActive()) {
+        if (this.crazyManager.isEnvoyBusy()) {
             EnvoyEndEvent event = new EnvoyEndEvent(EnvoyEndEvent.EnvoyEndReason.RELOAD);
 
             this.pluginManager.callEvent(event);
 
-            this.crazyManager.endEnvoyEvent();
         }
 
-        this.fusion.reload();
-
-        this.fileManager.refresh(false);
-
-        this.crazyManager.reload(false);
-
-        Messages.reloaded.sendMessage(sender);
+        this.crazyManager.endEnvoyEventAsync().handle((unused, throwable) -> null)
+                .thenCompose(unused -> this.crazyManager.getScheduler().runGlobal("reload CrazyEnvoys files", () -> {
+                    this.fusion.reload();
+                    this.fileManager.refresh(false);
+                }))
+                .thenCompose(unused -> this.crazyManager.reloadAsync())
+                .whenComplete((unused, throwable) -> {
+                    if (throwable != null) return;
+                    this.crazyManager.getScheduler().runForSender(sender, "confirm CrazyEnvoys reload", () -> Messages.reloaded.sendMessage(sender));
+                });
     }
 }

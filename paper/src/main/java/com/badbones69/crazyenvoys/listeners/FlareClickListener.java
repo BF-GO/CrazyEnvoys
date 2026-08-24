@@ -18,7 +18,6 @@ import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import com.badbones69.crazyenvoys.config.ConfigManager;
 import com.badbones69.crazyenvoys.config.types.ConfigKeys;
-import java.util.HashMap;
 import java.util.Map;
 
 public class FlareClickListener implements Listener {
@@ -50,18 +49,8 @@ public class FlareClickListener implements Listener {
                     return;
                 }
 
-                if (this.crazyManager.isEnvoyActive()) {
+                if (this.crazyManager.isEnvoyBusy()) {
                     Messages.already_started.sendMessage(player);
-
-                    return;
-                }
-
-                int online = this.server.getOnlinePlayers().size();
-
-                if (this.config.getProperty(ConfigKeys.envoys_flare_minimum_players_toggle) && online < this.config.getProperty(ConfigKeys.envoys_flare_minimum_players_amount)) {
-                    Messages.not_enough_players.sendMessage(player, Map.of(
-                            "{amount}", String.valueOf(online)
-                    ));
 
                     return;
                 }
@@ -86,16 +75,35 @@ public class FlareClickListener implements Listener {
                     return;
                 }
 
-                final EnvoyStartEvent envoyStartEvent = new EnvoyStartEvent(EnvoyStartEvent.EnvoyStartReason.FLARE);
-
-                this.pluginManager.callEvent(envoyStartEvent);
-
-                if (!envoyStartEvent.isCancelled() && this.crazyManager.startEnvoyEvent(player)) {
-                    Messages.used_flare.sendMessage(player);
-
-                    this.flareSettings.takeFlare(player);
-                }
+                this.crazyManager.getScheduler().supplyGlobal("count online players for flare", () -> this.server.getOnlinePlayers().size())
+                        .thenAccept(online -> this.crazyManager.getScheduler().runEntity(player, "finish flare use", () -> useFlare(player, online)));
             }
         }
+    }
+
+    private void useFlare(final Player player, final int online) {
+        if (this.crazyManager.isEnvoyBusy() || !this.flareSettings.isFlare(Methods.getItemInHand(player))) {
+            if (this.crazyManager.isEnvoyBusy()) Messages.already_started.sendMessage(player);
+            return;
+        }
+
+        if (this.config.getProperty(ConfigKeys.envoys_flare_minimum_players_toggle)
+                && online < this.config.getProperty(ConfigKeys.envoys_flare_minimum_players_amount)) {
+            Messages.not_enough_players.sendMessage(player, Map.of("{amount}", String.valueOf(online)));
+            return;
+        }
+
+        final EnvoyStartEvent envoyStartEvent = new EnvoyStartEvent(EnvoyStartEvent.EnvoyStartReason.FLARE);
+        this.pluginManager.callEvent(envoyStartEvent);
+        if (envoyStartEvent.isCancelled()) return;
+
+        this.crazyManager.startEnvoyEventAsync(player).whenComplete((started, throwable) -> {
+            if (throwable != null || !Boolean.TRUE.equals(started)) return;
+
+            this.crazyManager.getScheduler().runEntity(player, "consume used envoy flare", () -> {
+                Messages.used_flare.sendMessage(player);
+                this.flareSettings.takeFlare(player);
+            });
+        });
     }
 }

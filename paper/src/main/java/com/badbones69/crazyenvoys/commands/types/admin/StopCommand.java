@@ -17,7 +17,7 @@ public class StopCommand extends EnvoyCommand {
     @Permission(value = "envoy.stop", def = PermissionDefault.OP)
     @Syntax("/envoys stop")
     public void stop(final CommandSender sender) {
-        if (!this.crazyManager.isEnvoyActive()) {
+        if (!this.crazyManager.isEnvoyBusy()) {
             Messages.not_started.sendMessage(sender);
 
             return;
@@ -32,10 +32,9 @@ public class StopCommand extends EnvoyCommand {
         }
 
         this.pluginManager.callEvent(event);
-        this.crazyManager.endEnvoyEvent();
-
-        Messages.ended.broadcast(this.config.getProperty(ConfigKeys.envoys_ignore_behaviour_ended));
-
-        Messages.force_end.sendMessage(sender);
+        this.crazyManager.endEnvoyEventAsync().whenComplete((unused, throwable) -> {
+            Messages.ended.broadcast(this.config.getProperty(ConfigKeys.envoys_ignore_behaviour_ended));
+            this.crazyManager.getScheduler().runForSender(sender, "confirm forced envoy stop", () -> Messages.force_end.sendMessage(sender));
+        });
     }
 }

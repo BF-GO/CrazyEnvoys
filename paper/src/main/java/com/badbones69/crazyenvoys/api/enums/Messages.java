@@ -124,7 +124,7 @@ public enum Messages {
     }
 
     public @NonNull final List<String> getList() {
-        return this.messages.getProperty(this.listProperty);
+        return List.copyOf(this.messages.getProperty(this.listProperty));
     }
 
     public void sendMessage(@NotNull final Audience sender, @NotNull final String placeholder, @NotNull final String replacement) {
@@ -218,35 +218,22 @@ public enum Messages {
         final Server server = this.plugin.getServer();
 
         final SettingsManager config = ConfigManager.getConfig();
+        final boolean worldMessages = config.getProperty(ConfigKeys.envoys_world_messages);
+        final List<String> worlds = List.copyOf(config.getProperty(ConfigKeys.envoys_allowed_worlds));
+        final Map<String, String> values = Map.copyOf(placeholders);
 
-        // Send in console because we should lol.
-        sendMessage(server.getConsoleSender(), placeholders);
+        this.crazyManager.getScheduler().supplyGlobal("snapshot recipients for " + name(), () -> {
+            sendMessage(server.getConsoleSender(), values);
+            return List.copyOf(server.getOnlinePlayers());
+        }).thenAccept(players -> players.forEach(player -> this.crazyManager.getScheduler().runEntity(
+                player, "broadcast " + name() + " to " + player.getUniqueId(), () -> {
+                    if (worldMessages && !worlds.contains(player.getWorld().getName())) return;
+                    if (isIgnoring && this.crazyManager.isIgnoringMessages(player.getUniqueId())) return;
+                    if (!permission.isBlank() && !player.hasPermission(permission)) return;
 
-        if (config.getProperty(ConfigKeys.envoys_world_messages)) {
-            final List<String> worlds = config.getProperty(ConfigKeys.envoys_allowed_worlds);
-
-            for (final Player player : server.getOnlinePlayers()) {
-                final String worldName = player.getWorld().getName();
-
-                if (!worlds.contains(worldName)) continue;
-
-                if (isIgnoring && this.crazyManager.isIgnoringMessages(player.getUniqueId())) continue;
-
-                if (!permission.isBlank() && !player.hasPermission(permission)) continue;
-
-                sendMessage(player, placeholders);
-            }
-
-            return;
-        }
-
-        for (final Player player : server.getOnlinePlayers()) {
-            if (isIgnoring && this.crazyManager.isIgnoringMessages(player.getUniqueId())) continue;
-
-            if (!permission.isBlank() && !player.hasPermission(permission)) continue;
-
-            sendMessage(player, placeholders);
-        }
+                    sendMessage(player, values);
+                }
+        )));
     }
 
     public void broadcast(final boolean isIgnoring) {

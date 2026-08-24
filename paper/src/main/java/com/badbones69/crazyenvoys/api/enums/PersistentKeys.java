@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public enum PersistentKeys {
 
     no_firework_damage("firework"),
+    falling_envoy_session("falling_envoy_session"),
     prize_item("prize_item"),
     envoy_flare("envoy_flare");
 

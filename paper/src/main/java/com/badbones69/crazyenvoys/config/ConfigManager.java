@@ -11,14 +11,13 @@ import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.configuration.file.YamlConfiguration;
 import com.badbones69.crazyenvoys.config.types.MessageKeys;
 import java.io.File;
-import java.util.concurrent.CompletableFuture;
 
 public class ConfigManager {
 
     private static SettingsManager messages;
     private static SettingsManager config;
 
-    public static void load(final File dataFolder, final ComponentLogger logger) { //todo() improve this
+    public static void load(final File dataFolder, final ComponentLogger logger) {
         YamlFileResourceOptions builder = YamlFileResourceOptions.builder().indentationSize(2).build();
 
         File configFile = new File(dataFolder, "config.yml");
@@ -71,7 +70,7 @@ public class ConfigManager {
 
         if (!input.exists()) return;
 
-        YamlConfiguration configuration = CompletableFuture.supplyAsync(() -> YamlConfiguration.loadConfiguration(input)).join();
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(input);
 
         String language = configuration.getString("language", "en-US");
 

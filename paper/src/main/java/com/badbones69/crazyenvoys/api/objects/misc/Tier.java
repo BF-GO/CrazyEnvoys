@@ -38,14 +38,14 @@ public class Tier {
     private int bulkMax;
     private boolean holoToggle;
     private double holoHeight;
-    private final List<String> holoMessage;
+    private volatile List<String> holoMessage;
     private boolean fireworkToggle;
-    private List<Color> fireworkColors = new ArrayList<>();
+    private volatile List<Color> fireworkColors = List.of();
     private boolean signalFlareToggle;
     private String signalFlareTimer;
-    private List<Color> signalFlareColors = new ArrayList<>();
-    private List<Prize> prizes = new ArrayList<>();
-    private List<String> prizeMessage = new ArrayList<>();
+    private volatile List<Color> signalFlareColors = List.of();
+    private volatile List<Prize> prizes = List.of();
+    private volatile List<String> prizeMessage = new ArrayList<>();
 
     public Tier(
             final boolean claimPermissionToggle,
@@ -72,7 +72,7 @@ public class Tier {
         this.holoToggle = holoToggle;
         this.holoRange = holoRange;
         this.holoHeight = holoHeight;
-        this.holoMessage = holoMessage;
+        this.holoMessage = List.copyOf(holoMessage);
 
         final ItemType itemType = ItemUtils.getItemType(configuration.getString("Settings.Placed-Block", "chest").toLowerCase());
 
@@ -172,11 +172,11 @@ public class Tier {
     }
 
     public List<String> getPrizeMessage() {
-        return this.prizeMessage;
+        return List.copyOf(this.prizeMessage);
     }
 
     public void setPrizeMessage(List<String> prizeMessage) {
-        this.prizeMessage = prizeMessage;
+        this.prizeMessage = List.copyOf(prizeMessage);
     }
 
     /**
@@ -361,9 +361,7 @@ public class Tier {
      * @param holoMessage The message that is displayed. This auto color codes the message.
      */
     public Tier setHoloMessage(List<String> holoMessage) {
-        this.holoMessage.clear();
-
-        this.holoMessage.addAll(holoMessage);
+        this.holoMessage = List.copyOf(holoMessage);
 
         return this;
     }
@@ -390,7 +388,7 @@ public class Tier {
      * List of all the colors that the firework displays.
      */
     public List<Color> getFireworkColors() {
-        return this.fireworkColors;
+        return List.copyOf(this.fireworkColors);
     }
     
     /**
@@ -399,7 +397,7 @@ public class Tier {
      * @param fireworkColors List of Colors of the firework.
      */
     public Tier setFireworkColors(List<Color> fireworkColors) {
-        this.fireworkColors = fireworkColors;
+        this.fireworkColors = List.copyOf(fireworkColors);
 
         return this;
     }
@@ -409,8 +407,10 @@ public class Tier {
      *
      * @param fireworkColor A color to add to the firework effect.
      */
-    public Tier addFireworkColor(Color fireworkColor) {
-        this.fireworkColors.add(fireworkColor);
+    public synchronized Tier addFireworkColor(Color fireworkColor) {
+        final List<Color> colors = new ArrayList<>(this.fireworkColors);
+        colors.add(fireworkColor);
+        this.fireworkColors = List.copyOf(colors);
 
         return this;
     }
@@ -455,7 +455,7 @@ public class Tier {
      * Get a list of Colors that the flare displays.
      */
     public List<Color> getSignalFlareColors() {
-        return this.signalFlareColors;
+        return List.copyOf(this.signalFlareColors);
     }
     
     /**
@@ -464,7 +464,7 @@ public class Tier {
      * @param signalFlareColors List of colors the firework will be.
      */
     public Tier setSignalFlareColors(List<Color> signalFlareColors) {
-        this.signalFlareColors = signalFlareColors;
+        this.signalFlareColors = List.copyOf(signalFlareColors);
 
         return this;
     }
@@ -474,8 +474,10 @@ public class Tier {
      *
      * @param signalFlareColors The color added to the firework effect.
      */
-    public Tier addSignalFlareColor(Color signalFlareColors) {
-        this.signalFlareColors.add(signalFlareColors);
+    public synchronized Tier addSignalFlareColor(Color signalFlareColors) {
+        final List<Color> colors = new ArrayList<>(this.signalFlareColors);
+        colors.add(signalFlareColors);
+        this.signalFlareColors = List.copyOf(colors);
 
         return this;
     }
@@ -484,7 +486,7 @@ public class Tier {
      * Get the prizes that can be found in the tier.
      */
     public List<Prize> getPrizes() {
-        return this.prizes;
+        return List.copyOf(this.prizes);
     }
     
     /**
@@ -493,7 +495,7 @@ public class Tier {
      * @param prizes List of prizes.
      */
     public Tier setPrizes(List<Prize> prizes) {
-        this.prizes = prizes;
+        this.prizes = List.copyOf(prizes);
 
         return this;
     }
@@ -503,8 +505,10 @@ public class Tier {
      *
      * @param prize A new prize that is added to the list of prizes.
      */
-    public Tier addPrize(Prize prize) {
-        this.prizes.add(prize);
+    public synchronized Tier addPrize(Prize prize) {
+        final List<Prize> prizes = new ArrayList<>(this.prizes);
+        prizes.add(prize);
+        this.prizes = List.copyOf(prizes);
 
         return this;
     }

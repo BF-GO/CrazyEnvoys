@@ -18,7 +18,6 @@ import com.ryderbelserion.fusion.core.api.enums.Level;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.files.PaperFileManager;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -85,29 +84,25 @@ public class CrazyEnvoys extends JavaPlugin {
             new PlaceholderAPISupport().register();
         }
 
-        CommandManager.load();
-
-        this.fusion.log(Level.INFO, "Done (%s)!", String.format(Locale.ROOT, "%.3fs", (double) (System.nanoTime() - this.startTime) / 1.0E9D));
+        this.crazyManager.whenReady()
+                .thenCompose(unused -> this.crazyManager.getScheduler().runGlobal("register CrazyEnvoys commands", CommandManager::load))
+                .whenComplete((unused, throwable) -> {
+                    if (throwable == null) {
+                        this.fusion.log(Level.INFO, "Done (%s)!", String.format(Locale.ROOT, "%.3fs", (double) (System.nanoTime() - this.startTime) / 1.0E9D));
+                    }
+                });
     }
 
     @Override
     public void onDisable() {
-        for (Player player : getServer().getOnlinePlayers()) {
-            if (this.editorSettings.isEditor(player)) {
-                this.editorSettings.removeEditor(player);
-                this.editorSettings.removeFakeBlocks();
-            }
-        }
-
-        if (this.crazyManager.isEnvoyActive()) {
+        if (this.crazyManager.isEnvoyBusy()) {
             EnvoyEndEvent event = new EnvoyEndEvent(EnvoyEndReason.SHUTDOWN);
 
             getServer().getPluginManager().callEvent(event);
-
-            this.crazyManager.endEnvoyEvent();
         }
 
-        this.crazyManager.reload(true);
+        this.editorSettings.clearEditors();
+        this.crazyManager.shutdown();
     }
 
     public FusionPaper getFusion() {

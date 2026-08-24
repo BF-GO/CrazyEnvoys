@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class LocationSettings {
 
@@ -16,16 +17,13 @@ public class LocationSettings {
 
     private final FusionPaper fusion = this.plugin.getFusion();
 
-    private final List<Block> spawnLocations = new ArrayList<>();
+    private final List<Block> spawnLocations = new CopyOnWriteArrayList<>();
 
-    /**
-     * Ryder Note: This used to be "spawnedLocations".
-     */
-    private final List<Block> activeLocations = new ArrayList<>();
+    private final List<Block> activeLocations = new CopyOnWriteArrayList<>();
 
-    private final List<String> failedLocations = new ArrayList<>();
+    private final List<String> failedLocations = new CopyOnWriteArrayList<>();
 
-    private final List<Block> dropLocations = new ArrayList<>();
+    private final List<Block> dropLocations = new CopyOnWriteArrayList<>();
 
     /**
      * Adds a drop location.
@@ -58,7 +56,12 @@ public class LocationSettings {
      * @param blocks - The list of blocks to add.
      */
     public void addAllDropLocations(List<Block> blocks) {
-        this.dropLocations.addAll(blocks);
+        for (final Block block : blocks) addDropLocations(block);
+    }
+
+    public void replaceDropLocations(List<Block> blocks) {
+        this.dropLocations.clear();
+        addAllDropLocations(blocks);
     }
 
     /**
@@ -67,7 +70,7 @@ public class LocationSettings {
      * @return - The list of drop locations.
      */
     public List<Block> getDropLocations() {
-        return this.dropLocations;
+        return List.copyOf(this.dropLocations);
     }
 
     /**
@@ -83,7 +86,7 @@ public class LocationSettings {
      * @return - The list of failed locations.
      */
     public List<String> getFailedLocations() {
-        return this.failedLocations;
+        return List.copyOf(this.failedLocations);
     }
 
     /**
@@ -115,7 +118,7 @@ public class LocationSettings {
      * @return All active blocks.
      */
     public List<Block> getActiveLocations() {
-        return this.activeLocations;
+        return List.copyOf(this.activeLocations);
     }
 
     /**
@@ -146,7 +149,7 @@ public class LocationSettings {
      * @return All spawn locations.
      */
     public List<Block> getSpawnLocations() {
-        return this.spawnLocations;
+        return List.copyOf(this.spawnLocations);
     }
 
     /**
@@ -155,11 +158,11 @@ public class LocationSettings {
     public void populateMap() {
         FileConfiguration users = Files.users.getConfiguration();
 
-        getSpawnLocations().clear();
+        this.spawnLocations.clear();
 
         for (String location : users.getStringList("Locations.Spawns")) {
             try {
-                getSpawnLocations().add(Methods.getBuiltLocation(location).getBlock());
+                this.spawnLocations.add(Methods.getBuiltLocation(location).getBlock());
             } catch (Exception ignore) {
                 addFailedLocations(location);
             }
@@ -175,7 +178,7 @@ public class LocationSettings {
 
             for (String location : getFailedLocations()) {
                 try {
-                    getSpawnLocations().add(Methods.getBuiltLocation(location).getBlock());
+                    this.spawnLocations.add(Methods.getBuiltLocation(location).getBlock());
                     fixed++;
                 } catch (Exception ignore) {
                     failed++;

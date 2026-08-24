@@ -2,16 +2,12 @@ package com.badbones69.crazyenvoys;
 
 import com.badbones69.crazyenvoys.api.enums.PersistentKeys;
 import com.badbones69.crazyenvoys.api.enums.Messages;
-import com.ryderbelserion.fusion.paper.builders.folia.FoliaScheduler;
 import org.bukkit.Server;
-import org.bukkit.entity.Marker;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -72,12 +68,7 @@ public class Methods {
     }
 
     private static void detonate(Firework firework) {
-        new FoliaScheduler(plugin, firework.getLocation()) {
-            @Override
-            public void run() {
-                firework.detonate();
-            }
-        }.runDelayed(2);
+        plugin.getCrazyManager().getScheduler().runEntityDelayed(firework, 2, "detonate envoy firework", firework::detonate);
     }
 
     public static List<String> getPage(List<String> list, Integer page) {
@@ -113,20 +104,6 @@ public class Methods {
         final int chance = 1 + ThreadLocalRandom.current().nextInt(max);
 
         return chance <= min;
-    }
-
-    public static List<Entity> getNearbyEntities(Location loc, double x, double y, double z) {
-        List<Entity> out = new ArrayList<>();
-
-        if (loc.getWorld() != null) {
-            Marker entity = loc.getWorld().spawn(loc.subtract(0, 0, 0), Marker.class, CreatureSpawnEvent.SpawnReason.CUSTOM);
-
-            out = entity.getNearbyEntities(x, y, z);
-
-            entity.remove();
-        }
-
-        return out;
     }
 
     public static String convertTimeToString(Calendar timeTill) {

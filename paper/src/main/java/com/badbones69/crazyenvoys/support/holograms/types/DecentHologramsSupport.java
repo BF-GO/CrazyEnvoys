@@ -5,12 +5,12 @@ import com.badbones69.crazyenvoys.support.holograms.HologramManager;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import org.bukkit.Location;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DecentHologramsSupport extends HologramManager {
 
-    private final Map<String, Hologram> holograms = new HashMap<>();
+    private final Map<String, Hologram> holograms = new ConcurrentHashMap<>();
 
     @Override
     public void createHologram(final Location location, final Tier tier, final String id) {
@@ -41,6 +41,7 @@ public class DecentHologramsSupport extends HologramManager {
     @Override
     public void removeHologram(final String id) {
         DHAPI.removeHologram(name(id));
+        this.holograms.remove(name(id));
     }
 
     @Override
@@ -50,11 +51,7 @@ public class DecentHologramsSupport extends HologramManager {
 
     @Override
     public void purge(final boolean isShutdown) {
-        this.holograms.forEach((key, value) -> {
-            removeHologram(key);
-
-            value.delete();
-        });
+        this.holograms.values().forEach(Hologram::delete);
 
         this.holograms.clear();
     }

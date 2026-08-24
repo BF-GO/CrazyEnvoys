@@ -4,6 +4,8 @@ import com.ryderbelserion.fusion.paper.builders.folia.FoliaScheduler;
 import com.ryderbelserion.fusion.paper.builders.folia.Scheduler;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * A simple countdown timer using the Runnable interface in seconds!
  *
@@ -13,13 +15,13 @@ public class CountdownTimer extends FoliaScheduler {
 
     // Seconds and shiz
     private final int seconds;
-    private int secondsLeft;
+    private final AtomicInteger secondsLeft;
 
     public CountdownTimer(final JavaPlugin plugin, final int seconds) {
         super(plugin, Scheduler.global_scheduler);
 
         this.seconds = seconds;
-        this.secondsLeft = seconds;
+        this.secondsLeft = new AtomicInteger(seconds);
     }
 
     /**
@@ -29,14 +31,14 @@ public class CountdownTimer extends FoliaScheduler {
     @Override
     public void run() {
         // Is the timer up?
-        if (this.secondsLeft < 1) {
-            cancel();
+        if (this.secondsLeft.get() < 1) {
+            cancelSafely();
 
             return;
         }
 
         // Decrement the seconds left.
-        this.secondsLeft--;
+        this.secondsLeft.decrementAndGet();
     }
 
     /**
@@ -54,7 +56,7 @@ public class CountdownTimer extends FoliaScheduler {
      * @return Seconds left timer should run.
      */
     public int getSecondsLeft() {
-        return this.secondsLeft;
+        return this.secondsLeft.get();
     }
 
     /**
@@ -62,5 +64,14 @@ public class CountdownTimer extends FoliaScheduler {
      */
     public void scheduleTimer() {
         runAtFixedRate(0L, 20L);
+    }
+
+    public void cancelSafely() {
+        if (getTask() == null) return;
+
+        try {
+            cancel();
+        } catch (RuntimeException ignored) {
+        }
     }
 }

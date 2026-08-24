@@ -6,7 +6,6 @@ import com.Zrips.CMI.Modules.Holograms.CMIHologram;
 import com.Zrips.CMI.Modules.Holograms.Settings.CMIHologramSettings;
 import com.badbones69.crazyenvoys.api.objects.misc.Tier;
 import com.badbones69.crazyenvoys.support.holograms.HologramManager;
-import com.ryderbelserion.fusion.paper.builders.folia.FoliaScheduler;
 import net.Zrips.CMILib.Colors.CMIChatColor;
 import net.Zrips.CMILib.Container.CMILocation;
 import org.bukkit.Location;
@@ -43,12 +42,11 @@ public class CMIHologramsSupport extends HologramManager {
 
         this.hologramManager.add(hologram);
 
-        new FoliaScheduler(this.plugin, location) {
-            @Override
-            public void run() {
-                location.getNearbyEntitiesByType(Player.class, 5).forEach(player -> hologramManager.updatePlayer(player, hologram.getLocation()));
-            }
-        }.runNow();
+        location.getNearbyEntitiesByType(Player.class, 5).forEach(player ->
+                this.plugin.getCrazyManager().getScheduler().runEntity(
+                        player, "update CMI hologram visibility", () -> this.hologramManager.updatePlayer(player, hologram.getLocation())
+                )
+        );
     }
 
     @Override
