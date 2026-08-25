@@ -28,6 +28,7 @@ import com.badbones69.crazyenvoys.support.holograms.types.CMIHologramsSupport;
 import com.badbones69.crazyenvoys.support.holograms.types.DecentHologramsSupport;
 import com.badbones69.crazyenvoys.support.holograms.types.FancyHologramsSupport;
 import com.badbones69.crazyenvoys.util.MiscUtils;
+import com.badbones69.crazyenvoys.util.WeightedSelector;
 import com.ryderbelserion.fusion.core.api.FusionKey;
 import com.ryderbelserion.fusion.core.api.enums.Level;
 import com.ryderbelserion.fusion.paper.FusionPaper;
@@ -92,6 +93,8 @@ public class CrazyManager {
     private @NotNull final LocationSettings locationSettings = this.plugin.getLocationSettings();
 
     private @NotNull final SchedulerAdapter scheduler = new SchedulerAdapter(this.plugin);
+
+    private @NotNull final ArmorSetManager armorSetManager = new ArmorSetManager(this.plugin, this.scheduler);
     
     private volatile CountdownTimer countdownTimer;
 
@@ -113,7 +116,6 @@ public class CrazyManager {
     private volatile String centerString;
 
     private final List<Tier> tiers = new CopyOnWriteArrayList<>();
-    private final List<Tier> cachedChances = new CopyOnWriteArrayList<>();
     private final Set<Material> blacklistedBlocks = ConcurrentHashMap.newKeySet();
     private final Set<UUID> ignoreMessages = ConcurrentHashMap.newKeySet();
     private final List<Calendar> warnings = new CopyOnWriteArrayList<>();
@@ -187,8 +189,6 @@ public class CrazyManager {
         this.locationSettings.clearSpawnLocations();
 
         this.blacklistedBlocks.clear();
-        this.cachedChances.clear();
-
         final FileConfiguration users = Files.users.getConfiguration();
 
         this.envoyTimeLeft = Calendar.getInstance();
@@ -259,6 +259,8 @@ public class CrazyManager {
             this.tiers.add(tier);
         }
 
+        this.armorSetManager.reload(this.tiers);
+
         // Loading the blacklisted blocks.
         this.blacklistedBlocks.add(Material.WATER);
         this.blacklistedBlocks.add(Material.LILY_PAD);
@@ -297,8 +299,6 @@ public class CrazyManager {
         this.locationSettings.fixLocations();
 
         this.flareSettings.load();
-
-        rebuildTierCache();
 
         return recoverPersistedLocations().handle((unused, throwable) -> throwable)
                 .thenCompose(throwable -> this.scheduler.runGlobal("finish startup recovery", () -> {
@@ -517,6 +517,18 @@ public class CrazyManager {
     }
 
     /**
+     * Returns every unclaimed crate position in the current session, including
+     * crates whose falling block has not landed yet.
+     *
+     * @return An immutable snapshot of current crate positions.
+     */
+    public Set<Block> getCurrentDropLocations() {
+        final EventSession session = this.currentSession.get();
+
+        return session == null ? Set.of() : Set.copyOf(session.spawnedLocations());
+    }
+
+    /**
      * @param block The location you are checking.
      * @return Turn if it is and false if not.
      */
@@ -640,6 +652,10 @@ public class CrazyManager {
 
     public SchedulerAdapter getScheduler() {
         return this.scheduler;
+    }
+
+    public ArmorSetManager getArmorSetManager() {
+        return this.armorSetManager;
     }
 
     public boolean landFallingBlock(final Entity entity) {
@@ -947,16 +963,16 @@ public class CrazyManager {
 
         int x = 1;
 
-        for (final Block block : this.locationSettings.getDropLocations()) {
+        for (final Block block : getCurrentDropLocations()) {
             final Map<String, String> placeholders = new HashMap<>();
 
             placeholders.put("{id}", String.valueOf(x));
-            placeholders.put("{world}", block.getWorld().getName());
+            placeholders.put("{world}", Messages.displayWorldName(block.getWorld()));
             placeholders.put("{x}", String.valueOf(block.getX()));
             placeholders.put("{y}", String.valueOf(block.getY()));
             placeholders.put("{z}", String.valueOf(block.getZ()));
 
-            locations.append(Messages.location_format.getMessage(Audience.empty(), placeholders).translateEscapes());
+            locations.append(Messages.location_format.getMessage(Audience.empty(), placeholders));
 
             x += 1;
         }
@@ -1087,10 +1103,29 @@ public class CrazyManager {
     private CompletableFuture<Integer> spawnResolvedLocations(final EventSession session, final List<Block> locations, final List<EventSession.PlayerPosition> players) {
         final java.util.concurrent.atomic.AtomicInteger spawned = new java.util.concurrent.atomic.AtomicInteger();
         final List<CompletableFuture<Boolean>> futures = new ArrayList<>();
+        final List<Block> shuffledLocations = new ArrayList<>(locations);
+        Collections.shuffle(shuffledLocations, ThreadLocalRandom.current());
 
-        for (final Block block : locations) {
+        final List<WeightedSelector.Entry<Tier>> tierEntries = this.tiers.stream()
+                .map(tier -> new WeightedSelector.Entry<>(tier, tier.getSpawnChance(), tier.getMaxPerEvent()))
+                .toList();
+        final List<Tier> assignments = WeightedSelector.select(
+                tierEntries, shuffledLocations.size(), ThreadLocalRandom.current()
+        );
+
+        if (assignments.size() < shuffledLocations.size()) {
+            this.fusion.log(Level.WARNING, Messages.log_tier_capacity_limited.getMessage(Map.of(
+                    "{assigned}", String.valueOf(assignments.size()),
+                    "{requested}", String.valueOf(shuffledLocations.size())
+            )));
+        }
+
+        for (int index = 0; index < assignments.size(); index++) {
+            final Block block = shuffledLocations.get(index);
+            final Tier tier = assignments.get(index);
             final CompletableFuture<Boolean> future = this.scheduler.supplyRegion(
-                    block.getLocation(), "spawn envoy crate for session " + session.id(), () -> spawnEnvoy(session, block, players)
+                    block.getLocation(), "spawn envoy crate for session " + session.id(),
+                    () -> spawnEnvoy(session, block, tier, players)
             );
             future.whenComplete((success, throwable) -> {
                 if (throwable == null && Boolean.TRUE.equals(success)) spawned.incrementAndGet();
@@ -1102,13 +1137,10 @@ public class CrazyManager {
                 .handle((unused, throwable) -> spawned.get());
     }
 
-    private boolean spawnEnvoy(final EventSession session, final Block block, final List<EventSession.PlayerPosition> players) {
+    private boolean spawnEnvoy(final EventSession session, final Block block, final Tier tier, final List<EventSession.PlayerPosition> players) {
         if (!isResolving(session)) return false;
         if (block.getY() < block.getWorld().getMinHeight() || block.getY() >= block.getWorld().getMaxHeight()) return false;
         if (block.getType() != Material.AIR) return false;
-
-        final Tier tier = pickRandomTier();
-        if (tier == null) return false;
 
         final Location location = block.getLocation();
         final boolean useFallingBlock = this.config.getProperty(ConfigKeys.envoy_falling_block_toggle)
@@ -1197,9 +1229,26 @@ public class CrazyManager {
             Messages.started.broadcast(this.config.getProperty(ConfigKeys.envoys_ignore_behaviour_started), placeholders);
         }
 
-        Messages.envoy_locations.broadcast(this.config.getProperty(ConfigKeys.envoys_locations_broadcast), "envoy.locations", Map.of(
-                "{locations}", getStringBuilder().toString().translateEscapes()
-        ));
+        Messages.wave_guide.broadcast(this.config.getProperty(ConfigKeys.envoys_ignore_behaviour_started));
+
+        if (this.config.getProperty(ConfigKeys.envoys_random_locations) && this.center != null && this.center.getWorld() != null) {
+            Messages.spawn_area.broadcast(this.config.getProperty(ConfigKeys.envoys_ignore_behaviour_started), Map.of(
+                    "{min}", String.valueOf(this.config.getProperty(ConfigKeys.envoys_min_radius)),
+                    "{max}", String.valueOf(this.config.getProperty(ConfigKeys.envoys_max_radius)),
+                    "{world}", Messages.displayWorldName(this.center.getWorld()),
+                    "{x}", String.valueOf(this.center.getBlockX()),
+                    "{z}", String.valueOf(this.center.getBlockZ())
+            ));
+        }
+
+        final Set<String> locationPermissions = Set.of("envoy.drops", "envoy.locations");
+        if (this.config.getProperty(ConfigKeys.envoys_locations_broadcast)) {
+            Messages.envoy_locations.broadcast(false, locationPermissions, Map.of(
+                    "{locations}", getStringBuilder().toString().translateEscapes()
+            ));
+        } else {
+            Messages.drops_hint.broadcast(false, locationPermissions, Map.of());
+        }
 
         if (graceTimer != null) graceTimer.scheduleTimer();
 
@@ -1209,8 +1258,7 @@ public class CrazyManager {
                 if (currentSession.get() != session || session.phase().get() != EventSession.Phase.ACTIVE) return;
 
                 pluginManager.callEvent(new EnvoyEndEvent(EnvoyEndReason.OUT_OF_TIME));
-                Messages.ended.broadcast(config.getProperty(ConfigKeys.envoys_ignore_behaviour_ended));
-                endEnvoyEventAsync();
+                endEnvoyEventAsync().whenComplete((unused, throwable) -> broadcastWaveEnded());
             }
         }.runDelayed(getTimeSeconds(this.config.getProperty(ConfigKeys.envoys_run_time)) * 20L);
 
@@ -1222,6 +1270,17 @@ public class CrazyManager {
 
         this.envoyTimeLeft = getEnvoyRunTimeCalendar();
         session.startFuture().complete(true);
+    }
+
+    public void broadcastWaveEnded() {
+        if (this.config.getProperty(ConfigKeys.envoys_run_time_toggle)) {
+            Messages.wave_ended.broadcast(this.config.getProperty(ConfigKeys.envoys_ignore_behaviour_ended), Map.of(
+                    "{time}", getNextEnvoyTime()
+            ));
+            return;
+        }
+
+        Messages.wave_ended_manual.broadcast(this.config.getProperty(ConfigKeys.envoys_ignore_behaviour_ended));
     }
 
     private void failNoLocations(final EventSession session) {
@@ -1358,6 +1417,7 @@ public class CrazyManager {
     public void shutdown() {
         this.shuttingDown.set(true);
         this.ready.set(false);
+        this.armorSetManager.shutdown();
         cancelEnvoyRunTime();
         cancelEnvoyCooldownTime();
 
@@ -1679,16 +1739,6 @@ public class CrazyManager {
         }
     }
 
-    private void rebuildTierCache() {
-        this.cachedChances.clear();
-
-        for (final Tier tier : this.tiers) {
-            for (int index = 0; index < tier.getSpawnChance(); index++) {
-                this.cachedChances.add(tier);
-            }
-        }
-    }
-
     private final class ConfiguredLocationResolver {
 
         private final List<Block> configured;
@@ -1885,12 +1935,6 @@ public class CrazyManager {
         }
 
         return seconds;
-    }
-
-    private Tier pickRandomTier() {
-        if (this.cachedChances.isEmpty()) return null;
-
-        return this.cachedChances.get(ThreadLocalRandom.current().nextInt(this.cachedChances.size()));
     }
 
     /**

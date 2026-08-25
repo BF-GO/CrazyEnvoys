@@ -1,54 +1,144 @@
-# Стандартный удачный уровень. Технические идентификаторы материалов и команд не переводятся.
+# Мародёрский тир: добыча уже приличная, алиби всё ещё сомнительное.
 Settings:
+  Template-Version: 2
+  Display-Name: '<gradient:#ffd740:#ff6d00><bold>МАРОДЁРСКИЙ</bold></gradient>'
+  Max-Per-Event: 5
+  Rare-Enchantments:
+    Armor-Breaker:
+      Toggle: false
+      Chance: 0.0
+      Level: 0
+  Armor-Set:
+    Id: 'lucky_raider'
+    Display-Name: '<gradient:#ffd740:#ff6d00>Дресс-код налётчика</gradient>'
+    Effects: ['speed:1', 'haste:2', 'luck:2']
   Claim-Permission: false
   Claim-Permission-Name: 'lucky.envoy.use'
   Prize-Message:
-    - '<gray>Вы получили <yellow>{reward}</yellow> из груза <yellow>{tier}</yellow>.</gray>'
+    - '<gray>Тайник <white>{tier}</white> отдал <gradient:#ffd740:#ff6d00>{reward}</gradient>. Чек не прилагается.</gray>'
   Spawn-Chance: 25
   Use-Chance: true
-  Placed-Block: 'ENDER_CHEST'
+  Placed-Block: 'BARREL'
   Bulk-Prizes:
     Toggle: false
     Random: true
-    Max-Bulk: 3
+    Max-Bulk: 1
   Hologram-Toggle: true
   Hologram-Height: 1.5
   Hologram-Range: 8
   Hologram:
-    - '<gray><bold>(<yellow>!</yellow>) <yellow>Удачный груз</yellow></bold></gray>'
+    - '<gradient:#ffd740:#ff6d00><bold>МАРОДЁРСКИЙ ТАЙНИК</bold></gradient>'
+    - '<dark_gray>Пахнет удачей и чужой завистью.</dark_gray>'
     - '%crazyenvoys_crates_time%'
   Firework-Toggle: true
-  Firework-Colors: ['Gray', 'Black', 'Yellow']
+  Firework-Colors: ['Yellow', 'Orange']
   Signal-Flare:
     Toggle: true
-    Time: '25s'
-    Colors: ['Gray', 'Black', 'Yellow']
-# Доступные параметры предметов: item, amount, name, lore, glowing, damage,
-# unbreakable-item, enchantment, trim-pattern, trim-material и custom-model-data.
+    Time: '20s'
+    Colors: ['Yellow', 'Orange']
 Prizes:
   '1':
-    DisplayName: '<green>$10,000</green>'
-    Chance: 50
-    Messages:
-      - '<gray>Вы нашли {reward}.</gray>'
-    Commands:
-      - 'eco give {player} 10000'
-  '2':
-    DisplayName: '<yellow>Удачный меч</yellow>'
-    Chance: 25
+    DisplayName: 'Переубедитель'
+    Chance: 18
     Drop-Items: false
     Messages:
-      - '<gray>Поздравляем! Вы выиграли {reward}.</gray>'
+      - '<gray>Получен <gradient:#ffd740:#ff6d00>{reward}</gradient>. Дипломатия вышла покурить.</gray>'
     Items:
-      - 'item:diamond_sword, amount:1, name:<yellow>Удачный меч</yellow>, sharpness:2, unbreaking:1, knockback:1, fire_aspect:1, looting:1'
+      - 'item:diamond_sword, amount:1, name:<gradient:#ffd740:#ff6d00><bold>Переубедитель</bold></gradient>, lore:<gray>Последний довод в любой очереди.</gray>, sharpness:6, unbreaking:4, looting:3'
+  '2':
+    DisplayName: 'Выселятор'
+    Chance: 14
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#ffd740:#ff6d00>{reward}</gradient>. Квартиранты леса предупреждены.</gray>'
+    Items:
+      - 'item:diamond_axe, amount:1, name:<gradient:#ffd740:#ff6d00><bold>Выселятор</bold></gradient>, lore:<gray>Освобождает помещение вместе со стеной.</gray>, sharpness:7, efficiency:6, unbreaking:4'
   '3':
-    DisplayName: '<yellow>Удачная броня</yellow>'
+    DisplayName: 'Шахтёр без лицензии'
+    Chance: 14
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#ffd740:#ff6d00>{reward}</gradient>. Ростехнадзор уже потерял след.</gray>'
+    Items:
+      - 'item:diamond_pickaxe, amount:1, name:<gradient:#ffd740:#ff6d00><bold>Шахтёр без лицензии</bold></gradient>, lore:<gray>Копает глубже чем служебная проверка.</gray>, efficiency:7, fortune:4, unbreaking:5'
+  '4-head':
+    DisplayName: 'Каска уверенного лица'
+    Chance: 3
+    Armor-Set-Piece: 'head'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получена <gradient:#ffd740:#ff6d00>{reward}</gradient>. Уверенность уже есть, остальной костюм в розыске.</gray>'
+    Items:
+      - 'item:diamond_helmet, amount:1, name:<gradient:#ffd740:#ff6d00>Каска уверенного лица</gradient>, trim:sentry;quartz, protection:4, unbreaking:4'
+  '4-chest':
+    DisplayName: 'Жилет законного беспредела'
+    Chance: 3
+    Armor-Set-Piece: 'chest'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#ffd740:#ff6d00>{reward}</gradient>. Законность определяется владельцем жилета.</gray>'
+    Items:
+      - 'item:diamond_chestplate, amount:1, name:<gradient:#ffd740:#ff6d00>Жилет законного беспредела</gradient>, trim:dune;redstone, protection:4, unbreaking:4'
+  '4-legs':
+    DisplayName: 'Поножи быстрого обыска'
+    Chance: 3
+    Armor-Set-Piece: 'legs'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получены <gradient:#ffd740:#ff6d00>{reward}</gradient>. Обыск начинается с карманов владельца.</gray>'
+    Items:
+      - 'item:diamond_leggings, amount:1, name:<gradient:#ffd740:#ff6d00>Поножи быстрого обыска</gradient>, trim:host;copper, protection:4, unbreaking:4'
+  '4-feet':
+    DisplayName: 'Ботинки чистого отхода'
+    Chance: 3
+    Armor-Set-Piece: 'feet'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получены <gradient:#ffd740:#ff6d00>{reward}</gradient>. Следов нет, свидетели сомневаются.</gray>'
+    Items:
+      - 'item:diamond_boots, amount:1, name:<gradient:#ffd740:#ff6d00>Ботинки чистого отхода</gradient>, trim:shaper;gold, protection:4, unbreaking:4'
+  '5':
+    DisplayName: 'Последний комментарий'
     Chance: 10
     Drop-Items: false
     Messages:
-      - '<gray>Поздравляем! Вы выиграли комплект {reward}.</gray>'
+      - '<gray>Получен <gradient:#ffd740:#ff6d00>{reward}</gradient>. Дискуссия закрывается на расстоянии.</gray>'
     Items:
-      - 'item:diamond_helmet, damage:50, trim-pattern:sentry, trim-material:quartz, amount:1, name:<yellow>Удачный шлем</yellow>, protection:2, unbreaking:1'
-      - 'item:diamond_chestplate, damage:50, trim-pattern:dune, trim-material:redstone, amount:1, name:<yellow>Удачный нагрудник</yellow>, protection:2, unbreaking:1'
-      - 'item:diamond_leggings, damage:50, trim-pattern:host, trim-material:copper, amount:1, name:<yellow>Удачные поножи</yellow>, protection:2, unbreaking:1'
-      - 'item:diamond_boots, damage:50, trim-pattern:shaper, trim-material:gold, amount:1, name:<yellow>Удачные ботинки</yellow>, protection:2, unbreaking:1'
+      - 'item:bow, amount:1, name:<gradient:#ffd740:#ff6d00><bold>Последний комментарий</bold></gradient>, lore:<gray>Модерация на максимальной дальности.</gray>, power:6, punch:3, flame:1, infinity:1, unbreaking:4'
+      - 'item:arrow, amount:1, name:<gray>Единственный вечный аргумент</gray>'
+  '6':
+    DisplayName: 'Перфоратор ПВО'
+    Chance: 8
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#ffd740:#ff6d00>{reward}</gradient>. Соседи снизу уже всё поняли.</gray>'
+    Items:
+      - 'item:crossbow, amount:1, name:<gradient:#ffd740:#ff6d00><bold>Перфоратор ПВО</bold></gradient>, lore:<gray>Режим тишины конструкцией не предусмотрен.</gray>, quick_charge:5, multishot:1, piercing:4, unbreaking:4'
+      - 'item:firework_rocket, amount:32, name:<gradient:#ff5252:#ffd740>Боекомплект шумного соседа</gradient>'
+  '7':
+    DisplayName: 'Громоотвод чужих проблем'
+    Chance: 6
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#ffd740:#ff6d00>{reward}</gradient>. Гроза теперь работает по заявкам.</gray>'
+    Items:
+      - 'item:trident, amount:1, name:<gradient:#ffd740:#ff6d00><bold>Громоотвод чужих проблем</bold></gradient>, lore:<gray>Молния приходит без предварительного звонка.</gray>, impaling:7, loyalty:4, channeling:1, unbreaking:5'
+  '8':
+    DisplayName: 'Крылья эффектного отхода'
+    Chance: 6
+    Drop-Items: false
+    Messages:
+      - '<gray>Получены <gradient:#ffd740:#ff6d00>{reward}</gradient>. Тактическое отступление стало красивее.</gray>'
+    Items:
+      - 'item:elytra, amount:1, name:<gradient:#ffd740:#ff6d00><bold>Крылья эффектного отхода</bold></gradient>, lore:<gray>Бегство считается манёвром если есть крылья.</gray>, unbreaking:5'
+      - 'item:firework_rocket, amount:64, name:<gradient:#ff6d00:#ffd740>Топливо здравого смысла</gradient>'
+  '9':
+    DisplayName: 'Тревожный рюкзак'
+    Chance: 12
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#ffd740:#ff6d00>{reward}</gradient>. План Б наконец-то весит целый слот.</gray>'
+    Items:
+      - 'item:totem_of_undying, amount:1, name:<gradient:#fff176:#ffb300>Страховка без договора</gradient>'
+      - 'item:enchanted_golden_apple, amount:8, name:<gradient:#ffeb3b:#ff6d00>Яблоко второй попытки</gradient>'
+      - 'item:ender_pearl, amount:16, name:<gradient:#80cbc4:#7e57c2>Жемчуг срочной смены адреса</gradient>'

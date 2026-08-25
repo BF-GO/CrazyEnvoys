@@ -2,17 +2,23 @@ package com.badbones69.crazyenvoys.api.objects.misc;
 
 import com.badbones69.crazyenvoys.CrazyEnvoys;
 import com.badbones69.crazyenvoys.Methods;
+import com.badbones69.crazyenvoys.api.enums.Messages;
+import com.badbones69.crazyenvoys.api.enums.PersistentKeys;
 import com.badbones69.crazyenvoys.util.ItemUtil;
+import com.ryderbelserion.fusion.core.api.enums.Level;
 import com.ryderbelserion.fusion.core.api.exceptions.FusionException;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import com.ryderbelserion.fusion.paper.utils.ColorUtils;
 import com.ryderbelserion.fusion.paper.utils.ItemUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import java.nio.file.Path;
 import java.util.*;
@@ -26,6 +32,16 @@ public class Tier {
     private final ItemStack itemStack;
 
     private final String name;
+
+    private String displayName;
+
+    private int maxPerEvent;
+
+    private ArmorSetDefinition armorSetDefinition;
+
+    private final boolean armorSetConfigured;
+
+    private RareEnchantmentDefinition armorBreakerDefinition = RareEnchantmentDefinition.disabled();
 
     private boolean claimPermissionToggle;
 
@@ -111,12 +127,23 @@ public class Tier {
         }
 
         this.name = path.getFileName().toString().replace(".yml", "");
+        this.displayName = configuration.getString("Settings.Display-Name", this.name);
+        if (this.displayName == null || this.displayName.isBlank()) this.displayName = this.name;
+        this.maxPerEvent = Math.max(0, configuration.getInt("Settings.Max-Per-Event", 0));
+        this.armorBreakerDefinition = parseArmorBreaker(configuration.getConfigurationSection(
+                "Settings.Rare-Enchantments.Armor-Breaker"
+        ));
+        final ConfigurationSection armorSetSection = configuration.getConfigurationSection("Settings.Armor-Set");
+        this.armorSetConfigured = armorSetSection != null;
+        this.armorSetDefinition = parseArmorSet(armorSetSection);
 
         final ConfigurationSection prizes = configuration.getConfigurationSection("Prizes");
 
         if (prizes == null) {
             throw new FusionException("Failed to find the prizes section in %s".formatted(this.name));
         }
+
+        String armorSetError = null;
 
         for (final String id : prizes.getKeys(false)) {
             final ConfigurationSection prize = prizes.getConfigurationSection(id);
@@ -139,12 +166,145 @@ public class Tier {
                 messages.add(this.fusion.replacePlaceholders(message, placeholders));
             }
 
-            addPrize(new Prize(id).setDisplayName(prize.getString("DisplayName", ""))
+            final Prize loadedPrize = new Prize(id).setDisplayName(prize.getString("DisplayName", ""))
                     .setChance(prize.getInt("Chance", 10))
                     .setDropItems(prize.getBoolean("Drop-Items", true))
                     .setItemBuilders(ItemUtil.convertStringList(prize.getStringList("Items"), id))
-                    .setCommands(commands).setMessages(messages));
+                    .setCommands(commands).setMessages(messages);
+
+            final String pieceName = prize.getString("Armor-Set-Piece", "");
+            if (!pieceName.isBlank()) {
+                final Optional<ArmorSetPiece> piece = ArmorSetPiece.fromConfig(pieceName);
+                if (piece.isPresent()) loadedPrize.setArmorSetPiece(piece.get());
+                else armorSetError = "unknown armor set piece " + pieceName;
+            }
+
+            addPrize(loadedPrize);
         }
+
+        validateArmorSet(armorSetError);
+    }
+
+    private RareEnchantmentDefinition parseArmorBreaker(final ConfigurationSection section) {
+        if (section == null || !section.getBoolean("Toggle", false)) {
+            return RareEnchantmentDefinition.disabled();
+        }
+
+        try {
+            return new RareEnchantmentDefinition(
+                    true,
+                    section.getDouble("Chance", 0.0D),
+                    section.getInt("Level", 0)
+            );
+        } catch (IllegalArgumentException exception) {
+            this.fusion.log(Level.WARNING, Messages.log_rare_enchantment_invalid.getMessage(Map.of(
+                    "{tier}", this.name,
+                    "{reason}", exception.getMessage()
+            )));
+            return RareEnchantmentDefinition.disabled();
+        }
+    }
+
+    private ArmorSetDefinition parseArmorSet(final ConfigurationSection section) {
+        if (section == null) return null;
+
+        final String id = section.getString("Id", "").trim().toLowerCase(Locale.ROOT);
+        if (!id.matches("[a-z0-9_-]+")) return invalidArmorSet("invalid id");
+
+        final String configuredDisplayName = section.getString("Display-Name", id);
+        final String displayName = configuredDisplayName == null || configuredDisplayName.isBlank() ? id : configuredDisplayName;
+        final Map<PotionEffectType, Integer> effects = new LinkedHashMap<>();
+
+        for (final String value : section.getStringList("Effects")) {
+            final String[] parts = value.trim().toLowerCase(Locale.ROOT).split(":", 2);
+            if (parts.length != 2 || !parts[0].matches("[a-z0-9_]+")) {
+                return invalidArmorSet("invalid effect " + value);
+            }
+
+            final int level;
+            try {
+                level = Integer.parseInt(parts[1]);
+            } catch (NumberFormatException exception) {
+                return invalidArmorSet("invalid effect level " + value);
+            }
+
+            if (level < 1) return invalidArmorSet("effect levels must be positive");
+
+            final PotionEffectType type = Registry.EFFECT.get(NamespacedKey.minecraft(parts[0]));
+            if (type == null) return invalidArmorSet("unknown effect " + parts[0]);
+            if (effects.putIfAbsent(type, level) != null) return invalidArmorSet("duplicate effect " + parts[0]);
+        }
+
+        if (effects.isEmpty()) return invalidArmorSet("no effects configured");
+
+        return new ArmorSetDefinition(id, displayName, effects);
+    }
+
+    private void validateArmorSet(final String configurationError) {
+        if (configurationError != null) {
+            invalidateArmorSet(configurationError);
+            return;
+        }
+
+        final boolean hasPieces = this.prizes.stream().anyMatch(prize -> prize.getArmorSetPiece().isPresent());
+        if (this.armorSetDefinition == null) {
+            if (hasPieces && !this.armorSetConfigured) invalidateArmorSet("pieces configured without a set definition");
+            return;
+        }
+
+        final EnumMap<ArmorSetPiece, Prize> pieces = new EnumMap<>(ArmorSetPiece.class);
+        for (final Prize prize : this.prizes) {
+            final Optional<ArmorSetPiece> configuredPiece = prize.getArmorSetPiece();
+            if (configuredPiece.isEmpty()) continue;
+
+            final ArmorSetPiece piece = configuredPiece.get();
+            if (pieces.putIfAbsent(piece, prize) != null) {
+                invalidateArmorSet("duplicate piece " + piece.getConfigName());
+                return;
+            }
+
+            if (prize.getItemBuilders().size() != 1) {
+                invalidateArmorSet("piece " + piece.getConfigName() + " must contain exactly one item");
+                return;
+            }
+
+            final ItemStack item = prize.getItemBuilders().getFirst().asItemStack();
+            if (!piece.matches(item.getType())) {
+                invalidateArmorSet("piece " + piece.getConfigName() + " has the wrong item type");
+                return;
+            }
+        }
+
+        if (pieces.size() != ArmorSetPiece.values().length) {
+            invalidateArmorSet("all four armor pieces are required");
+            return;
+        }
+
+        for (final Map.Entry<ArmorSetPiece, Prize> entry : pieces.entrySet()) {
+            entry.getValue().getItemBuilders().getFirst().setPersistentString(
+                    PersistentKeys.armor_set_id.getNamespacedKey(), this.armorSetDefinition.id()
+            );
+            entry.getValue().getItemBuilders().getFirst().setPersistentString(
+                    PersistentKeys.armor_set_piece.getNamespacedKey(), entry.getKey().getConfigName()
+            );
+        }
+    }
+
+    private ArmorSetDefinition invalidArmorSet(@NotNull final String reason) {
+        logInvalidArmorSet(reason);
+        return null;
+    }
+
+    private void invalidateArmorSet(@NotNull final String reason) {
+        this.armorSetDefinition = null;
+        logInvalidArmorSet(reason);
+    }
+
+    private void logInvalidArmorSet(@NotNull final String reason) {
+        this.fusion.log(Level.WARNING, Messages.log_armor_set_invalid.getMessage(Map.of(
+                "{tier}", this.name,
+                "{reason}", reason
+        )));
     }
 
     // Check if the envoy is allowed to require the claim permission.
@@ -186,6 +346,47 @@ public class Tier {
      */
     public String getName() {
         return this.name;
+    }
+
+    /**
+     * Get the MiniMessage display name shown to players.
+     *
+     * @return The configured display name, or the technical tier name when unset.
+     */
+    public String getDisplayName() {
+        return this.displayName;
+    }
+
+    public Tier setDisplayName(@NotNull final String displayName) {
+        this.displayName = displayName.isBlank() ? this.name : displayName;
+
+        return this;
+    }
+
+    /**
+     * Get the maximum number of crates of this tier in one event.
+     *
+     * @return A positive limit, or zero for no limit.
+     */
+    public int getMaxPerEvent() {
+        return this.maxPerEvent;
+    }
+
+    public Tier setMaxPerEvent(final int maxPerEvent) {
+        this.maxPerEvent = Math.max(0, maxPerEvent);
+
+        return this;
+    }
+
+    public Optional<ArmorSetDefinition> getArmorSetDefinition() {
+        return Optional.ofNullable(this.armorSetDefinition);
+    }
+
+    /**
+     * Get the immutable Armor Breaker bonus settings for this tier.
+     */
+    public RareEnchantmentDefinition getArmorBreakerDefinition() {
+        return this.armorBreakerDefinition;
     }
     
     /**

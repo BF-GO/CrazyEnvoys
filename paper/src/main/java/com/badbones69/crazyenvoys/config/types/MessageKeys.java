@@ -73,6 +73,15 @@ public class MessageKeys implements SettingsHolder {
             "{prefix}<red>The envoy event has ended. Thanks for playing and please come back for the next one."
     ));
 
+    public static final Property<String> envoy_wave_ended = newProperty("envoys.wave-ended", "{prefix}<gray>The current drop wave has ended. The next wave starts in <gold>{time}</gold>.</gray>");
+
+    public static final Property<String> envoy_wave_ended_manual = newProperty("envoys.wave-ended-manual", "{prefix}<gray>The current drop wave has ended. The next wave requires a manual start.</gray>");
+
+    public static final Property<List<String>> envoy_wave_guide = newListProperty("envoys.wave-guide", List.of(
+            "{prefix}<gray>This is a crate wave within the ongoing server event; it does not change server rules.</gray>",
+            "{prefix}<gray>Each crate gives one random reward. Higher tiers are rarer and limited per wave.</gray>"
+    ));
+
     public static final Property<String> not_enough_players = newProperty("envoys.not-enough-players", "{prefix}<gray>Not enough players are online to start the envoy event. Only <gold>{amount} <gray>players are online.");
 
     public static final Property<String> enter_editor_mode = newProperty("envoys.enter-editor-mode", "{prefix}<gray>You are now in editor mode.");
@@ -119,6 +128,10 @@ public class MessageKeys implements SettingsHolder {
 
     public static final Property<String> drops_possibilities = newProperty("envoys.drops-possibilities", "{prefix}<gray>List of location envoy''s may spawn at.");
 
+    public static final Property<String> drops_hint = newProperty("envoys.drops-hint", "{prefix}<gray>Use <gold>/envoys drops</gold> to view the current crate coordinates.");
+
+    public static final Property<String> spawn_area = newProperty("envoys.spawn-area", "{prefix}<gray>Search area: up to <gold>{max}</gold> blocks on X/Z from <gold>{world} ({x}, {z})</gold>; crates do not spawn within <gold>{min}</gold> blocks of the center.</gray>");
+
     public static final Property<String> drops_page = newProperty("envoys.drops-page", "{prefix}<gray>Use /crazyenvoys drops [page] to see more.");
 
     public static final Property<String> drops_format = newProperty("envoys.drops-format", "<gray>[<gold>{id}<gray>]: {world}, {x}, {y}, {z}");
@@ -134,9 +147,13 @@ public class MessageKeys implements SettingsHolder {
     public static final Property<String> time_placeholder_minute = newProperty("envoys.time-placeholders.minute", "m");
     public static final Property<String> time_placeholder_second = newProperty("envoys.time-placeholders.second", "s");
 
-    public static final Property<String> envoy_locations = newProperty("envoys.envoy-locations", "<yellow><bold>All Envoy Locations:</bold></yellow> \\n<red>[ID], [World]: [X], [Y], [Z]</red> {locations}");
+    public static final Property<String> envoy_locations = newProperty("envoys.envoy-locations", "<yellow><bold>All Envoy Locations:</bold></yellow><newline><red>[ID], [World]: [X], [Y], [Z]</red> {locations}");
 
-    public static final Property<String> location_format = newProperty("envoys.location-format", "\\n<dark_gray>[<blue>{id}<dark_gray>] <red>{world}: {x}, {y}, {z}");
+    public static final Property<String> location_format = newProperty("envoys.location-format", "<newline><dark_gray>[<blue>{id}<dark_gray>] <red>{world}: {x}, {y}, {z}");
+
+    public static final Property<String> world_overworld = newProperty("envoys.world-names.overworld", "Overworld");
+    public static final Property<String> world_nether = newProperty("envoys.world-names.nether", "Nether");
+    public static final Property<String> world_end = newProperty("envoys.world-names.end", "The End");
 
     @Comment("A list of available placeholders: {command}")
     public static final Property<String> unknown_command = newProperty("misc.command-not-found", "{prefix}<red>{command} is not a known command.");
@@ -173,6 +190,8 @@ public class MessageKeys implements SettingsHolder {
 
     public static final Property<String> not_applicable = newProperty("misc.not-applicable", "N/A");
 
+    public static final Property<String> command_prefix = newProperty("ui.command-prefix", "<dark_gray>[<light_purple>CrazyEnvoys</light_purple>]</dark_gray> <dark_gray>»</dark_gray> ");
+
     public static final Property<String> envoy_menu_title = newProperty("ui.envoy-menu-title", "<red>Envoy Drops");
 
     public static final Property<String> prize_load_error_item = newProperty("ui.prize-load-error", "<red>Error found with prize: {prize}");
@@ -188,6 +207,20 @@ public class MessageKeys implements SettingsHolder {
 
     public static final Property<String> grace_period_time_unit = newProperty("ui.grace-period.time-unit", " seconds.");
 
+    public static final Property<String> armor_set_activated = newProperty("ui.armor-set.activated", "{prefix}<green>Full armor set {set} activated.</green>");
+
+    public static final Property<String> armor_set_deactivated = newProperty("ui.armor-set.deactivated", "{prefix}<gray>Armor set {set} is no longer complete.</gray>");
+
+    public static final Property<String> armor_breaker_name = newProperty(
+            "ui.enchantments.armor-breaker",
+            "<gradient:#ffb300:#ff1744><bold>Armor Breaker</bold></gradient>"
+    );
+
+    public static final Property<String> armor_breaker_awarded = newProperty(
+            "ui.rare-enchantment.armor-breaker-awarded",
+            "{prefix}<gradient:#ffb300:#ff1744><bold>ULTRA-RARE BONUS!</bold></gradient> <gray>Your reward gained {enchantment} <white>{level}</white>.</gray>"
+    );
+
     public static final Property<String> log_done = newProperty("logs.done", "Done ({time})!");
     public static final Property<String> log_config_migrated = newProperty("logs.config-migrated", "Successfully migrated {file}.");
     public static final Property<String> log_prize_error = newProperty("logs.prize-error", "An error occurred while loading prize {prize}.");
@@ -200,6 +233,11 @@ public class MessageKeys implements SettingsHolder {
     public static final Property<String> log_task_cancel_failed = newProperty("logs.task-cancel-failed", "Could not cancel envoy {task} task.");
     public static final Property<String> log_generation_partial = newProperty("logs.generation-partial", "Generated {generated}/{requested} envoy locations after {attempts} attempts.");
     public static final Property<String> log_generation_area_limited = newProperty("logs.generation-area-limited", "The crate amount exceeds the configured area. Spawning {amount} crates instead.");
+    public static final Property<String> log_tier_capacity_limited = newProperty("logs.tier-capacity-limited", "Tier limits only allowed {assigned}/{requested} crates to be assigned.");
+    public static final Property<String> log_armor_set_invalid = newProperty("logs.armor-set-invalid", "Armor set in tier {tier} was disabled: {reason}.");
+    public static final Property<String> log_rare_enchantment_invalid = newProperty("logs.rare-enchantment-invalid", "Rare enchantment in tier {tier} was disabled: {reason}.");
+    public static final Property<String> log_armor_breaker_unavailable = newProperty("logs.armor-breaker-unavailable", "Armor Breaker is missing from the server registry. Install the new jar and perform a full server restart.");
+    public static final Property<String> log_armor_breaker_name_invalid = newProperty("logs.armor-breaker-name-invalid", "Could not parse the Armor Breaker display name; using a safe fallback.");
     public static final Property<String> log_chunk_load_failed = newProperty("logs.chunk-load-failed", "Could not load {type} envoy chunk at {x},{z}.");
     public static final Property<String> log_chunk_request_failed = newProperty("logs.chunk-request-failed", "Could not request {type} envoy chunk at {x},{z}.");
     public static final Property<String> log_no_tiers = newProperty("logs.no-tiers", "No tiers were found in the tiers folder. Delete the folder to regenerate the examples.");

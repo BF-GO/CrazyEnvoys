@@ -3,7 +3,6 @@ package com.badbones69.crazyenvoys.commands.types.admin;
 import com.badbones69.crazyenvoys.api.enums.Messages;
 import com.badbones69.crazyenvoys.api.events.EnvoyEndEvent;
 import com.badbones69.crazyenvoys.commands.types.EnvoyCommand;
-import com.badbones69.crazyenvoys.config.types.ConfigKeys;
 import dev.triumphteam.cmd.bukkit.annotation.Permission;
 import dev.triumphteam.cmd.core.annotations.Command;
 import dev.triumphteam.cmd.core.annotations.Syntax;
@@ -33,7 +32,7 @@ public class StopCommand extends EnvoyCommand {
 
         this.pluginManager.callEvent(event);
         this.crazyManager.endEnvoyEventAsync().whenComplete((unused, throwable) -> {
-            Messages.ended.broadcast(this.config.getProperty(ConfigKeys.envoys_ignore_behaviour_ended));
+            this.crazyManager.broadcastWaveEnded();
             this.crazyManager.getScheduler().runForSender(sender, "confirm forced envoy stop", () -> Messages.force_end.sendMessage(sender));
         });
     }

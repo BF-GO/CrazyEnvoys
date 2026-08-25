@@ -1,0 +1,168 @@
+# Проклятый тир: баланс покинул сервер, но обещал написать.
+Settings:
+  Template-Version: 2
+  Display-Name: '<gradient:#e040fb:#d50000><bold>ПРОКЛЯТЫЙ</bold></gradient>'
+  Max-Per-Event: 2
+  Rare-Enchantments:
+    Armor-Breaker:
+      Toggle: true
+      Chance: 1.0
+      Level: 2
+  Armor-Set:
+    Id: 'cursed_optimist'
+    Display-Name: '<gradient:#e040fb:#d50000>Облачение бессмертного оптимиста</gradient>'
+    Effects: ['strength:2', 'speed:2', 'fire_resistance:1']
+  Claim-Permission: false
+  Claim-Permission-Name: 'cursed.envoy.use'
+  Prize-Message:
+    - '<gray>Проклятый тайник прошептал твоё имя и отдал <gradient:#e040fb:#d50000>{reward}</gradient>.</gray>'
+  Spawn-Chance: 5
+  Use-Chance: true
+  Placed-Block: 'CRYING_OBSIDIAN'
+  Bulk-Prizes:
+    Toggle: false
+    Random: true
+    Max-Bulk: 1
+  Hologram-Toggle: true
+  Hologram-Height: 1.5
+  Hologram-Range: 10
+  Hologram:
+    - '<gradient:#e040fb:#d50000><bold>ПРОКЛЯТЫЙ ТАЙНИК</bold></gradient>'
+    - '<dark_gray>Он смотрит на тебя первым.</dark_gray>'
+    - '%crazyenvoys_crates_time%'
+  Firework-Toggle: true
+  Firework-Colors: ['Purple', 'Red', 'Black']
+  Signal-Flare:
+    Toggle: true
+    Time: '40s'
+    Colors: ['Purple', 'Red', 'Black']
+Prizes:
+  '1':
+    DisplayName: 'Клинок красного часа'
+    Chance: 17
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#e040fb:#d50000>{reward}</gradient>. Часы пробили кого-то другого.</gray>'
+    Items:
+      - 'item:netherite_sword, amount:1, name:<gradient:#e040fb:#d50000><bold>Клинок красного часа</bold></gradient>, lore:<gray>После полуночи гарантия не действует.</gray>, sharpness:12, looting:6, fire_aspect:4, unbreaking:8, mending:1'
+  '2':
+    DisplayName: 'Топор досрочного рассвета'
+    Chance: 13
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#e040fb:#d50000>{reward}</gradient>. Для некоторых рассвет наступит раньше.</gray>'
+    Items:
+      - 'item:netherite_axe, amount:1, name:<gradient:#e040fb:#d50000><bold>Топор досрочного рассвета</bold></gradient>, lore:<gray>Будильник с очень убедительным звуком.</gray>, sharpness:14, efficiency:12, unbreaking:8, mending:1'
+  '3':
+    DisplayName: 'Убиватор 3000'
+    Chance: 12
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#ff1744:#ff6d00>{reward}</gradient>. Производитель не предусмотрел мирный режим.</gray>'
+    Items:
+      - 'item:diamond_hoe, amount:1, name:<gradient:#ff0000:#ff6d00><bold>Убиватор 3000</bold></gradient>, lore:<gray>Грядки вспоминают тебя с ужасом.</gray>, sharpness:20, unbreaking:10, mending:1'
+  '4-head':
+    DisplayName: 'Венец плохих предчувствий'
+    Chance: 4
+    Armor-Set-Piece: 'head'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#e040fb:#d50000>{reward}</gradient>. Предчувствия плохие, защита отличная.</gray>'
+    Items:
+      - 'item:netherite_helmet, amount:1, name:<gradient:#e040fb:#d50000>Венец плохих предчувствий</gradient>, trim:silence;amethyst, protection:8, thorns:4, unbreaking:8, mending:1'
+  '4-chest':
+    DisplayName: 'Панцирь отрицания урона'
+    Chance: 4
+    Armor-Set-Piece: 'chest'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#e040fb:#d50000>{reward}</gradient>. Урон существует только в чужих отчётах.</gray>'
+    Items:
+      - 'item:netherite_chestplate, amount:1, name:<gradient:#e040fb:#d50000>Панцирь отрицания урона</gradient>, trim:rib;redstone, protection:8, thorns:4, unbreaking:8, mending:1'
+  '4-legs':
+    DisplayName: 'Поножи дурного знамения'
+    Chance: 4
+    Armor-Set-Piece: 'legs'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получены <gradient:#e040fb:#d50000>{reward}</gradient>. Дурное знамение теперь официально ниже пояса.</gray>'
+    Items:
+      - 'item:netherite_leggings, amount:1, name:<gradient:#e040fb:#d50000>Поножи дурного знамения</gradient>, trim:eye;amethyst, protection:8, thorns:4, unbreaking:8, mending:1'
+  '4-feet':
+    DisplayName: 'Следы на месте преступления'
+    Chance: 4
+    Armor-Set-Piece: 'feet'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получены <gradient:#e040fb:#d50000>{reward}</gradient>. Следователь уже устал считать совпадения.</gray>'
+    Items:
+      - 'item:netherite_boots, amount:1, name:<gradient:#e040fb:#d50000>Следы на месте преступления</gradient>, trim:spire;redstone, protection:8, thorns:4, unbreaking:8, mending:1'
+  '5':
+    DisplayName: 'Лук судебных приставов'
+    Chance: 9
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#e040fb:#d50000>{reward}</gradient>. Долг взыскивается стрелами.</gray>'
+    Items:
+      - 'item:bow, amount:1, name:<gradient:#e040fb:#d50000><bold>Лук судебных приставов</bold></gradient>, lore:<gray>Доставка постановления прямо в инвентарь.</gray>, power:12, punch:8, flame:1, infinity:1, unbreaking:8'
+      - 'item:arrow, amount:1, name:<red>Исполнительный лист</red>'
+  '6':
+    DisplayName: 'Трёхствольная ошибка'
+    Chance: 7
+    Drop-Items: false
+    Messages:
+      - '<gray>Получена <gradient:#e040fb:#d50000>{reward}</gradient>. Исправлять уже поздно.</gray>'
+    Items:
+      - 'item:crossbow, amount:1, name:<gradient:#e040fb:#d50000><bold>Трёхствольная ошибка</bold></gradient>, lore:<gray>Совместимость зачарований отменена указом.</gray>, quick_charge:5, multishot:1, piercing:10, unbreaking:8, mending:1'
+      - 'item:firework_rocket, amount:96, name:<gradient:#e040fb:#d50000>Боеприпас коллективной ответственности</gradient>'
+  '7':
+    DisplayName: 'Кувалда причин и следствий'
+    Chance: 7
+    Drop-Items: false
+    Messages:
+      - '<gray>Получена <gradient:#e040fb:#d50000>{reward}</gradient>. Причина сверху — последствия внизу.</gray>'
+    Items:
+      - 'item:mace, amount:1, name:<gradient:#e040fb:#d50000><bold>Кувалда причин и следствий</bold></gradient>, lore:<gray>Физика подписала отказ от ответственности.</gray>, density:15, breach:10, wind_burst:5, unbreaking:8, mending:1'
+  '8':
+    DisplayName: 'Вилка Посейдона'
+    Chance: 6
+    Drop-Items: false
+    Messages:
+      - '<gray>Получена <gradient:#e040fb:#d50000>{reward}</gradient>. Морской царь требует вернуть после дождя.</gray>'
+    Items:
+      - 'item:trident, amount:1, name:<gradient:#e040fb:#d50000><bold>Вилка Посейдона</bold></gradient>, lore:<gray>Для очень большого ужина.</gray>, impaling:15, loyalty:8, channeling:1, unbreaking:8, mending:1'
+  '9':
+    DisplayName: 'Крылья плохого решения'
+    Chance: 5
+    Drop-Items: false
+    Messages:
+      - '<gray>Получены <gradient:#e040fb:#d50000>{reward}</gradient>. Высота только усиливает сомнения.</gray>'
+    Items:
+      - 'item:elytra, amount:1, name:<gradient:#e040fb:#d50000><bold>Крылья плохого решения</bold></gradient>, lore:<gray>Каждый полёт начинается со слов «смотри как могу».</gray>, unbreaking:15, mending:1'
+      - 'item:firework_rocket, amount:192, name:<gradient:#e040fb:#d50000>Ускоритель необратимых решений</gradient>'
+  '10':
+    DisplayName: 'Набор «План Б»'
+    Chance: 4
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#e040fb:#d50000>{reward}</gradient>. План А даже не открывали.</gray>'
+    Items:
+      - 'item:totem_of_undying, amount:5, name:<gradient:#fff176:#e040fb>Абонемент на возвращение</gradient>'
+      - 'item:enchanted_golden_apple, amount:32, name:<gradient:#ffd740:#d50000>Яблоко отрицания последствий</gradient>'
+      - 'item:ender_pearl, amount:32, name:<gradient:#80cbc4:#e040fb>Жемчуг смены показаний</gradient>'
+  '11':
+    DisplayName: 'Кирка ЖКХ «Мы уже выехали»'
+    Chance: 2
+    Drop-Items: false
+    Messages:
+      - '<gray>Получена <gradient:#e040fb:#d50000>{reward}</gradient>. Заявка закрыта вместе со стеной.</gray>'
+    Items:
+      - 'item:netherite_pickaxe, amount:1, name:<gradient:#e040fb:#d50000><bold>Кирка ЖКХ «Мы уже выехали»</bold></gradient>, lore:<gray>Следующая заявка — через три Судных ночи.</gray>, efficiency:18, fortune:8, sharpness:10, unbreaking:12, mending:1'
+  '12':
+    DisplayName: 'Лопата участкового'
+    Chance: 2
+    Drop-Items: false
+    Messages:
+      - '<gray>Получена <gradient:#e040fb:#d50000>{reward}</gradient>. Обстоятельства закопаны, свидетели занервничали.</gray>'
+    Items:
+      - 'item:netherite_shovel, amount:1, name:<gradient:#e040fb:#d50000><bold>Лопата участкового</bold></gradient>, lore:<gray>Копает обстоятельства и свидетелей одинаково быстро.</gray>, sharpness:16, efficiency:18, knockback:6, fire_aspect:4, unbreaking:12, mending:1'

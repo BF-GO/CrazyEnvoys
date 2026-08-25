@@ -52,6 +52,7 @@ public final class LocaleManager {
         final YamlConfiguration target = loadWithComments(targetFile);
         final YamlConfiguration bundled = loadWithComments(new InputStreamReader(bundledResource, StandardCharsets.UTF_8));
         boolean changed = migrateShape(target, bundled);
+        changed |= migrateBundledDefaults(target, bundled);
 
         for (String path : bundled.getKeys(true)) {
             if (bundled.get(path) instanceof ConfigurationSection || target.contains(path)) continue;
@@ -124,6 +125,58 @@ public final class LocaleManager {
         }
 
         return changed;
+    }
+
+    private static boolean migrateBundledDefaults(final YamlConfiguration target, final YamlConfiguration bundled) {
+        boolean changed = false;
+
+        changed |= replaceIfUnchanged(target, bundled, "player.no-permission-to-claim",
+                "{prefix}<red>Руки убрал от тайника.</red> <gray>Даже в Судную ночь нужны правильные права.</gray>");
+        changed |= replaceIfUnchanged(target, bundled, "envoys.already-started",
+                "{prefix}<yellow>Судная ночь уже идёт.</yellow> <gray>Вторую луну на небо пока не завезли.</gray>");
+        changed |= replaceIfUnchanged(target, bundled, "envoys.not-started",
+                "{prefix}<gray>Сейчас тихо: законы работают, тайники спят.</gray>");
+        changed |= replaceIfUnchanged(target, bundled, "envoys.warning",
+                "{prefix}<gradient:#ff1744:#ff6d00><bold>ВНИМАНИЕ</bold></gradient> <gray>До отмены правил <white>{time}</white>. Прячьте алмазы и здравый смысл.</gray>");
+        changed |= replaceIfUnchanged(target, bundled, "envoys.started.list", List.of(
+                "{prefix}<gradient:#ff1744:#7c4dff><bold>СУДНАЯ НОЧЬ НАЧАЛАСЬ</bold></gradient> <gray>На карте появилось тайников: <white>{amount}</white>.</gray>"
+        ));
+        changed |= replaceIfUnchanged(target, bundled, "envoys.ended", List.of(
+                "{prefix}<gradient:#80cbc4:#64b5f6><bold>РАССВЕТ</bold></gradient> <gray>Законы снова включены. Кто выжил — тот молодец.</gray>"
+        ));
+        changed |= replaceIfUnchanged(target, bundled, "envoys.kicked-from-editor-mode",
+                "{prefix}<yellow>Редактор закрыт: Судная ночь уже началась.</yellow> <gray>Ремонт во время пожара запрещён.</gray>");
+        changed |= replaceIfUnchanged(target, bundled, "envoys.time-left",
+                "{prefix}<gray>До рассвета <white>{time}</white>. Успей сделать вид, что у тебя был план.</gray>");
+        changed |= replaceIfUnchanged(target, bundled, "envoys.time-till-event", List.of(
+                "{prefix}<gray>До следующей Судной ночи <white>{time}</white>. Пока можно жить прилично.</gray>"
+        ));
+        changed |= replaceIfUnchanged(target, bundled, "envoys.hologram-placeholders.on-going", "Судная ночь идёт");
+        changed |= replaceIfUnchanged(target, bundled, "envoys.hologram-placeholders.not-running", "До сирены тихо");
+        changed |= replaceIfUnchanged(target, bundled, "misc.not-a-number",
+                "{prefix}<red>Это не число.</red> <gray>Даже в ночь без правил математика ещё работает.</gray>");
+        changed |= replaceIfUnchanged(target, bundled, "ui.command-prefix",
+                "<gradient:#ff1744:#ff6d00><bold>СУДНАЯ НОЧЬ</bold></gradient> <dark_gray>»</dark_gray> ");
+        changed |= replaceIfUnchanged(target, bundled, "ui.flare.lore", List.of(
+                "<gray>ПКМ — и законы уходят</gray>",
+                "<gray>в неоплачиваемый отпуск.</gray>",
+                "<dark_gray>Нажимать с драматичным лицом.</dark_gray>"
+        ));
+        changed |= replaceIfUnchanged(target, bundled, "logs.start-begin-failed", "Не удалось запустить Судную ночь.");
+        changed |= replaceIfUnchanged(target, bundled, "envoys.envoy-locations",
+                "<gradient:#ff1744:#ff6d00><bold>ВСЕ ТАЙНИКИ</bold></gradient>\\n<dark_gray>[ID] [Мир]: [X], [Y], [Z]</dark_gray> {locations}");
+        changed |= replaceIfUnchanged(target, bundled, "envoys.location-format",
+                "\\n<dark_gray>[</dark_gray><#ff6d00>{id}</#ff6d00><dark_gray>]</dark_gray> <gray>{world}</gray><dark_gray>:</dark_gray> <white>{x}, {y}, {z}</white>");
+
+        return changed;
+    }
+
+    private static boolean replaceIfUnchanged(final YamlConfiguration target, final YamlConfiguration bundled,
+                                              final String path, final Object previousDefault) {
+        if (!Objects.equals(target.get(path), previousDefault) || !bundled.contains(path)) return false;
+
+        target.set(path, bundled.get(path));
+        return true;
     }
 
     private static boolean stringToList(final YamlConfiguration target, final String path) {

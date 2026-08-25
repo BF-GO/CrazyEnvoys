@@ -18,12 +18,8 @@ public class ConfigKeys implements SettingsHolder {
     @Override
     public void registerComments(CommentsConfiguration conf) {
         String[] header = {
-                "Support: https://discord.gg/badbones-s-live-chat-182615261403283459",
-                "Github: https://github.com/Crazy-Crew",
-                "",
-                "Issues: https://github.com/Crazy-Crew/CrazyEnvoys/issues",
-                "Features: https://github.com/Crazy-Crew/CrazyEnvoys/issues",
-                ""
+                "Server event configuration.",
+                "Messages and generated interface text support MiniMessage."
         };
 
         String[] deprecation = {
@@ -47,12 +43,9 @@ public class ConfigKeys implements SettingsHolder {
             "",
             "A custom locale can be added as locale/<locale-id>.yml and selected here.",
             "Missing keys are added automatically without overwriting existing values.",
-            "If you do not see your language above, you can contribute by modifying the current en-US.yml",
-            "https://github.com/Crazy-Crew/CrazyEnvoys/blob/main/paper/src/main/resources/locale/en-US.yml",
-            "Submit your finalized config using https://bin.bloom.host/ and send it to us in https://discord.gg/badbones-s-live-chat-182615261403283459",
             ""
     })
-    public static final Property<String> locale_file = PropertyInitializer.newProperty("root.language", "en-US");
+    public static final Property<String> locale_file = PropertyInitializer.newProperty("root.language", "ru-RU");
 
     @Comment({
             "A list of available hologram plugins:",
@@ -76,10 +69,10 @@ public class ConfigKeys implements SettingsHolder {
     public static final Property<State> message_state = newBeanProperty(State.class, "root.message-state", State.send_message);
 
     @Comment("The command prefix you want shown in front of commands!")
-    public static final Property<String> command_prefix = PropertyInitializer.newProperty("root.command_prefix", "<dark_gray>[<light_purple>CrazyEnvoys<dark_gray>]: ");
+    public static final Property<String> command_prefix = PropertyInitializer.newProperty("root.command_prefix", "");
 
     @Comment("The console prefix you want shown when the logging messages show up!")
-    public static final Property<String> console_prefix = PropertyInitializer.newProperty("root.console_prefix" ,"<dark_gray>[<red>CrazyEnvoys<dark_gray>] ");
+    public static final Property<String> console_prefix = PropertyInitializer.newProperty("root.console_prefix", "");
 
     @Comment("Envoys will act as chests with items inside instead of adding to inventory.")
     public static final Property<Boolean> envoy_menu_open = PropertyInitializer.newProperty("envoys.open-chest.toggle", false);
@@ -122,13 +115,13 @@ public class ConfigKeys implements SettingsHolder {
     public static final Property<Boolean> envoys_random_locations = newProperty("envoys.generation.random-locations.toggle", true);
 
     @Comment("The maximum distance the envoys will fall from the center.")
-    public static final Property<Integer> envoys_max_radius = newProperty("envoys.generation.random-locations.max-radius", 300);
+    public static final Property<Integer> envoys_max_radius = newProperty("envoys.generation.random-locations.max-radius", 2000);
 
     @Comment("The minimum distance from the middle the envoys will fall from the center.")
     public static final Property<Integer> envoys_min_radius = newProperty("envoys.generation.random-locations.min-radius", 20);
 
     @Comment("If all drop locations should be broadcast when an envoy starts.")
-    public static final Property<Boolean> envoys_locations_broadcast = newProperty("envoys.broadcast", false);
+    public static final Property<Boolean> envoys_locations_broadcast = newProperty("envoys.broadcast", true);
 
     @Comment({
             "This option decides whether to run envoys at an interval or on a schedule.",

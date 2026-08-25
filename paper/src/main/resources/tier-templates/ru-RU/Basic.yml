@@ -1,62 +1,139 @@
-# Стандартный обычный уровень. Технические идентификаторы материалов и команд не переводятся.
+# Нищий тир: доступная добыча для тех, кто пришёл на Судную ночь с пустыми карманами.
 Settings:
-  # Требовать ли право для получения груза.
+  Template-Version: 2
+  Display-Name: '<gradient:#90a4ae:#546e7a><bold>НИЩИЙ</bold></gradient>'
+  Max-Per-Event: 0
+  Rare-Enchantments:
+    Armor-Breaker:
+      Toggle: false
+      Chance: 0.0
+      Level: 0
+  Armor-Set:
+    Id: 'basic_survivor'
+    Display-Name: '<gradient:#b0bec5:#78909c>Комплект «Дожить до утра»</gradient>'
+    Effects: ['speed:1', 'night_vision:1']
   Claim-Permission: false
-  # Необходимое право.
   Claim-Permission-Name: 'basic.envoy.use'
-  # Сообщение по умолчанию, если у награды нет собственного Messages.
   Prize-Message:
-    - '<gray>Вы получили <red>{reward}</red> из груза <red>{tier}</red>.</gray>'
-  # Вероятность появления уровня.
-  Spawn-Chance: 85
+    - '<gray>Тайник <white>{tier}</white> выдал <gradient:#90a4ae:#cfd8dc>{reward}</gradient>. Лучше чем ничего. Наверное.</gray>'
+  Spawn-Chance: 58
   Use-Chance: true
-  # Блок груза.
   Placed-Block: 'CHEST'
   Bulk-Prizes:
     Toggle: false
     Random: true
-    Max-Bulk: 3
+    Max-Bulk: 1
   Hologram-Toggle: true
   Hologram-Height: 1.5
   Hologram-Range: 8
   Hologram:
-    - '<gray><bold>(<gold>!</gold>) Обычный груз</bold></gray>'
+    - '<gradient:#90a4ae:#546e7a><bold>НИЩИЙ ТАЙНИК</bold></gradient>'
+    - '<dark_gray>Охраны нет. Как и бюджета.</dark_gray>'
     - '%crazyenvoys_crates_time%'
   Firework-Toggle: true
-  Firework-Colors: ['Gray', 'Black', 'Orange']
+  Firework-Colors: ['Gray', 'White']
   Signal-Flare:
     Toggle: true
     Time: '15s'
-    Colors: ['Gray', 'Black', 'Orange']
-# Доступные параметры предметов: item, amount, name, lore, glowing, damage,
-# unbreakable-item, enchantment, trim-pattern, trim-material и custom-model-data.
+    Colors: ['Gray', 'White']
+# Chance — относительный вес. Сумма весов наград этого тира равна 100.
 Prizes:
   '1':
-    DisplayName: '<green>$1,000</green>'
+    DisplayName: 'Нож коммунального конфликта'
+    Chance: 18
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#b0bec5:#78909c>{reward}</gradient>. Соседский совет переговоры отменил.</gray>'
+    Items:
+      - 'item:iron_sword, amount:1, name:<gradient:#b0bec5:#78909c><bold>Нож коммунального конфликта</bold></gradient>, lore:<gray>Аргумент из общего коридора.</gray>, sharpness:3, unbreaking:2'
+  '2':
+    DisplayName: 'Кирка арендатора'
+    Chance: 16
+    Drop-Items: false
+    Messages:
+      - '<gray>Получена <gradient:#b0bec5:#78909c>{reward}</gradient>. Шахта съёмная — руда настоящая.</gray>'
+    Items:
+      - 'item:iron_pickaxe, amount:1, name:<gradient:#b0bec5:#78909c><bold>Кирка арендатора</bold></gradient>, lore:<gray>Залог хозяину пещеры не возвращается.</gray>, efficiency:4, fortune:2, unbreaking:3'
+  '3':
+    DisplayName: 'Топор без разрешения'
+    Chance: 14
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#b0bec5:#78909c>{reward}</gradient>. Порубочный билет потерялся до рассвета.</gray>'
+    Items:
+      - 'item:iron_axe, amount:1, name:<gradient:#b0bec5:#78909c><bold>Топор без разрешения</bold></gradient>, lore:<gray>Лесник предпочёл ничего не замечать.</gray>, sharpness:4, efficiency:4, unbreaking:3'
+  '4':
+    DisplayName: 'Лук из соседнего подъезда'
+    Chance: 12
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#b0bec5:#78909c>{reward}</gradient>. Стреляет громче домофона.</gray>'
+    Items:
+      - 'item:bow, amount:1, name:<gradient:#b0bec5:#78909c><bold>Лук из соседнего подъезда</bold></gradient>, lore:<gray>Собран без единого разрешения УК.</gray>, power:3, punch:1, unbreaking:3'
+      - 'item:arrow, amount:32, name:<gray>Стрелы общего пользования</gray>'
+  '5-head':
+    DisplayName: 'Каска тревожного жильца'
+    Chance: 3
+    Armor-Set-Piece: 'head'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получена <gradient:#b0bec5:#78909c>{reward}</gradient>. До полного комплекта осталось немного паники.</gray>'
+    Items:
+      - 'item:iron_helmet, amount:1, name:<gradient:#b0bec5:#78909c>Каска тревожного жильца</gradient>, lore:<gray>Сверху капает уже не так страшно.</gray>, protection:2, unbreaking:2'
+  '5-chest':
+    DisplayName: 'Жилет разумной осторожности'
+    Chance: 3
+    Armor-Set-Piece: 'chest'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#b0bec5:#78909c>{reward}</gradient>. Разум по-прежнему продаётся отдельно.</gray>'
+    Items:
+      - 'item:iron_chestplate, amount:1, name:<gradient:#b0bec5:#78909c>Жилет разумной осторожности</gradient>, lore:<gray>Разум продаётся отдельно.</gray>, protection:2, unbreaking:2'
+  '5-legs':
+    DisplayName: 'Штаны быстрого старта'
+    Chance: 3
+    Armor-Set-Piece: 'legs'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получены <gradient:#b0bec5:#78909c>{reward}</gradient>. Направление побега выбери заранее.</gray>'
+    Items:
+      - 'item:iron_leggings, amount:1, name:<gradient:#b0bec5:#78909c>Штаны быстрого старта</gradient>, lore:<gray>Главное направление — от опасности.</gray>, protection:2, unbreaking:2'
+  '5-feet':
+    DisplayName: 'Ботинки раннего рассвета'
+    Chance: 3
+    Armor-Set-Piece: 'feet'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получены <gradient:#b0bec5:#78909c>{reward}</gradient>. Рассвет ближе не стал, но ноги довольны.</gray>'
+    Items:
+      - 'item:iron_boots, amount:1, name:<gradient:#b0bec5:#78909c>Ботинки раннего рассвета</gradient>, lore:<gray>Рассвет не ускоряют. Но попытка хорошая.</gray>, protection:2, unbreaking:2'
+  '6':
+    DisplayName: 'Паёк начинающего мародёра'
+    Chance: 12
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#b0bec5:#78909c>{reward}</gradient>. Голод объявлен вне закона.</gray>'
+    Items:
+      - 'item:cooked_beef, amount:32, name:<gray>Стратегическая тушёнка</gray>'
+      - 'item:golden_apple, amount:4, name:<gradient:#ffd54f:#ff8f00>Яблоко отмены диеты</gradient>'
+      - 'item:ender_pearl, amount:4, name:<gradient:#80cbc4:#7e57c2>Жемчуг тактического исчезновения</gradient>'
+  '7':
+    DisplayName: 'Набор убедительной перепланировки'
     Chance: 10
     Drop-Items: false
     Messages:
-      - '<gray>Вы выиграли {reward}.</gray>'
-    Commands:
-      - 'eco give {player} 1000'
-  '2':
-    DisplayName: '<gold>16 золотых яблок</gold>'
-    Chance: 75
+      - '<gray>Получен <gradient:#b0bec5:#78909c>{reward}</gradient>. Несущие стены напряглись.</gray>'
+    Items:
+      - 'item:tnt, amount:12, name:<gradient:#ff5252:#ff9800><bold>Аргумент для двери</bold></gradient>, lore:<gray>Ключ подходит почти к любому замку.</gray>'
+      - 'item:flint_and_steel, amount:1, name:<gray>Пульт дистанционного ремонта</gray>, unbreaking:3'
+      - 'item:wind_charge, amount:16, name:<gradient:#b2ebf2:#80deea>Карманный сквозняк</gradient>'
+  '8':
+    DisplayName: 'Заначка под матрасом'
+    Chance: 6
     Drop-Items: false
     Messages:
-      - '<gray>Вы выиграли {reward}.</gray>'
+      - '<gray>Найдена <gradient:#b0bec5:#78909c>{reward}</gradient>. Матрас показаний не даёт.</gray>'
     Items:
-      - 'item:golden_apple, amount:16, name:<light_purple>Сочное золотое яблоко</light_purple>, lore:<gray>Очень вкусное яблоко</gray>'
-  '3':
-    DisplayName: '<light_purple>Набор еды</light_purple>'
-    Chance: 40
-    Drop-Items: false
-    Messages:
-      - '<gray>Вы получили отличный урожай.</gray>'
-    Items:
-      - 'item:cooked_beef, amount:16'
-      - 'item:apple, amount:16'
-      - 'item:cooked_cod, amount:16'
-      - 'item:cooked_salmon, amount:16'
-      - 'item:carrot, amount:16'
-      - 'item:bread, amount:16'
+      - 'item:diamond, amount:4, name:<gradient:#80deea:#42a5f5>Неприкосновенный запас</gradient>'
+      - 'item:emerald, amount:8, name:<gradient:#69f0ae:#00c853>Камни сомнительного происхождения</gradient>'
+      - 'item:experience_bottle, amount:16, name:<gradient:#ccff90:#76ff03>Опыт чужих ошибок</gradient>'

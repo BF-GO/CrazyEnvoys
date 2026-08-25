@@ -9,6 +9,7 @@ import com.ryderbelserion.fusion.kyori.utils.AdvUtils;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,6 +17,7 @@ import com.badbones69.crazyenvoys.config.ConfigManager;
 import com.badbones69.crazyenvoys.config.types.ConfigKeys;
 import com.badbones69.crazyenvoys.config.types.MessageKeys;
 import org.jspecify.annotations.NonNull;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,9 @@ import java.util.Map;
 public enum Messages {
 
     ended(MessageKeys.envoy_ended, true),
+    wave_ended(MessageKeys.envoy_wave_ended),
+    wave_ended_manual(MessageKeys.envoy_wave_ended_manual),
+    wave_guide(MessageKeys.envoy_wave_guide, true),
     warning(MessageKeys.envoy_warning),
     started(MessageKeys.envoy_started, true),
     started_player(MessageKeys.envoy_started_player, true),
@@ -43,6 +48,8 @@ public enum Messages {
     drops_format(MessageKeys.drops_format),
     drops_available(MessageKeys.drops_available),
     drops_possibilities(MessageKeys.drops_possibilities),
+    drops_hint(MessageKeys.drops_hint),
+    spawn_area(MessageKeys.spawn_area),
     player_only(MessageKeys.player_only),
     must_be_console_sender(MessageKeys.must_be_console_sender),
     not_a_number(MessageKeys.not_a_number),
@@ -73,6 +80,9 @@ public enum Messages {
     second(MessageKeys.time_placeholder_second),
     envoy_locations(MessageKeys.envoy_locations),
     location_format(MessageKeys.location_format),
+    world_overworld(MessageKeys.world_overworld),
+    world_nether(MessageKeys.world_nether),
+    world_end(MessageKeys.world_end),
 
     error_migrating(MessageKeys.error_migrating),
     migration_not_available(MessageKeys.migration_not_available),
@@ -85,12 +95,17 @@ public enum Messages {
 
     empty_tier_warning(MessageKeys.empty_tier_warning),
     not_applicable(MessageKeys.not_applicable),
+    command_prefix(MessageKeys.command_prefix),
     envoy_menu_title(MessageKeys.envoy_menu_title),
     prize_load_error_item(MessageKeys.prize_load_error_item),
     flare_item_name(MessageKeys.flare_item_name),
     flare_item_lore(MessageKeys.flare_item_lore, true),
     grace_period_unlocked(MessageKeys.grace_period_unlocked),
     grace_period_time_unit(MessageKeys.grace_period_time_unit),
+    armor_set_activated(MessageKeys.armor_set_activated),
+    armor_set_deactivated(MessageKeys.armor_set_deactivated),
+    armor_breaker_name(MessageKeys.armor_breaker_name),
+    armor_breaker_awarded(MessageKeys.armor_breaker_awarded),
 
     log_done(MessageKeys.log_done),
     log_config_migrated(MessageKeys.log_config_migrated),
@@ -104,6 +119,11 @@ public enum Messages {
     log_task_cancel_failed(MessageKeys.log_task_cancel_failed),
     log_generation_partial(MessageKeys.log_generation_partial),
     log_generation_area_limited(MessageKeys.log_generation_area_limited),
+    log_tier_capacity_limited(MessageKeys.log_tier_capacity_limited),
+    log_armor_set_invalid(MessageKeys.log_armor_set_invalid),
+    log_rare_enchantment_invalid(MessageKeys.log_rare_enchantment_invalid),
+    log_armor_breaker_unavailable(MessageKeys.log_armor_breaker_unavailable),
+    log_armor_breaker_name_invalid(MessageKeys.log_armor_breaker_name_invalid),
     log_chunk_load_failed(MessageKeys.log_chunk_load_failed),
     log_chunk_request_failed(MessageKeys.log_chunk_request_failed),
     log_no_tiers(MessageKeys.log_no_tiers),
@@ -168,6 +188,15 @@ public enum Messages {
 
     public @NonNull final String getString() {
         return ConfigManager.getMessages().getProperty(this.property);
+    }
+
+    public static @NonNull String displayWorldName(@NonNull final World world) {
+        return switch (world.getName().toLowerCase(java.util.Locale.ROOT)) {
+            case "world" -> world_overworld.getString();
+            case "world_nether" -> world_nether.getString();
+            case "world_the_end" -> world_end.getString();
+            default -> world.getName();
+        };
     }
 
     public @NonNull final List<String> getList() {
@@ -266,12 +295,17 @@ public enum Messages {
     }
 
     public void broadcast(final boolean isIgnoring, @NonNull final String permission, @NonNull final Map<String, String> placeholders) {
+        broadcast(isIgnoring, permission.isBlank() ? List.of() : List.of(permission), placeholders);
+    }
+
+    public void broadcast(final boolean isIgnoring, @NonNull final Collection<String> permissions, @NonNull final Map<String, String> placeholders) {
         final Server server = this.plugin.getServer();
         final CrazyManager crazyManager = this.plugin.getCrazyManager();
 
         final SettingsManager config = ConfigManager.getConfig();
         final boolean worldMessages = config.getProperty(ConfigKeys.envoys_world_messages);
         final List<String> worlds = List.copyOf(config.getProperty(ConfigKeys.envoys_allowed_worlds));
+        final List<String> requiredPermissions = permissions.stream().filter(permission -> !permission.isBlank()).toList();
         final Map<String, String> values = Map.copyOf(placeholders);
 
         crazyManager.getScheduler().supplyGlobal("snapshot recipients for " + name(), () -> {
@@ -281,7 +315,7 @@ public enum Messages {
                 player, "broadcast " + name() + " to " + player.getUniqueId(), () -> {
                     if (worldMessages && !worlds.contains(player.getWorld().getName())) return;
                     if (isIgnoring && crazyManager.isIgnoringMessages(player.getUniqueId())) return;
-                    if (!permission.isBlank() && !player.hasPermission(permission)) return;
+                    if (!requiredPermissions.isEmpty() && requiredPermissions.stream().noneMatch(player::hasPermission)) return;
 
                     sendMessage(player, values);
                 }
@@ -307,7 +341,13 @@ public enum Messages {
     private @NonNull String parse(@NotNull final Audience sender, @NonNull final Map<String, String> placeholders) {
         final Map<String, String> origin = new HashMap<>(placeholders);
 
-        origin.putIfAbsent("{prefix}", ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix));
+        final String configuredPrefix = ConfigManager.getConfig().getProperty(ConfigKeys.command_prefix);
+        final String defaultPrefix = ConfigKeys.command_prefix.getDefaultValue();
+        final String prefix = configuredPrefix.isBlank() || configuredPrefix.equals(defaultPrefix)
+                ? ConfigManager.getMessages().getProperty(MessageKeys.command_prefix)
+                : configuredPrefix;
+
+        origin.putIfAbsent("{prefix}", prefix);
 
         return this.fusion.parse(sender, this.isList ? StringUtils.toString(getList()) : getString(), origin);
     }

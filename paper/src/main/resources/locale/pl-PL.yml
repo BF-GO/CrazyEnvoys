@@ -19,6 +19,11 @@ envoys:
     - '{prefix}<gold>{player}</gold> <gray>znalazł zrzut poziomu {tier}. Pozostało: <gold>{amount}</gold>.</gray>'
   ended:
     - '{prefix}<red>Wydarzenie zrzutów zakończyło się. Dziękujemy za udział.</red>'
+  wave-ended: '{prefix}<gray>Obecna fala zrzutów dobiegła końca. Następna rozpocznie się za <gold>{time}</gold>.</gray>'
+  wave-ended-manual: '{prefix}<gray>Obecna fala zrzutów dobiegła końca. Następna wymaga ręcznego uruchomienia.</gray>'
+  wave-guide:
+    - '{prefix}<gray>To tylko fala skrzyń w ramach trwającego wydarzenia serwerowego. Zasady serwera nie są włączane ani wyłączane.</gray>'
+    - '{prefix}<gray>Każda skrzynia daje jedną losową nagrodę. Wyższe poziomy są rzadsze i limitowane na falę.</gray>'
   not-enough-players: '{prefix}<gray>Za mało graczy online. Obecnie: <gold>{amount}</gold>.</gray>'
   enter-editor-mode: '{prefix}<gray>Włączono tryb edycji.</gray>'
   leave-editor-mode: '{prefix}<gray>Wyłączono tryb edycji.</gray>'
@@ -43,6 +48,8 @@ envoys:
   countdown-in-progress: '{prefix}<gray>Zrzuty będzie można odbierać za <gold>{time}</gold> s.</gray>'
   drops-available: '{prefix}<gray>Dostępne zrzuty:</gray>'
   drops-possibilities: '{prefix}<gray>Skonfigurowane punkty zrzutów:</gray>'
+  drops-hint: '{prefix}<gray>Użyj <click:run_command:''/envoys drops''><hover:show_text:''<gray>Pokaż aktualne współrzędne skrzyń.</gray>''><gold>/envoys drops</gold></hover></click>, aby zobaczyć współrzędne skrzyń.</gray>'
+  spawn-area: '{prefix}<gray>Obszar poszukiwań: do <gold>{max}</gold> bloków na osiach X/Z od <gold>{world} ({x}, {z})</gold>. Skrzynie nie pojawiają się bliżej niż <gold>{min}</gold> bloków od środka.</gray>'
   drops-page: '{prefix}<gray>Użyj /crazyenvoys drops [strona], aby zobaczyć więcej.</gray>'
   drops-format: '<gray>[<gold>{id}</gold>]: {world}, {x}, {y}, {z}</gray>'
   no-spawn-locations-found: '{prefix}<red>Nie znaleziono prawidłowych punktów. Wydarzenie anulowano, a czas odnowienia zresetowano.</red>'
@@ -54,8 +61,12 @@ envoys:
     hour: 'g'
     minute: 'm'
     second: 's'
-  envoy-locations: '<yellow><bold>Wszystkie punkty zrzutów:</bold></yellow>\n<red>[ID], [Świat]: [X], [Y], [Z]</red> {locations}'
-  location-format: '\n<dark_gray>[<blue>{id}</blue>]</dark_gray> <red>{world}: {x}, {y}, {z}</red>'
+  envoy-locations: '<yellow><bold>Wszystkie punkty zrzutów:</bold></yellow><newline><red>[ID], [Świat]: [X], [Y], [Z]</red>{locations}'
+  location-format: '<newline><dark_gray>[<blue>{id}</blue>]</dark_gray> <red>{world}: {x}, {y}, {z}</red>'
+  world-names:
+    overworld: 'Zwykły świat'
+    nether: 'Nether'
+    end: 'End'
 misc:
   command-not-found: '{prefix}<red>Nieznana komenda: {command}.</red>'
   correct-usage: '{prefix}<red>Poprawne użycie: <yellow>{usage}</yellow></red>'
@@ -98,6 +109,7 @@ command:
 warnings:
   empty-tier: '<red>Nie znaleziono nagród w poziomie {tier}. Sprawdź konfigurację.</red>'
 ui:
+  command-prefix: '<dark_gray>[<light_purple>CrazyEnvoys</light_purple>]</dark_gray> <dark_gray>»</dark_gray> '
   envoy-menu-title: '<red>Nagrody ze zrzutu</red>'
   prize-load-error: '<red>Błąd nagrody: {prize}</red>'
   flare:
@@ -108,6 +120,13 @@ ui:
   grace-period:
     unlocked: '<red>Gotowe do odebrania.</red>'
     time-unit: ' s.'
+  armor-set:
+    activated: '{prefix}<green>Aktywowano pełny zestaw pancerza {set}.</green>'
+    deactivated: '{prefix}<gray>Zestaw pancerza {set} nie jest już kompletny.</gray>'
+  enchantments:
+    armor-breaker: '<gradient:#ffb300:#ff1744><bold>Łamacz pancerza</bold></gradient>'
+  rare-enchantment:
+    armor-breaker-awarded: '{prefix}<gradient:#ffb300:#ff1744><bold>ULTRARZADKI BONUS!</bold></gradient> <gray>Nagroda otrzymała {enchantment} <white>{level}</white>.</gray>'
 logs:
   done: 'Gotowe ({time})!'
   config-migrated: 'Pomyślnie zmigrowano {file}.'
@@ -121,6 +140,11 @@ logs:
   task-cancel-failed: 'Nie udało się anulować zadania {task}.'
   generation-partial: 'Wygenerowano {generated}/{requested} punktów po {attempts} próbach.'
   generation-area-limited: 'Obszar jest za mały. Liczba zrzutów: {amount}.'
+  tier-capacity-limited: 'Limity poziomów pozwoliły przydzielić {assigned}/{requested} skrzyń.'
+  armor-set-invalid: 'Zestaw pancerza w poziomie {tier} został wyłączony: {reason}.'
+  rare-enchantment-invalid: 'Rzadkie zaklęcie w poziomie {tier} zostało wyłączone: {reason}.'
+  armor-breaker-unavailable: 'Brakuje Łamacza pancerza w rejestrze serwera. Zainstaluj nowy jar i wykonaj pełny restart serwera.'
+  armor-breaker-name-invalid: 'Nie udało się odczytać nazwy Łamacza pancerza; użyto bezpiecznej nazwy zastępczej.'
   chunk-load-failed: 'Nie udało się wczytać chunku {type} w {x},{z}.'
   chunk-request-failed: 'Nie udało się zażądać chunku {type} w {x},{z}.'
   no-tiers: 'Brak poziomów w folderze tiers. Usuń folder, aby odtworzyć przykłady.'

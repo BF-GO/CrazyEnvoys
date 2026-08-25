@@ -1,9 +1,11 @@
 package com.badbones69.crazyenvoys.api.objects.misc;
 
 import com.ryderbelserion.fusion.paper.builders.items.ItemBuilder;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import java.util.List;
+import java.util.Optional;
 
 public class Prize {
     
@@ -14,6 +16,7 @@ public class Prize {
     private volatile List<String> commands;
     private volatile List<ItemBuilder> builders;
     private String displayName;
+    private ArmorSetPiece armorSetPiece;
     
     public Prize(String prizeID) {
         this.prizeID = prizeID;
@@ -39,7 +42,7 @@ public class Prize {
     }
     
     /**
-     * Get the chance of the prize being won.
+     * Get the relative weight of the prize being selected.
      *
      * @return The chance as an integer.
      */
@@ -48,9 +51,9 @@ public class Prize {
     }
     
     /**
-     * Set the chance of the prize being picked out of 100.
+     * Set the relative selection weight of the prize.
      *
-     * @param chance The new chance of the prize out of 100.
+     * @param chance The new non-negative selection weight.
      */
     public Prize setChance(int chance) {
         this.chance = chance;
@@ -60,6 +63,16 @@ public class Prize {
 
     public Prize setDisplayName(String displayName) {
         this.displayName = displayName;
+
+        return this;
+    }
+
+    public Optional<ArmorSetPiece> getArmorSetPiece() {
+        return Optional.ofNullable(this.armorSetPiece);
+    }
+
+    public Prize setArmorSetPiece(final ArmorSetPiece armorSetPiece) {
+        this.armorSetPiece = armorSetPiece;
 
         return this;
     }
@@ -128,7 +141,23 @@ public class Prize {
      * @return The items that are won in the prize.
      */
     public List<ItemStack> getItems() {
-        return this.builders.stream().map(ItemBuilder::asItemStack).toList();
+        return this.builders.stream()
+                .map(ItemBuilder::asItemStack)
+                .map(ItemStack::clone)
+                .toList();
+    }
+
+    /**
+     * Materialize this prize for a player without exposing an ItemBuilder cached stack.
+     *
+     * @param player player used to resolve item placeholders
+     * @return independent item copies
+     */
+    public List<ItemStack> getItems(@NotNull final Player player) {
+        return this.builders.stream()
+                .map(builder -> builder.asItemStack(player))
+                .map(ItemStack::clone)
+                .toList();
     }
 
     public List<ItemBuilder> getItemBuilders() {

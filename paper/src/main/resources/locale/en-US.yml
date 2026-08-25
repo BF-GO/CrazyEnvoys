@@ -20,6 +20,11 @@ envoys:
     - '{prefix}<gold>{player}</gold> <gray>found a {tier} envoy. <gold>{amount}</gold> remain.</gray>'
   ended:
     - '{prefix}<red>The envoy event has ended. Thanks for playing.</red>'
+  wave-ended: '{prefix}<gray>The current drop wave has ended. The next wave starts in <gold>{time}</gold>.</gray>'
+  wave-ended-manual: '{prefix}<gray>The current drop wave has ended. The next wave requires a manual start.</gray>'
+  wave-guide:
+    - '{prefix}<gray>This is only a crate wave within the ongoing server event. It does not enable or disable server rules.</gray>'
+    - '{prefix}<gray>Each crate gives one random reward. Higher tiers are rarer and limited per wave.</gray>'
   not-enough-players: '{prefix}<gray>Not enough players are online. Only <gold>{amount}</gold> players are online.</gray>'
   enter-editor-mode: '{prefix}<gray>You entered editor mode.</gray>'
   leave-editor-mode: '{prefix}<gray>You left editor mode.</gray>'
@@ -44,6 +49,8 @@ envoys:
   countdown-in-progress: '{prefix}<gray>You cannot claim envoys for another <gold>{time}</gold> seconds.</gray>'
   drops-available: '{prefix}<gray>Available envoy locations:</gray>'
   drops-possibilities: '{prefix}<gray>Configured envoy spawn locations:</gray>'
+  drops-hint: '{prefix}<gray>Use <click:run_command:''/envoys drops''><hover:show_text:''<gray>Show current crate coordinates.</gray>''><gold>/envoys drops</gold></hover></click> to view the current crate coordinates.</gray>'
+  spawn-area: '{prefix}<gray>Search area: up to <gold>{max}</gold> blocks on X/Z from <gold>{world} ({x}, {z})</gold>. Crates do not spawn within <gold>{min}</gold> blocks of the center.</gray>'
   drops-page: '{prefix}<gray>Use /crazyenvoys drops [page] to see more.</gray>'
   drops-format: '<gray>[<gold>{id}</gold>]: {world}, {x}, {y}, {z}</gray>'
   no-spawn-locations-found: '{prefix}<red>No valid spawn locations were found. The event was cancelled and its cooldown was reset.</red>'
@@ -55,8 +62,12 @@ envoys:
     hour: 'h'
     minute: 'm'
     second: 's'
-  envoy-locations: '<yellow><bold>All Envoy Locations:</bold></yellow>\n<red>[ID], [World]: [X], [Y], [Z]</red> {locations}'
-  location-format: '\n<dark_gray>[<blue>{id}</blue>]</dark_gray> <red>{world}: {x}, {y}, {z}</red>'
+  envoy-locations: '<yellow><bold>All Envoy Locations:</bold></yellow><newline><red>[ID], [World]: [X], [Y], [Z]</red>{locations}'
+  location-format: '<newline><dark_gray>[<blue>{id}</blue>]</dark_gray> <red>{world}: {x}, {y}, {z}</red>'
+  world-names:
+    overworld: 'Overworld'
+    nether: 'Nether'
+    end: 'The End'
 misc:
   command-not-found: '{prefix}<red>{command} is not a known command.</red>'
   correct-usage: '{prefix}<red>Correct usage: <yellow>{usage}</yellow></red>'
@@ -99,6 +110,7 @@ command:
 warnings:
   empty-tier: '<red>No prizes were found in tier {tier}. Check its configuration.</red>'
 ui:
+  command-prefix: '<dark_gray>[<light_purple>CrazyEnvoys</light_purple>]</dark_gray> <dark_gray>»</dark_gray> '
   envoy-menu-title: '<red>Envoy Drops</red>'
   prize-load-error: '<red>Error in prize: {prize}</red>'
   flare:
@@ -109,6 +121,13 @@ ui:
   grace-period:
     unlocked: '<red>Ready to claim.</red>'
     time-unit: ' seconds.'
+  armor-set:
+    activated: '{prefix}<green>Full armor set {set} activated.</green>'
+    deactivated: '{prefix}<gray>Armor set {set} is no longer complete.</gray>'
+  enchantments:
+    armor-breaker: '<gradient:#ffb300:#ff1744><bold>Armor Breaker</bold></gradient>'
+  rare-enchantment:
+    armor-breaker-awarded: '{prefix}<gradient:#ffb300:#ff1744><bold>ULTRA-RARE BONUS!</bold></gradient> <gray>Your reward gained {enchantment} <white>{level}</white>.</gray>'
 logs:
   done: 'Done ({time})!'
   config-migrated: 'Successfully migrated {file}.'
@@ -122,6 +141,11 @@ logs:
   task-cancel-failed: 'Could not cancel envoy {task} task.'
   generation-partial: 'Generated {generated}/{requested} envoy locations after {attempts} attempts.'
   generation-area-limited: 'The requested crate count exceeds the configured area. Spawning {amount} crates.'
+  tier-capacity-limited: 'Tier limits only allowed {assigned}/{requested} crates to be assigned.'
+  armor-set-invalid: 'Armor set in tier {tier} was disabled: {reason}.'
+  rare-enchantment-invalid: 'Rare enchantment in tier {tier} was disabled: {reason}.'
+  armor-breaker-unavailable: 'Armor Breaker is missing from the server registry. Install the new jar and perform a full server restart.'
+  armor-breaker-name-invalid: 'Could not parse the Armor Breaker display name; using a safe fallback.'
   chunk-load-failed: 'Could not load {type} envoy chunk at {x},{z}.'
   chunk-request-failed: 'Could not request {type} envoy chunk at {x},{z}.'
   no-tiers: 'No tiers were found in the tiers folder. Delete the folder to regenerate examples.'

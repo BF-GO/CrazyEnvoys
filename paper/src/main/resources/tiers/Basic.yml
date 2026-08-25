@@ -1,12 +1,14 @@
 Settings:
+  Display-Name: '<gradient:#90a4ae:#546e7a><bold>BASIC</bold></gradient>'
+  Max-Per-Event: 0
   # If they need a permission to claim this envoy. Set too false to disable.
   Claim-Permission: false
   # What permission they need.
   Claim-Permission-Name: 'basic.envoy.use'
   Prize-Message:
     - '<gray>You have won <red>{reward} <gray>from <red>{tier}.'
-  Spawn-Chance: 85 #The chance that this tier will spawn.
-  Use-Chance: true #If true then it uses the chance option in the prizes and if false then each prize has a 1/(Amount of Prizes) chance of winning.
+  Spawn-Chance: 58 #The relative weight used when assigning tiers.
+  Use-Chance: true #If true then Chance is a relative prize weight; if false each prize is equally likely.
   Placed-Block: 'CHEST' #The block that will be clicked when they land.
   Bulk-Prizes: #This allows players to win multiple prizes from one crate.
     Toggle: false #Toggle if players can win multiple prizes.
@@ -44,16 +46,16 @@ Settings:
 ###################################
 Prizes: #The prizes that can be won.
   '1': #Prize number
-    DisplayName: '<green>$1,000' #The display name used in {reward}
-    Chance: 10 #The chance that it will be won.
+    DisplayName: '<aqua>4 Diamonds' #The display name used in {reward}
+    Chance: 25 #The relative selection weight.
     Drop-Items: false #Drop all items in the Items: option on the ground instead of into their inventory.
     Messages: #The message that will be sent to the player if won.
       - '<gray>You have just won {reward}.'
-    Commands: #The commands that will be run when this prize is won.
-      - 'eco give {player} 1000'
+    Items:
+      - 'item:diamond, amount:4, name:<gradient:#80deea:#42a5f5>Emergency Diamonds</gradient>'
   '2':
     DisplayName: '<gold>16 Gold Apples' #The display name used in %reward%
-    Chance: 75
+    Chance: 45
     Drop-Items: false
     Messages:
       - '<gray>You have just won {reward}.'
@@ -61,7 +63,7 @@ Prizes: #The prizes that can be won.
       - 'item:golden_apple, amount:16, name:<light_purple>juicy golden apple, lore:<gray>i am a yummy apple,<gray>make sure to savor my flavor.'
   '3':
     DisplayName: '<light_purple>Food Pack' #The display name used in {reward}
-    Chance: 40
+    Chance: 30
     Drop-Items: false
     Messages:
       - '<gray>You have just had a great harvest.'

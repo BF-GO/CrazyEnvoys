@@ -19,6 +19,11 @@ envoys:
     - '{prefix}<gold>{player}</gold> <gray>a trouvé un largage {tier}. Il en reste <gold>{amount}</gold>.</gray>'
   ended:
     - '{prefix}<red>Le largage est terminé. Merci d’avoir participé.</red>'
+  wave-ended: '{prefix}<gray>La vague de largages est terminée. La prochaine commencera dans <gold>{time}</gold>.</gray>'
+  wave-ended-manual: '{prefix}<gray>La vague de largages est terminée. La prochaine nécessite un démarrage manuel.</gray>'
+  wave-guide:
+    - '{prefix}<gray>Il s’agit uniquement d’une vague de caisses pendant l’événement en cours. Les règles du serveur ne changent pas.</gray>'
+    - '{prefix}<gray>Chaque caisse donne une récompense aléatoire. Les niveaux supérieurs sont plus rares et limités par vague.</gray>'
   not-enough-players: '{prefix}<gray>Il n’y a pas assez de joueurs en ligne : <gold>{amount}</gold>.</gray>'
   enter-editor-mode: '{prefix}<gray>Vous êtes entré en mode édition.</gray>'
   leave-editor-mode: '{prefix}<gray>Vous avez quitté le mode édition.</gray>'
@@ -43,6 +48,8 @@ envoys:
   countdown-in-progress: '{prefix}<gray>Les largages seront récupérables dans <gold>{time}</gold> secondes.</gray>'
   drops-available: '{prefix}<gray>Largages disponibles :</gray>'
   drops-possibilities: '{prefix}<gray>Emplacements de largage configurés :</gray>'
+  drops-hint: '{prefix}<gray>Utilisez <click:run_command:''/envoys drops''><hover:show_text:''<gray>Afficher les coordonnées actuelles.</gray>''><gold>/envoys drops</gold></hover></click> pour voir les coordonnées des caisses.</gray>'
+  spawn-area: '{prefix}<gray>Zone de recherche : jusqu’à <gold>{max}</gold> blocs sur X/Z depuis <gold>{world} ({x}, {z})</gold>. Aucun coffre n’apparaît à moins de <gold>{min}</gold> blocs du centre.</gray>'
   drops-page: '{prefix}<gray>Utilisez /crazyenvoys drops [page] pour en voir plus.</gray>'
   drops-format: '<gray>[<gold>{id}</gold>] : {world}, {x}, {y}, {z}</gray>'
   no-spawn-locations-found: '{prefix}<red>Aucun emplacement valide trouvé. L’événement a été annulé et son délai réinitialisé.</red>'
@@ -54,8 +61,12 @@ envoys:
     hour: 'h'
     minute: 'm'
     second: 's'
-  envoy-locations: '<yellow><bold>Tous les emplacements :</bold></yellow>\n<red>[ID], [Monde] : [X], [Y], [Z]</red> {locations}'
-  location-format: '\n<dark_gray>[<blue>{id}</blue>]</dark_gray> <red>{world}: {x}, {y}, {z}</red>'
+  envoy-locations: '<yellow><bold>Tous les emplacements :</bold></yellow><newline><red>[ID], [Monde] : [X], [Y], [Z]</red>{locations}'
+  location-format: '<newline><dark_gray>[<blue>{id}</blue>]</dark_gray> <red>{world}: {x}, {y}, {z}</red>'
+  world-names:
+    overworld: 'Monde normal'
+    nether: 'Nether'
+    end: 'End'
 misc:
   command-not-found: '{prefix}<red>Commande inconnue : {command}.</red>'
   correct-usage: '{prefix}<red>Utilisation correcte : <yellow>{usage}</yellow></red>'
@@ -98,6 +109,7 @@ command:
 warnings:
   empty-tier: '<red>Aucune récompense trouvée dans le niveau {tier}. Vérifiez sa configuration.</red>'
 ui:
+  command-prefix: '<dark_gray>[<light_purple>CrazyEnvoys</light_purple>]</dark_gray> <dark_gray>»</dark_gray> '
   envoy-menu-title: '<red>Récompenses du largage</red>'
   prize-load-error: '<red>Erreur dans la récompense : {prize}</red>'
   flare:
@@ -108,6 +120,13 @@ ui:
   grace-period:
     unlocked: '<red>Prêt à récupérer.</red>'
     time-unit: ' secondes.'
+  armor-set:
+    activated: '{prefix}<green>Le set d’armure complet {set} est activé.</green>'
+    deactivated: '{prefix}<gray>Le set d’armure {set} n’est plus complet.</gray>'
+  enchantments:
+    armor-breaker: '<gradient:#ffb300:#ff1744><bold>Brise-armure</bold></gradient>'
+  rare-enchantment:
+    armor-breaker-awarded: '{prefix}<gradient:#ffb300:#ff1744><bold>BONUS ULTRA-RARE !</bold></gradient> <gray>Votre récompense obtient {enchantment} <white>{level}</white>.</gray>'
 logs:
   done: 'Terminé ({time}) !'
   config-migrated: '{file} a été migré avec succès.'
@@ -121,6 +140,11 @@ logs:
   task-cancel-failed: 'Impossible d’annuler la tâche {task}.'
   generation-partial: '{generated}/{requested} emplacements générés après {attempts} tentatives.'
   generation-area-limited: 'La zone est trop petite. {amount} caisses seront générées.'
+  tier-capacity-limited: 'Les limites de niveaux ont permis d’attribuer {assigned}/{requested} caisses.'
+  armor-set-invalid: 'Le set d’armure du niveau {tier} a été désactivé : {reason}.'
+  rare-enchantment-invalid: 'L’enchantement rare du niveau {tier} a été désactivé : {reason}.'
+  armor-breaker-unavailable: 'Brise-armure est absent du registre du serveur. Installez le nouveau jar puis redémarrez complètement le serveur.'
+  armor-breaker-name-invalid: 'Impossible de lire le nom de Brise-armure ; un nom de secours sera utilisé.'
   chunk-load-failed: 'Impossible de charger le chunk {type} en {x},{z}.'
   chunk-request-failed: 'Impossible de demander le chunk {type} en {x},{z}.'
   no-tiers: 'Aucun niveau dans le dossier tiers. Supprimez-le pour recréer les exemples.'

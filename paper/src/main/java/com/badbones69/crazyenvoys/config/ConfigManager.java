@@ -178,10 +178,10 @@ public class ConfigManager {
 
         YamlConfiguration configuration = YamlConfiguration.loadConfiguration(input);
 
-        String language = configuration.getString("language", "en-US");
+        String language = configuration.getString("language", "ru-RU");
 
-        String prefix = configuration.getString("command_prefix", "&8[&dCrazyEnvoys&8]: ");
-        String consolePrefix = configuration.getString("console_prefix", "&8[&cCrazyEnvoys&8] ");
+        String prefix = configuration.getString("command_prefix", "");
+        String consolePrefix = configuration.getString("console_prefix", "");
 
         config.setProperty(ConfigKeys.locale_file, language);
         config.setProperty(ConfigKeys.command_prefix, prefix);

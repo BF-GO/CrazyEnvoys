@@ -1,4 +1,6 @@
 Settings:
+  Display-Name: '<gradient:#66ff99:#00bfa5><bold>TITAN</bold></gradient>'
+  Max-Per-Event: 3
   # If they need a permission to claim this envoy. Set too false to disable.
   Claim-Permission: false
   # What permission they need.
@@ -45,15 +47,15 @@ Settings:
 ###################################
 Prizes:
   '1':
-    DisplayName: '<green>$1,000,000'
-    Chance: 50
+    DisplayName: '<light_purple>Netherite Cache'
+    Chance: 45
     Messages:
       - '<gray>You have just found {reward}.'
-    Commands:
-      - 'eco give {player} 1000000'
+    Items:
+      - 'item:netherite_ingot, amount:4, name:<gradient:#e040fb:#7e57c2>Netherite Cache</gradient>'
   '2':
     DisplayName: '<dark_red>Titan <gray>Sword.'
-    Chance: 25
+    Chance: 35
     Drop-Items: false
     Messages:
       - '<gray>Congratulations you have just won a {reward}.'
@@ -61,14 +63,14 @@ Prizes:
       - 'item:diamond_sword, amount:1, name:<dark_red>titan sword, sharpness:5, unbreaking:3, knockback:2, fire_aspect:2, looting:3'
   '3':
     DisplayName: '<dark_red>Titan <gray>Armor'
-    Chance: 10
+    Chance: 20
     Drop-Items: false
     Messages:
       - '<gray>Congratulations you have just won a {reward} set.'
     # Available Materials: https://jd.papermc.io/paper/1.20/org/bukkit/inventory/meta/trim/TrimMaterial.html
     # Available Patterns: https://jd.papermc.io/paper/1.20/org/bukkit/inventory/meta/trim/TrimPattern.html
     Items:
-      - 'item:diamond_helmet, damage:50, trim-pattern:sentry, trim-material:quartz, amount:1, name:<dark_red>titan helmet, protection:4, unbreaking:3'
-      - 'item:diamond_chestplate, damage:50, trim-pattern:dune, trim-material:redstone, amount:1, name:<dark_red>titan chestplate, protection:4, unbreaking:3'
-      - 'item:diamond_leggings, damage:50, trim-pattern:host, trim-material:copper, amount:1, name:<dark_red>titan leggings, protection:4, unbreaking:3'
-      - 'item:diamond_boots, damage:50, trim-pattern:shaper, trim-material:gold, amount:1, name:<dark_red>titan boots, protection:4, unbreaking:3'
+      - 'item:diamond_helmet, damage:50, trim:sentry;quartz, amount:1, name:<dark_red>titan helmet, protection:4, unbreaking:3'
+      - 'item:diamond_chestplate, damage:50, trim:dune;redstone, amount:1, name:<dark_red>titan chestplate, protection:4, unbreaking:3'
+      - 'item:diamond_leggings, damage:50, trim:host;copper, amount:1, name:<dark_red>titan leggings, protection:4, unbreaking:3'
+      - 'item:diamond_boots, damage:50, trim:shaper;gold, amount:1, name:<dark_red>titan boots, protection:4, unbreaking:3'

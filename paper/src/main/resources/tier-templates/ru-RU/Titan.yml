@@ -1,54 +1,152 @@
-# Стандартный уровень титана. Технические идентификаторы материалов и команд не переводятся.
+# Военный тир: тяжёлое снаряжение и лёгкое отношение к балансу.
 Settings:
+  Template-Version: 2
+  Display-Name: '<gradient:#66ff99:#00bfa5><bold>ВОЕННЫЙ</bold></gradient>'
+  Max-Per-Event: 3
+  Rare-Enchantments:
+    Armor-Breaker:
+      Toggle: true
+      Chance: 2.0
+      Level: 1
+  Armor-Set:
+    Id: 'titan_special'
+    Display-Name: '<gradient:#66ff99:#00bfa5>Комплект «Особый случай»</gradient>'
+    Effects: ['strength:1', 'resistance:1', 'haste:2']
   Claim-Permission: false
   Claim-Permission-Name: 'titan.envoy.use'
   Prize-Message:
-    - '<gray>Вы получили <dark_red>{reward}</dark_red> из груза <dark_red>{tier}</dark_red>.</gray>'
+    - '<gray>Военный тайник выдал <gradient:#66ff99:#00bfa5>{reward}</gradient>. Накладную унесло взрывом.</gray>'
   Spawn-Chance: 10
   Use-Chance: true
-  Placed-Block: 'ENCHANTING_TABLE'
+  Placed-Block: 'TRAPPED_CHEST'
   Bulk-Prizes:
     Toggle: false
     Random: true
-    Max-Bulk: 3
+    Max-Bulk: 1
   Hologram-Toggle: true
   Hologram-Height: 1.5
   Hologram-Range: 8
   Hologram:
-    - '<gray><bold>(<dark_red>!</dark_red>) <dark_red>Груз титана</dark_red></bold></gray>'
+    - '<gradient:#66ff99:#00bfa5><bold>ВОЕННЫЙ ТАЙНИК</bold></gradient>'
+    - '<dark_gray>Опись имущества засекречена.</dark_gray>'
     - '%crazyenvoys_crates_time%'
   Firework-Toggle: true
-  Firework-Colors: ['Gray', 'Black', 'Red']
+  Firework-Colors: ['Green', 'Lime', 'White']
   Signal-Flare:
     Toggle: true
-    Time: '40s'
-    Colors: ['Gray', 'Black', 'Red']
-# Доступные параметры предметов: item, amount, name, lore, glowing, damage,
-# unbreakable-item, enchantment, trim-pattern, trim-material и custom-model-data.
+    Time: '30s'
+    Colors: ['Green', 'Lime', 'White']
 Prizes:
   '1':
-    DisplayName: '<green>$1,000,000</green>'
-    Chance: 50
+    DisplayName: 'Протокол №9'
+    Chance: 17
+    Drop-Items: false
     Messages:
-      - '<gray>Вы нашли {reward}.</gray>'
-    Commands:
-      - 'eco give {player} 1000000'
+      - '<gray>Получен <gradient:#66ff99:#00bfa5>{reward}</gradient>. Все возражения теперь оформляются письменно.</gray>'
+    Items:
+      - 'item:netherite_sword, amount:1, name:<gradient:#66ff99:#00bfa5><bold>Протокол №9</bold></gradient>, lore:<gray>Подпись оппонента необязательна.</gray>, sharpness:9, looting:5, unbreaking:6, mending:1'
   '2':
-    DisplayName: '<dark_red>Меч титана</dark_red>'
-    Chance: 25
+    DisplayName: 'Демобилизатор'
+    Chance: 13
     Drop-Items: false
     Messages:
-      - '<gray>Поздравляем! Вы выиграли {reward}.</gray>'
+      - '<gray>Получен <gradient:#66ff99:#00bfa5>{reward}</gradient>. Служба закончится быстрее чем планировалось.</gray>'
     Items:
-      - 'item:diamond_sword, amount:1, name:<dark_red>Меч титана</dark_red>, sharpness:5, unbreaking:3, knockback:2, fire_aspect:2, looting:3'
+      - 'item:netherite_axe, amount:1, name:<gradient:#66ff99:#00bfa5><bold>Демобилизатор</bold></gradient>, lore:<gray>Рубит сроки и прочие препятствия.</gray>, sharpness:10, efficiency:9, unbreaking:6, mending:1'
   '3':
-    DisplayName: '<dark_red>Броня титана</dark_red>'
-    Chance: 10
+    DisplayName: 'Карьерный рост'
+    Chance: 12
     Drop-Items: false
     Messages:
-      - '<gray>Поздравляем! Вы выиграли комплект {reward}.</gray>'
+      - '<gray>Получен <gradient:#66ff99:#00bfa5>{reward}</gradient>. Карьера движется строго вниз.</gray>'
     Items:
-      - 'item:diamond_helmet, damage:50, trim-pattern:sentry, trim-material:quartz, amount:1, name:<dark_red>Шлем титана</dark_red>, protection:4, unbreaking:3'
-      - 'item:diamond_chestplate, damage:50, trim-pattern:dune, trim-material:redstone, amount:1, name:<dark_red>Нагрудник титана</dark_red>, protection:4, unbreaking:3'
-      - 'item:diamond_leggings, damage:50, trim-pattern:host, trim-material:copper, amount:1, name:<dark_red>Поножи титана</dark_red>, protection:4, unbreaking:3'
-      - 'item:diamond_boots, damage:50, trim-pattern:shaper, trim-material:gold, amount:1, name:<dark_red>Ботинки титана</dark_red>, protection:4, unbreaking:3'
+      - 'item:netherite_pickaxe, amount:1, name:<gradient:#66ff99:#00bfa5><bold>Карьерный рост</bold></gradient>, lore:<gray>До бедрока быстрее чем до повышения.</gray>, efficiency:10, fortune:6, unbreaking:7, mending:1'
+  '4-head':
+    DisplayName: 'Шлем служебной необходимости'
+    Chance: 4
+    Armor-Set-Piece: 'head'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#66ff99:#00bfa5>{reward}</gradient>. Необходимость засекречена.</gray>'
+    Items:
+      - 'item:diamond_helmet, amount:1, name:<gradient:#66ff99:#00bfa5>Шлем служебной необходимости</gradient>, trim:sentry;emerald, protection:6, unbreaking:6, mending:1'
+  '4-chest':
+    DisplayName: 'Бронежилет вне очереди'
+    Chance: 4
+    Armor-Set-Piece: 'chest'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#66ff99:#00bfa5>{reward}</gradient>. Очередь молча согласилась.</gray>'
+    Items:
+      - 'item:diamond_chestplate, amount:1, name:<gradient:#66ff99:#00bfa5>Бронежилет вне очереди</gradient>, trim:dune;emerald, protection:6, unbreaking:6, mending:1'
+  '4-legs':
+    DisplayName: 'Поножи особого отдела'
+    Chance: 4
+    Armor-Set-Piece: 'legs'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получены <gradient:#66ff99:#00bfa5>{reward}</gradient>. Отдел существует только по документам.</gray>'
+    Items:
+      - 'item:diamond_leggings, amount:1, name:<gradient:#66ff99:#00bfa5>Поножи особого отдела</gradient>, trim:host;emerald, protection:6, unbreaking:6, mending:1'
+  '4-feet':
+    DisplayName: 'Берцы убедительного шага'
+    Chance: 4
+    Armor-Set-Piece: 'feet'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получены <gradient:#66ff99:#00bfa5>{reward}</gradient>. Каждый шаг звучит как окончательное решение.</gray>'
+    Items:
+      - 'item:diamond_boots, amount:1, name:<gradient:#66ff99:#00bfa5>Берцы убедительного шага</gradient>, trim:shaper;emerald, protection:6, unbreaking:6, mending:1'
+  '5':
+    DisplayName: 'Дальняя связь'
+    Chance: 9
+    Drop-Items: false
+    Messages:
+      - '<gray>Получена <gradient:#66ff99:#00bfa5>{reward}</gradient>. Абонент услышит сообщение с первого раза.</gray>'
+    Items:
+      - 'item:bow, amount:1, name:<gradient:#66ff99:#00bfa5><bold>Дальняя связь</bold></gradient>, lore:<gray>Тариф включает безлимитный Punch.</gray>, power:9, punch:5, flame:1, infinity:1, unbreaking:6'
+      - 'item:arrow, amount:1, name:<gray>Служебная записка</gray>'
+  '6':
+    DisplayName: 'Система залпового уведомления'
+    Chance: 8
+    Drop-Items: false
+    Messages:
+      - '<gray>Получена <gradient:#66ff99:#00bfa5>{reward}</gradient>. Уведомления отключить невозможно.</gray>'
+    Items:
+      - 'item:crossbow, amount:1, name:<gradient:#66ff99:#00bfa5><bold>Система залпового уведомления</bold></gradient>, lore:<gray>Рассылка сразу по нескольким адресам.</gray>, quick_charge:5, multishot:1, piercing:8, unbreaking:6, mending:1'
+      - 'item:firework_rocket, amount:64, name:<gradient:#ff5252:#66ff99>Пакет срочных уведомлений</gradient>'
+  '7':
+    DisplayName: 'Гроза по расписанию'
+    Chance: 7
+    Drop-Items: false
+    Messages:
+      - '<gray>Получена <gradient:#66ff99:#00bfa5>{reward}</gradient>. Осадки возможны в районе противника.</gray>'
+    Items:
+      - 'item:trident, amount:1, name:<gradient:#66ff99:#00bfa5><bold>Гроза по расписанию</bold></gradient>, lore:<gray>Прогноз составлен с точностью до координаты.</gray>, impaling:10, loyalty:5, channeling:1, unbreaking:7, mending:1'
+  '8':
+    DisplayName: 'Печать окончательного решения'
+    Chance: 7
+    Drop-Items: false
+    Messages:
+      - '<gray>Получена <gradient:#66ff99:#00bfa5>{reward}</gradient>. Решение обжалованию не подлежит.</gray>'
+    Items:
+      - 'item:mace, amount:1, name:<gradient:#66ff99:#00bfa5><bold>Печать окончательного решения</bold></gradient>, lore:<gray>Подпись ставится сверху вниз.</gray>, density:10, breach:6, wind_burst:3, unbreaking:7, mending:1'
+  '9':
+    DisplayName: 'Крылья эвакуационной комиссии'
+    Chance: 6
+    Drop-Items: false
+    Messages:
+      - '<gray>Получены <gradient:#66ff99:#00bfa5>{reward}</gradient>. Комиссия уже эвакуировалась без тебя.</gray>'
+    Items:
+      - 'item:elytra, amount:1, name:<gradient:#66ff99:#00bfa5><bold>Крылья эвакуационной комиссии</bold></gradient>, lore:<gray>Пункт сбора находится где-то в небе.</gray>, unbreaking:10, mending:1'
+      - 'item:firework_rocket, amount:128, name:<gradient:#66ff99:#00bfa5>Государственное реактивное имущество</gradient>'
+  '10':
+    DisplayName: 'Тактический запас оптимиста'
+    Chance: 5
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#66ff99:#00bfa5>{reward}</gradient>. Оптимист верит в один тотем. У тебя их три.</gray>'
+    Items:
+      - 'item:totem_of_undying, amount:3, name:<gradient:#fff176:#00bfa5>Талон на дополнительную жизнь</gradient>'
+      - 'item:enchanted_golden_apple, amount:16, name:<gradient:#ffeb3b:#00bfa5>Сухпаёк бессмертного</gradient>'
+      - 'item:wind_charge, amount:32, name:<gradient:#b2ebf2:#00bfa5>Тактический сквозняк</gradient>'

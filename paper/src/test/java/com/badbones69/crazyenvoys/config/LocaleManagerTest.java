@@ -1,6 +1,7 @@
 package com.badbones69.crazyenvoys.config;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import com.badbones69.crazyenvoys.config.types.ConfigKeys;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.junit.jupiter.api.Test;
@@ -99,6 +100,28 @@ class LocaleManagerTest {
         assertEquals("custom value", updated.getString("player.no-permission"));
         assertEquals("untouched", updated.getString("custom.keep"));
         assertNotNull(updated.getString("ui.envoy-menu-title"));
+    }
+
+    @Test
+    void knownRussianDefaultsMigrateWithoutTouchingCustomText() throws Exception {
+        final File target = temporaryDirectory.resolve("ru-RU.yml").toFile();
+        final YamlConfiguration previous = new YamlConfiguration();
+        previous.set("player.no-permission", "custom value");
+        previous.set("envoys.warning", "{prefix}<gradient:#ff1744:#ff6d00><bold>ВНИМАНИЕ</bold></gradient> <gray>До отмены правил <white>{time}</white>. Прячьте алмазы и здравый смысл.</gray>");
+        previous.set("envoys.ended", List.of("{prefix}<gradient:#80cbc4:#64b5f6><bold>РАССВЕТ</bold></gradient> <gray>Законы снова включены. Кто выжил — тот молодец.</gray>"));
+        previous.set("ui.command-prefix", "<gradient:#ff1744:#ff6d00><bold>СУДНАЯ НОЧЬ</bold></gradient> <dark_gray>»</dark_gray> ");
+        previous.save(target);
+
+        try (InputStream resource = resource("ru-RU")) {
+            LocaleManager.mergeMissing(resource, target);
+        }
+
+        final YamlConfiguration updated = YamlConfiguration.loadConfiguration(target);
+        assertEquals("custom value", updated.getString("player.no-permission"));
+        assertTrue(updated.getString("envoys.warning", "").contains("СКОРО НОВЫЙ ЗАВОЗ"));
+        assertFalse(updated.getStringList("envoys.ended").getFirst().contains("РАССВЕТ"));
+        assertTrue(updated.getString("ui.command-prefix", "").contains("ДРОПЫ СУДНОЙ НЕДЕЛИ"));
+        assertEquals(2000, ConfigKeys.envoys_max_radius.getDefaultValue());
     }
 
     @Test

@@ -1,0 +1,161 @@
+# Судный тир: максимум один на событие. Если увидел — дружба официально приостановлена.
+Settings:
+  Template-Version: 2
+  Display-Name: '<gradient:#ff1744:#651fff><bold>СУДНЫЙ</bold></gradient>'
+  Max-Per-Event: 1
+  Rare-Enchantments:
+    Armor-Breaker:
+      Toggle: true
+      Chance: 0.5
+      Level: 3
+  Armor-Set:
+    Id: 'doom_plot_armor'
+    Display-Name: '<gradient:#ff1744:#651fff>Костюм бессюжетной брони</gradient>'
+    Effects: ['strength:3', 'speed:2', 'resistance:2', 'fire_resistance:1', 'regeneration:1']
+  Claim-Permission: false
+  Claim-Permission-Name: 'doom.envoy.use'
+  Prize-Message:
+    - '<gray>Судный тайник выбрал тебя и выдал <gradient:#ff1744:#651fff>{reward}</gradient>. Баланс объявлен пропавшим.</gray>'
+  Spawn-Chance: 2
+  Use-Chance: true
+  Placed-Block: 'LODESTONE'
+  Bulk-Prizes:
+    Toggle: false
+    Random: true
+    Max-Bulk: 1
+  Hologram-Toggle: true
+  Hologram-Height: 1.7
+  Hologram-Range: 12
+  Hologram:
+    - '<gradient:#ff1744:#651fff><bold>СУДНЫЙ ТАЙНИК</bold></gradient>'
+    - '<red>ОДИН НА ВСЮ КАРТУ</red>'
+    - '<dark_gray>Здесь дружба проходит нагрузочный тест.</dark_gray>'
+    - '%crazyenvoys_crates_time%'
+  Firework-Toggle: true
+  Firework-Colors: ['Red', 'Purple', 'Black', 'White']
+  Signal-Flare:
+    Toggle: true
+    Time: '50s'
+    Colors: ['Red', 'Purple', 'Black', 'White']
+Prizes:
+  '1':
+    DisplayName: 'Последняя поправка'
+    Chance: 21
+    Drop-Items: false
+    Messages:
+      - '<gray>Получена <gradient:#ff1744:#651fff>{reward}</gradient>. После неё текст договора обычно заканчивается.</gray>'
+    Items:
+      - 'item:netherite_sword, amount:1, name:<gradient:#ff1744:#651fff><bold>Последняя поправка</bold></gradient>, lore:<gray>Вносится без обсуждения и второго чтения.</gray>, sharpness:15, looting:10, fire_aspect:5, knockback:5, unbreaking:12, mending:1'
+  '2':
+    DisplayName: 'Убиватор 9000'
+    Chance: 13
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#ff1744:#651fff>{reward}</gradient>. Грядки эвакуированы заранее.</gray>'
+    Items:
+      - 'item:netherite_hoe, amount:1, name:<gradient:#ff0000:#651fff><bold>Убиватор 9000</bold></gradient>, lore:<gray>Девять тысяч причин не подходить ближе.</gray>, sharpness:20, efficiency:20, unbreaking:15, mending:1'
+  '3':
+    DisplayName: 'Гильотина района'
+    Chance: 14
+    Drop-Items: false
+    Messages:
+      - '<gray>Получена <gradient:#ff1744:#651fff>{reward}</gradient>. Районный суд заседает прямо на улице.</gray>'
+    Items:
+      - 'item:netherite_axe, amount:1, name:<gradient:#ff1744:#651fff><bold>Гильотина района</bold></gradient>, lore:<gray>Решение быстрое. Апелляция ещё быстрее.</gray>, sharpness:15, efficiency:15, unbreaking:12, mending:1'
+  '4-head':
+    DisplayName: 'Корона без лицензии'
+    Chance: 5
+    Armor-Set-Piece: 'head'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получена <gradient:#ff1744:#651fff>{reward}</gradient>. Лицензирующий орган уже эвакуирован.</gray>'
+    Items:
+      - 'item:netherite_helmet, amount:1, name:<gradient:#ff1744:#651fff>Корона без лицензии</gradient>, trim:silence;redstone, protection:10, thorns:5, unbreaking:10, mending:1'
+  '4-chest':
+    DisplayName: 'Бронежилет главного злодея'
+    Chance: 5
+    Armor-Set-Piece: 'chest'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#ff1744:#651fff>{reward}</gradient>. Музыка главного босса включилась сама.</gray>'
+    Items:
+      - 'item:netherite_chestplate, amount:1, name:<gradient:#ff1744:#651fff>Бронежилет главного злодея</gradient>, trim:rib;amethyst, protection:10, thorns:5, unbreaking:10, mending:1'
+  '4-legs':
+    DisplayName: 'Поножи сюжетной важности'
+    Chance: 5
+    Armor-Set-Piece: 'legs'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получены <gradient:#ff1744:#651fff>{reward}</gradient>. Сюжет теперь обязан оставить тебя в живых.</gray>'
+    Items:
+      - 'item:netherite_leggings, amount:1, name:<gradient:#ff1744:#651fff>Поножи сюжетной важности</gradient>, trim:eye;redstone, protection:10, thorns:5, unbreaking:10, mending:1'
+  '4-feet':
+    DisplayName: 'Ботинки финальных титров'
+    Chance: 5
+    Armor-Set-Piece: 'feet'
+    Drop-Items: false
+    Messages:
+      - '<gray>Получены <gradient:#ff1744:#651fff>{reward}</gradient>. До титров осталось четыре громких шага.</gray>'
+    Items:
+      - 'item:netherite_boots, amount:1, name:<gradient:#ff1744:#651fff>Ботинки финальных титров</gradient>, trim:spire;amethyst, protection:10, thorns:5, unbreaking:10, mending:1'
+  '5':
+    DisplayName: 'Молот финальных титров'
+    Chance: 10
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#ff1744:#651fff>{reward}</gradient>. После удара включается музыка и список актёров.</gray>'
+    Items:
+      - 'item:mace, amount:1, name:<gradient:#ff1744:#651fff><bold>Молот финальных титров</bold></gradient>, lore:<gray>Продолжение зависит от высоты падения.</gray>, density:20, breach:15, wind_burst:10, unbreaking:12, mending:1'
+  '6':
+    DisplayName: 'Красная линия горизонта'
+    Chance: 8
+    Drop-Items: false
+    Messages:
+      - '<gray>Получена <gradient:#ff1744:#651fff>{reward}</gradient>. За линией горизонта тоже небезопасно.</gray>'
+    Items:
+      - 'item:bow, amount:1, name:<gradient:#ff1744:#651fff><bold>Красная линия горизонта</bold></gradient>, lore:<gray>Дальность ограничена только прорисовкой мира.</gray>, power:15, punch:10, flame:1, infinity:1, unbreaking:12'
+      - 'item:arrow, amount:1, name:<red>Последняя точка маршрута</red>'
+  '7':
+    DisplayName: 'Посох грозы'
+    Chance: 6
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#ff1744:#651fff>{reward}</gradient>. Теперь погода согласовывает планы с тобой.</gray>'
+    Items:
+      - 'item:trident, amount:1, name:<gradient:#ff1744:#651fff><bold>Посох грозы</bold></gradient>, lore:<gray>Небо отвечает без задержки поддержки.</gray>, impaling:20, loyalty:10, channeling:1, unbreaking:12, mending:1'
+  '8':
+    DisplayName: 'Арбалет коллективного наказания'
+    Chance: 5
+    Drop-Items: false
+    Messages:
+      - '<gray>Получен <gradient:#ff1744:#651fff>{reward}</gradient>. Индивидуальный подход отменён.</gray>'
+    Items:
+      - 'item:crossbow, amount:1, name:<gradient:#ff1744:#651fff><bold>Арбалет коллективного наказания</bold></gradient>, lore:<gray>Одна жалоба — сразу несколько ответов.</gray>, quick_charge:5, multishot:1, piercing:15, unbreaking:12, mending:1'
+      - 'item:firework_rocket, amount:192, name:<gradient:#ff1744:#651fff>Праздничный боекомплект</gradient>'
+  '9':
+    DisplayName: 'Арсенал последнего часа'
+    Chance: 1
+    Drop-Items: false
+    Messages:
+      - '<gradient:#ff1744:#651fff><bold>ВЫПАЛ {reward}</bold></gradient> <gray>Сервер официально просит тебя успокоиться.</gray>'
+    Items:
+      - 'item:netherite_sword, amount:1, name:<gradient:#ff1744:#651fff><bold>Приговор без срока давности</bold></gradient>, lore:<gray>Один процент шанса. Сто процентов проблем.</gray>, sharpness:15, looting:10, fire_aspect:5, unbreaking:15, mending:1'
+      - 'item:netherite_hoe, amount:1, name:<gradient:#ff0000:#651fff><bold>Убиватор Последнего Часа</bold></gradient>, lore:<gray>Сельское хозяйство зашло слишком далеко.</gray>, sharpness:20, efficiency:20, unbreaking:20, mending:1'
+      - 'item:totem_of_undying, amount:5, name:<gradient:#fff176:#ff1744>Пять официальных несмертей</gradient>'
+      - 'item:enchanted_golden_apple, amount:32, name:<gradient:#ffd740:#ff1744>Яблоко отмены последствий</gradient>'
+  '10':
+    DisplayName: 'Банхаммер без права апелляции'
+    Chance: 1
+    Drop-Items: false
+    Messages:
+      - '<gradient:#ff1744:#651fff><bold>ВЫПАЛ {reward}</bold></gradient> <gray>Апелляция отклонена ещё до первого удара.</gray>'
+    Items:
+      - 'item:mace, amount:1, name:<gradient:#ff1744:#651fff><bold>Банхаммер без права апелляции</bold></gradient>, lore:<gray>Одно нажатие — и обсуждение закрыто навсегда.</gray>, density:25, breach:20, wind_burst:15, unbreaking:15, mending:1'
+  '11':
+    DisplayName: 'Ножницы бюджетного секвестра'
+    Chance: 1
+    Drop-Items: false
+    Messages:
+      - '<gradient:#ff1744:#651fff><bold>ВЫПАЛИ {reward}</bold></gradient> <gray>Расходы сокращены вместе с полоской здоровья.</gray>'
+    Items:
+      - 'item:shears, amount:1, name:<gradient:#ff1744:#651fff><bold>Ножницы бюджетного секвестра</bold></gradient>, lore:<gray>Режут бюджет и аргументы одной кнопкой.</gray>, sharpness:25, efficiency:20, looting:10, fire_aspect:10, unbreaking:20, mending:1'
