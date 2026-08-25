@@ -22,9 +22,6 @@ envoys:
     - '{prefix}<red>The envoy event has ended. Thanks for playing.</red>'
   wave-ended: '{prefix}<gray>The current drop wave has ended. The next wave starts in <gold>{time}</gold>.</gray>'
   wave-ended-manual: '{prefix}<gray>The current drop wave has ended. The next wave requires a manual start.</gray>'
-  wave-guide:
-    - '{prefix}<gray>This is only a crate wave within the ongoing server event. It does not enable or disable server rules.</gray>'
-    - '{prefix}<gray>Each crate gives one random reward. Higher tiers are rarer and limited per wave.</gray>'
   not-enough-players: '{prefix}<gray>Not enough players are online. Only <gold>{amount}</gold> players are online.</gray>'
   enter-editor-mode: '{prefix}<gray>You entered editor mode.</gray>'
   leave-editor-mode: '{prefix}<gray>You left editor mode.</gray>'
@@ -50,7 +47,6 @@ envoys:
   drops-available: '{prefix}<gray>Available envoy locations:</gray>'
   drops-possibilities: '{prefix}<gray>Configured envoy spawn locations:</gray>'
   drops-hint: '{prefix}<gray>Use <click:run_command:''/envoys drops''><hover:show_text:''<gray>Show current crate coordinates.</gray>''><gold>/envoys drops</gold></hover></click> to view the current crate coordinates.</gray>'
-  spawn-area: '{prefix}<gray>Search area: up to <gold>{max}</gold> blocks on X/Z from <gold>{world} ({x}, {z})</gold>. Crates do not spawn within <gold>{min}</gold> blocks of the center.</gray>'
   drops-page: '{prefix}<gray>Use /crazyenvoys drops [page] to see more.</gray>'
   drops-format: '<gray>[<gold>{id}</gold>]: {world}, {x}, {y}, {z}</gray>'
   no-spawn-locations-found: '{prefix}<red>No valid spawn locations were found. The event was cancelled and its cooldown was reset.</red>'

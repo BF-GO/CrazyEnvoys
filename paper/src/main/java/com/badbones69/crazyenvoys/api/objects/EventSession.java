@@ -10,7 +10,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -25,6 +27,11 @@ public final class EventSession {
         ACTIVE,
         STOPPING,
         STOPPED
+    }
+
+    public enum StartMode {
+        GLOBAL,
+        FLARE
     }
 
     public enum CrateState {
@@ -44,6 +51,17 @@ public final class EventSession {
 
     public record FallingCrate(long sessionId, Block block, Tier tier) {}
 
+    public record SpawnOrigin(UUID worldId, int blockX, int blockZ) {
+        public SpawnOrigin {
+            Objects.requireNonNull(worldId, "worldId");
+        }
+
+        public static SpawnOrigin from(final Player player) {
+            final Location location = player.getLocation();
+            return new SpawnOrigin(location.getWorld().getUID(), location.getBlockX(), location.getBlockZ());
+        }
+    }
+
     public record PlayerPosition(String world, double x, double y, double z) {
         public static PlayerPosition from(final Player player) {
             final Location location = player.getLocation();
@@ -61,6 +79,8 @@ public final class EventSession {
 
     private final long id;
     private final @Nullable String starterName;
+    private final StartMode startMode;
+    private final @Nullable SpawnOrigin spawnOrigin;
     private final AtomicReference<Phase> phase = new AtomicReference<>(Phase.RESOLVING);
     private final AtomicBoolean generationCompleted = new AtomicBoolean();
     private final AtomicInteger remainingCrates = new AtomicInteger();
@@ -74,8 +94,19 @@ public final class EventSession {
     private final Map<Location, ScheduledTask> signalTasks = new ConcurrentHashMap<>();
 
     public EventSession(final long id, @Nullable final Player starter) {
+        this(id, starter == null ? null : starter.getName(), StartMode.GLOBAL, null);
+    }
+
+    public EventSession(final long id, @Nullable final String starterName, final StartMode startMode,
+                        @Nullable final SpawnOrigin spawnOrigin) {
         this.id = id;
-        this.starterName = starter == null ? null : starter.getName();
+        this.starterName = starterName;
+        this.startMode = Objects.requireNonNull(startMode, "startMode");
+        this.spawnOrigin = spawnOrigin;
+
+        if (startMode == StartMode.FLARE && spawnOrigin == null) {
+            throw new IllegalArgumentException("A flare session requires a spawn origin");
+        }
     }
 
     public long id() {
@@ -84,6 +115,18 @@ public final class EventSession {
 
     public @Nullable String starterName() {
         return this.starterName;
+    }
+
+    public StartMode startMode() {
+        return this.startMode;
+    }
+
+    public @Nullable SpawnOrigin spawnOrigin() {
+        return this.spawnOrigin;
+    }
+
+    public boolean affectsGlobalSchedule() {
+        return this.startMode == StartMode.GLOBAL;
     }
 
     public AtomicReference<Phase> phase() {

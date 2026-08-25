@@ -156,6 +156,18 @@ public class ConfigKeys implements SettingsHolder {
     @Comment("The minimum amount of players needed to use a flare.")
     public static final Property<Integer> envoys_flare_minimum_players_amount = newProperty("flare.required-players.amount", 6);
 
+    @Comment("The minimum amount of crates spawned by a player flare.")
+    public static final Property<Integer> envoys_flare_min_drops = newProperty("flare.generation.min-drops-amount", 3);
+
+    @Comment("The maximum amount of crates spawned by a player flare.")
+    public static final Property<Integer> envoys_flare_max_drops = newProperty("flare.generation.max-drops-amount", 6);
+
+    @Comment("The minimum distance from the player at which flare crates may spawn.")
+    public static final Property<Integer> envoys_flare_min_radius = newProperty("flare.generation.min-radius", 20);
+
+    @Comment("The maximum distance from the player at which flare crates may spawn.")
+    public static final Property<Integer> envoys_flare_max_radius = newProperty("flare.generation.max-radius", 250);
+
     @Comment("The name of the flare item.")
     public static final Property<String> envoys_flare_item_name = newProperty("flare.item.name", "<bold><gray>(<dark_red>!<gray>)</bold> <red>Flare");
 

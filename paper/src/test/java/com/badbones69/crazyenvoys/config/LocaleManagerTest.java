@@ -122,6 +122,10 @@ class LocaleManagerTest {
         assertFalse(updated.getStringList("envoys.ended").getFirst().contains("РАССВЕТ"));
         assertTrue(updated.getString("ui.command-prefix", "").contains("ДРОПЫ СУДНОЙ НЕДЕЛИ"));
         assertEquals(2000, ConfigKeys.envoys_max_radius.getDefaultValue());
+        assertEquals(3, ConfigKeys.envoys_flare_min_drops.getDefaultValue());
+        assertEquals(6, ConfigKeys.envoys_flare_max_drops.getDefaultValue());
+        assertEquals(20, ConfigKeys.envoys_flare_min_radius.getDefaultValue());
+        assertEquals(250, ConfigKeys.envoys_flare_max_radius.getDefaultValue());
     }
 
     @Test

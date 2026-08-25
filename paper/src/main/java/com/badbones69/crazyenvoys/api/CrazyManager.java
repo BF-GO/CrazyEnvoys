@@ -65,6 +65,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
+import java.util.random.RandomGenerator;
 
 public class CrazyManager {
 
@@ -816,7 +817,7 @@ public class CrazyManager {
 
     public CompletionStage<List<Block>> generateSpawnLocationsAsync() {
         return this.scheduler.supplyGlobal("prepare envoy location generation", () -> true)
-                .thenCompose(unused -> generateSpawnLocationsAsync(() -> false))
+                .thenCompose(unused -> generateSpawnLocationsAsync(null, () -> false))
                 .thenApply(locations -> {
                     final List<Block> snapshot = List.copyOf(locations);
                     this.lastGeneratedLocations = snapshot;
@@ -824,7 +825,11 @@ public class CrazyManager {
                 });
     }
 
-    private CompletionStage<List<Block>> generateSpawnLocationsAsync(final BooleanSupplier cancelled) {
+    private CompletionStage<List<Block>> generateSpawnLocationsAsync(final EventSession session, final BooleanSupplier cancelled) {
+        if (session != null && session.startMode() == EventSession.StartMode.FLARE) {
+            return generateFlareSpawnLocationsAsync(session, cancelled);
+        }
+
         final int maxSpawns = calculateMaxSpawns();
 
         if (maxSpawns <= 0) return CompletableFuture.completedFuture(List.of());
@@ -836,24 +841,9 @@ public class CrazyManager {
 
             final int maxRadius = Math.max(0, Math.min(30_000_000, this.config.getProperty(ConfigKeys.envoys_max_radius)));
             final int minRadius = Math.max(0, Math.min(maxRadius, this.config.getProperty(ConfigKeys.envoys_min_radius)));
-            final int maxAttempts = (int) Math.min(Integer.MAX_VALUE,
-                    Math.max((long) MIN_GENERATION_ATTEMPTS, (long) maxSpawns * ATTEMPTS_PER_DROP));
-            final int maxInFlight = Math.max(1, Math.min(MAX_IN_FLIGHT_CHUNKS, maxSpawns));
-            final RandomLocationGenerator generator = new RandomLocationGenerator(
-                    this.center.clone(), maxSpawns, minRadius, maxRadius, maxAttempts, maxInFlight, cancelled
+            return generateRandomSpawnLocationsAsync(
+                    this.center.clone(), maxSpawns, minRadius, maxRadius, "global", cancelled
             );
-
-            return generator.start().thenApply(locations -> {
-                if (locations.size() < maxSpawns) {
-                    this.fusion.log(Level.WARNING, Messages.log_generation_partial.getMessage(Map.of(
-                            "{generated}", String.valueOf(locations.size()),
-                            "{requested}", String.valueOf(maxSpawns),
-                            "{attempts}", String.valueOf(generator.attempts())
-                    )));
-                }
-
-                return locations;
-            });
         }
 
         final List<Block> configured = new ArrayList<>(this.locationSettings.getSpawnLocations());
@@ -866,19 +856,77 @@ public class CrazyManager {
         return resolveConfiguredLocations(configured, cancelled);
     }
 
+    private CompletionStage<List<Block>> generateFlareSpawnLocationsAsync(final EventSession session,
+                                                                            final BooleanSupplier cancelled) {
+        final EventSession.SpawnOrigin origin = session.spawnOrigin();
+        if (origin == null) return CompletableFuture.completedFuture(List.of());
+
+        final World world = this.server.getWorld(origin.worldId());
+        if (world == null) return CompletableFuture.completedFuture(List.of());
+
+        final int maximumRadius = Math.max(0, Math.min(30_000_000,
+                this.config.getProperty(ConfigKeys.envoys_flare_max_radius)));
+        final int minimumRadius = Math.max(0, Math.min(maximumRadius,
+                this.config.getProperty(ConfigKeys.envoys_flare_min_radius)));
+        final int requested = selectDropCount(
+                this.config.getProperty(ConfigKeys.envoys_flare_min_drops),
+                this.config.getProperty(ConfigKeys.envoys_flare_max_drops),
+                ThreadLocalRandom.current()
+        );
+        final int maxSpawns = limitSpawnsToAreaWithWarning(requested, minimumRadius, maximumRadius);
+
+        if (maxSpawns <= 0) return CompletableFuture.completedFuture(List.of());
+
+        return generateRandomSpawnLocationsAsync(
+                new Location(world, origin.blockX(), 0, origin.blockZ()),
+                maxSpawns,
+                minimumRadius,
+                maximumRadius,
+                "flare",
+                cancelled
+        );
+    }
+
+    private CompletionStage<List<Block>> generateRandomSpawnLocationsAsync(
+            final Location generationCenter,
+            final int maxSpawns,
+            final int minimumRadius,
+            final int maximumRadius,
+            final String source,
+            final BooleanSupplier cancelled
+    ) {
+        final int maxAttempts = (int) Math.min(Integer.MAX_VALUE,
+                Math.max((long) MIN_GENERATION_ATTEMPTS, (long) maxSpawns * ATTEMPTS_PER_DROP));
+        final int maxInFlight = Math.max(1, Math.min(MAX_IN_FLIGHT_CHUNKS, maxSpawns));
+        final RandomLocationGenerator generator = new RandomLocationGenerator(
+                generationCenter, maxSpawns, minimumRadius, maximumRadius,
+                maxAttempts, maxInFlight, source, cancelled
+        );
+
+        return generator.start().thenApply(locations -> {
+            if (locations.size() < maxSpawns) {
+                this.fusion.log(Level.WARNING, Messages.log_generation_partial.getMessage(Map.of(
+                        "{generated}", String.valueOf(locations.size()),
+                        "{requested}", String.valueOf(maxSpawns),
+                        "{attempts}", String.valueOf(generator.attempts())
+                )));
+            }
+
+            return locations;
+        });
+    }
+
     private int calculateMaxSpawns() {
         int maxSpawns;
 
         if (this.config.getProperty(ConfigKeys.envoys_max_drops_toggle)) {
             maxSpawns = this.config.getProperty(ConfigKeys.envoys_max_drops);
         } else if (this.config.getProperty(ConfigKeys.envoys_random_drops)) {
-            final int minimum = this.config.getProperty(ConfigKeys.envoys_min_drops);
-            final int maximum = this.config.getProperty(ConfigKeys.envoys_max_drops);
-            final int lower = Math.max(0, minimum);
-            final int upper = Math.max(lower, maximum);
-            maxSpawns = lower >= upper
-                    ? lower
-                    : (int) ThreadLocalRandom.current().nextLong(lower, (long) upper + 1L);
+            maxSpawns = selectDropCount(
+                    this.config.getProperty(ConfigKeys.envoys_min_drops),
+                    this.config.getProperty(ConfigKeys.envoys_max_drops),
+                    ThreadLocalRandom.current()
+            );
         } else {
             maxSpawns = this.config.getProperty(ConfigKeys.envoys_random_locations)
                     ? this.config.getProperty(ConfigKeys.envoys_max_drops)
@@ -886,19 +934,42 @@ public class CrazyManager {
         }
 
         if (this.config.getProperty(ConfigKeys.envoys_random_locations)) {
-            final long maxRadius = Math.max(0, Math.min(30_000_000, this.config.getProperty(ConfigKeys.envoys_max_radius)));
-            final long minRadius = Math.max(0, Math.min(maxRadius, this.config.getProperty(ConfigKeys.envoys_min_radius)));
-            final long area = Math.max(0L, (maxRadius * 2L) * (maxRadius * 2L) - ((minRadius * 2L + 1L) * (minRadius * 2L + 1L)));
-
-            if (maxSpawns > area) {
-                maxSpawns = (int) Math.min(Integer.MAX_VALUE, area);
-                this.fusion.log(Level.WARNING, Messages.log_generation_area_limited.getMessage(Map.of(
-                        "{amount}", String.valueOf(maxSpawns)
-                )));
-            }
+            final int maxRadius = Math.max(0, Math.min(30_000_000, this.config.getProperty(ConfigKeys.envoys_max_radius)));
+            final int minRadius = Math.max(0, Math.min(maxRadius, this.config.getProperty(ConfigKeys.envoys_min_radius)));
+            maxSpawns = limitSpawnsToAreaWithWarning(maxSpawns, minRadius, maxRadius);
         }
 
         return Math.max(0, maxSpawns);
+    }
+
+    static int selectDropCount(final int minimum, final int maximum, final RandomGenerator random) {
+        final int lower = Math.max(0, minimum);
+        final int upper = Math.max(lower, maximum);
+
+        return lower >= upper ? lower : (int) random.nextLong(lower, (long) upper + 1L);
+    }
+
+    static int limitSpawnsToArea(final int requested, final int minimumRadius, final int maximumRadius) {
+        final long maxRadius = Math.max(0, Math.min(30_000_000, maximumRadius));
+        final long minRadius = Math.max(0, Math.min(maxRadius, minimumRadius));
+        final long area = Math.max(0L,
+                (maxRadius * 2L) * (maxRadius * 2L)
+                        - ((minRadius * 2L + 1L) * (minRadius * 2L + 1L))
+        );
+
+        return (int) Math.min(Math.max(0L, requested), Math.min(Integer.MAX_VALUE, area));
+    }
+
+    private int limitSpawnsToAreaWithWarning(final int requested, final int minimumRadius, final int maximumRadius) {
+        final int limited = limitSpawnsToArea(requested, minimumRadius, maximumRadius);
+
+        if (limited < Math.max(0, requested)) {
+            this.fusion.log(Level.WARNING, Messages.log_generation_area_limited.getMessage(Map.of(
+                    "{amount}", String.valueOf(limited)
+            )));
+        }
+
+        return limited;
     }
 
     private CompletionStage<List<Block>> resolveConfiguredLocations(final List<Block> configured, final BooleanSupplier cancelled) {
@@ -996,7 +1067,30 @@ public class CrazyManager {
         return requestStart(starter).completion();
     }
 
+    /**
+     * Starts a local random envoy session around an immutable snapshot of the player's position.
+     *
+     * @param starter The player using the flare.
+     * @return A stage completed with true only after at least one crate has spawned.
+     */
+    public CompletionStage<Boolean> startFlareEventAsync(@NotNull final Player starter) {
+        return this.scheduler.supplyEntity(starter, "snapshot flare start for " + starter.getUniqueId(), () ->
+                new FlareStartSnapshot(starter.getName(), EventSession.SpawnOrigin.from(starter))
+        ).thenCompose(snapshot -> requestStart(
+                snapshot.starterName(), EventSession.StartMode.FLARE, snapshot.spawnOrigin()
+        ).completion());
+    }
+
     private StartRequest requestStart(final Player starter) {
+        return requestStart(
+                starter == null ? null : starter.getName(),
+                EventSession.StartMode.GLOBAL,
+                null
+        );
+    }
+
+    private StartRequest requestStart(final String starterName, final EventSession.StartMode startMode,
+                                      final EventSession.SpawnOrigin spawnOrigin) {
         if (!this.ready.get() || this.tiers.isEmpty()) {
             if (this.tiers.isEmpty()) {
                 this.fusion.log(Level.ERROR, Messages.log_no_tiers.getString());
@@ -1005,7 +1099,9 @@ public class CrazyManager {
             return new StartRequest(false, CompletableFuture.completedFuture(false));
         }
 
-        final EventSession session = new EventSession(this.sessionSequence.incrementAndGet(), starter);
+        final EventSession session = new EventSession(
+                this.sessionSequence.incrementAndGet(), starterName, startMode, spawnOrigin
+        );
 
         if (!this.currentSession.compareAndSet(null, session)) {
             return new StartRequest(false, CompletableFuture.completedFuture(false));
@@ -1022,7 +1118,7 @@ public class CrazyManager {
     private void beginStart(final EventSession session) {
         if (!isResolving(session)) return;
 
-        generateSpawnLocationsAsync(() -> !isResolving(session)).whenComplete((locations, throwable) -> {
+        generateSpawnLocationsAsync(session, () -> !isResolving(session)).whenComplete((locations, throwable) -> {
             this.scheduler.runGlobal("process generated locations for session " + session.id(), () -> {
                     if (!isResolving(session)) return;
 
@@ -1229,18 +1325,6 @@ public class CrazyManager {
             Messages.started.broadcast(this.config.getProperty(ConfigKeys.envoys_ignore_behaviour_started), placeholders);
         }
 
-        Messages.wave_guide.broadcast(this.config.getProperty(ConfigKeys.envoys_ignore_behaviour_started));
-
-        if (this.config.getProperty(ConfigKeys.envoys_random_locations) && this.center != null && this.center.getWorld() != null) {
-            Messages.spawn_area.broadcast(this.config.getProperty(ConfigKeys.envoys_ignore_behaviour_started), Map.of(
-                    "{min}", String.valueOf(this.config.getProperty(ConfigKeys.envoys_min_radius)),
-                    "{max}", String.valueOf(this.config.getProperty(ConfigKeys.envoys_max_radius)),
-                    "{world}", Messages.displayWorldName(this.center.getWorld()),
-                    "{x}", String.valueOf(this.center.getBlockX()),
-                    "{z}", String.valueOf(this.center.getBlockZ())
-            ));
-        }
-
         final Set<String> locationPermissions = Set.of("envoy.drops", "envoy.locations");
         if (this.config.getProperty(ConfigKeys.envoys_locations_broadcast)) {
             Messages.envoy_locations.broadcast(false, locationPermissions, Map.of(
@@ -1284,8 +1368,10 @@ public class CrazyManager {
     }
 
     private void failNoLocations(final EventSession session) {
-        setNextEnvoy(getEnvoyCooldown());
-        resetWarnings();
+        if (session.affectsGlobalSchedule()) {
+            setNextEnvoy(getEnvoyCooldown());
+            resetWarnings();
+        }
         this.pluginManager.callEvent(new EnvoyEndEvent(EnvoyEndReason.NO_LOCATIONS_FOUND));
         Messages.no_spawn_locations_found.broadcast(this.config.getProperty(ConfigKeys.envoys_ignore_behaviour_no_spawn_locations_found));
         this.fusion.log(Level.WARNING, Messages.log_no_valid_locations.getString());
@@ -1300,8 +1386,10 @@ public class CrazyManager {
         if (throwable == null) this.fusion.log(Level.WARNING, message);
         else this.plugin.getLogger().log(java.util.logging.Level.SEVERE, message, throwable);
 
-        setNextEnvoy(getEnvoyCooldown());
-        resetWarnings();
+        if (session.affectsGlobalSchedule()) {
+            setNextEnvoy(getEnvoyCooldown());
+            resetWarnings();
+        }
         session.startFuture().complete(false);
         session.cleanupFuture().complete(null);
         this.currentSession.compareAndSet(session, null);
@@ -1401,7 +1489,7 @@ public class CrazyManager {
             Files.users.save();
         }
 
-        if (this.config.getProperty(ConfigKeys.envoys_run_time_toggle)) {
+        if (session.affectsGlobalSchedule() && this.config.getProperty(ConfigKeys.envoys_run_time_toggle)) {
             setNextEnvoy(getEnvoyCooldown());
             resetWarnings();
         }
@@ -1440,6 +1528,8 @@ public class CrazyManager {
     }
 
     private record StartRequest(boolean accepted, CompletionStage<Boolean> completion) {}
+
+    private record FlareStartSnapshot(String starterName, EventSession.SpawnOrigin spawnOrigin) {}
 
     /**
      * Get a list of all the tiers.
@@ -1798,6 +1888,7 @@ public class CrazyManager {
         private final int maximumRadius;
         private final int maximumAttempts;
         private final int maximumInFlight;
+        private final String source;
         private final BooleanSupplier cancelled;
         private final Set<Long> candidates = ConcurrentHashMap.newKeySet();
         private final List<Block> results = new CopyOnWriteArrayList<>();
@@ -1813,6 +1904,7 @@ public class CrazyManager {
                 final int maximumRadius,
                 final int maximumAttempts,
                 final int maximumInFlight,
+                final String source,
                 final BooleanSupplier cancelled
         ) {
             this.center = center;
@@ -1822,6 +1914,7 @@ public class CrazyManager {
             this.maximumRadius = maximumRadius;
             this.maximumAttempts = maximumAttempts;
             this.maximumInFlight = maximumInFlight;
+            this.source = source;
             this.cancelled = cancelled;
         }
 
@@ -1873,7 +1966,7 @@ public class CrazyManager {
                     if (throwable != null || this.cancelled.getAsBoolean() || this.future.isDone()) {
                         if (throwable != null) {
                             plugin.getLogger().log(java.util.logging.Level.WARNING, Messages.log_chunk_load_failed.getMessage(Map.of(
-                                    "{type}", "random",
+                                    "{type}", this.source,
                                     "{x}", String.valueOf(x),
                                     "{z}", String.valueOf(z)
                             )), throwable);
@@ -1883,7 +1976,7 @@ public class CrazyManager {
                     }
 
                     final Location owner = new Location(this.world, x, 0, z);
-                    scheduler.supplyRegion(owner, "validate random envoy location at " + x + "," + z, () -> {
+                    scheduler.supplyRegion(owner, "validate " + this.source + " envoy location at " + x + "," + z, () -> {
                         if (this.cancelled.getAsBoolean() || this.future.isDone()) return null;
 
                         final Block highest = this.world.getHighestBlockAt(x, z);
@@ -1898,7 +1991,7 @@ public class CrazyManager {
                 });
             } catch (Throwable throwable) {
                 plugin.getLogger().log(java.util.logging.Level.WARNING, Messages.log_chunk_request_failed.getMessage(Map.of(
-                        "{type}", "random",
+                        "{type}", this.source,
                         "{x}", String.valueOf(x),
                         "{z}", String.valueOf(z)
                 )), throwable);

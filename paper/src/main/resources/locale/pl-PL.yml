@@ -21,9 +21,6 @@ envoys:
     - '{prefix}<red>Wydarzenie zrzutów zakończyło się. Dziękujemy za udział.</red>'
   wave-ended: '{prefix}<gray>Obecna fala zrzutów dobiegła końca. Następna rozpocznie się za <gold>{time}</gold>.</gray>'
   wave-ended-manual: '{prefix}<gray>Obecna fala zrzutów dobiegła końca. Następna wymaga ręcznego uruchomienia.</gray>'
-  wave-guide:
-    - '{prefix}<gray>To tylko fala skrzyń w ramach trwającego wydarzenia serwerowego. Zasady serwera nie są włączane ani wyłączane.</gray>'
-    - '{prefix}<gray>Każda skrzynia daje jedną losową nagrodę. Wyższe poziomy są rzadsze i limitowane na falę.</gray>'
   not-enough-players: '{prefix}<gray>Za mało graczy online. Obecnie: <gold>{amount}</gold>.</gray>'
   enter-editor-mode: '{prefix}<gray>Włączono tryb edycji.</gray>'
   leave-editor-mode: '{prefix}<gray>Wyłączono tryb edycji.</gray>'
@@ -49,7 +46,6 @@ envoys:
   drops-available: '{prefix}<gray>Dostępne zrzuty:</gray>'
   drops-possibilities: '{prefix}<gray>Skonfigurowane punkty zrzutów:</gray>'
   drops-hint: '{prefix}<gray>Użyj <click:run_command:''/envoys drops''><hover:show_text:''<gray>Pokaż aktualne współrzędne skrzyń.</gray>''><gold>/envoys drops</gold></hover></click>, aby zobaczyć współrzędne skrzyń.</gray>'
-  spawn-area: '{prefix}<gray>Obszar poszukiwań: do <gold>{max}</gold> bloków na osiach X/Z od <gold>{world} ({x}, {z})</gold>. Skrzynie nie pojawiają się bliżej niż <gold>{min}</gold> bloków od środka.</gray>'
   drops-page: '{prefix}<gray>Użyj /crazyenvoys drops [strona], aby zobaczyć więcej.</gray>'
   drops-format: '<gray>[<gold>{id}</gold>]: {world}, {x}, {y}, {z}</gray>'
   no-spawn-locations-found: '{prefix}<red>Nie znaleziono prawidłowych punktów. Wydarzenie anulowano, a czas odnowienia zresetowano.</red>'

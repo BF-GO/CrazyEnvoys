@@ -77,11 +77,6 @@ public class MessageKeys implements SettingsHolder {
 
     public static final Property<String> envoy_wave_ended_manual = newProperty("envoys.wave-ended-manual", "{prefix}<gray>The current drop wave has ended. The next wave requires a manual start.</gray>");
 
-    public static final Property<List<String>> envoy_wave_guide = newListProperty("envoys.wave-guide", List.of(
-            "{prefix}<gray>This is a crate wave within the ongoing server event; it does not change server rules.</gray>",
-            "{prefix}<gray>Each crate gives one random reward. Higher tiers are rarer and limited per wave.</gray>"
-    ));
-
     public static final Property<String> not_enough_players = newProperty("envoys.not-enough-players", "{prefix}<gray>Not enough players are online to start the envoy event. Only <gold>{amount} <gray>players are online.");
 
     public static final Property<String> enter_editor_mode = newProperty("envoys.enter-editor-mode", "{prefix}<gray>You are now in editor mode.");
@@ -129,8 +124,6 @@ public class MessageKeys implements SettingsHolder {
     public static final Property<String> drops_possibilities = newProperty("envoys.drops-possibilities", "{prefix}<gray>List of location envoy''s may spawn at.");
 
     public static final Property<String> drops_hint = newProperty("envoys.drops-hint", "{prefix}<gray>Use <gold>/envoys drops</gold> to view the current crate coordinates.");
-
-    public static final Property<String> spawn_area = newProperty("envoys.spawn-area", "{prefix}<gray>Search area: up to <gold>{max}</gold> blocks on X/Z from <gold>{world} ({x}, {z})</gold>; crates do not spawn within <gold>{min}</gold> blocks of the center.</gray>");
 
     public static final Property<String> drops_page = newProperty("envoys.drops-page", "{prefix}<gray>Use /crazyenvoys drops [page] to see more.");
 

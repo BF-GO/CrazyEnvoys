@@ -97,7 +97,7 @@ public class FlareClickListener implements Listener {
         this.pluginManager.callEvent(envoyStartEvent);
         if (envoyStartEvent.isCancelled()) return;
 
-        this.crazyManager.startEnvoyEventAsync(player).whenComplete((started, throwable) -> {
+        this.crazyManager.startFlareEventAsync(player).whenComplete((started, throwable) -> {
             if (throwable != null || !Boolean.TRUE.equals(started)) return;
 
             this.crazyManager.getScheduler().runEntity(player, "consume used envoy flare", () -> {

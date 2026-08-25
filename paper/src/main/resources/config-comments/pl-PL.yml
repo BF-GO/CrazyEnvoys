@@ -55,6 +55,11 @@ comments:
     warnings: 'Momenty wysyłania ostrzeżeń przed wydarzeniem.'
     ignore-behaviour: 'Ogłoszenia ukrywane przez /envoys ignore.'
   flare:
+    generation:
+      min-drops-amount: 'Minimalna liczba skrzyń tworzonych przez flarę gracza.'
+      max-drops-amount: 'Maksymalna liczba skrzyń tworzonych przez flarę gracza.'
+      min-radius: 'Minimalna odległość od gracza używającego flary.'
+      max-radius: 'Maksymalna odległość od gracza używającego flary.'
     required-players:
       toggle: 'Wymagać minimalnej liczby graczy do użycia flary.'
       amount: 'Minimalna liczba graczy dla flary.'

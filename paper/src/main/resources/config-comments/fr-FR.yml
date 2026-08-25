@@ -55,6 +55,11 @@ comments:
     warnings: 'Moments où les avertissements sont envoyés avant un événement.'
     ignore-behaviour: 'Annonces masquées par /envoys ignore.'
   flare:
+    generation:
+      min-drops-amount: 'Nombre minimal de caisses créées par une fusée de joueur.'
+      max-drops-amount: 'Nombre maximal de caisses créées par une fusée de joueur.'
+      min-radius: 'Distance minimale d’apparition depuis le joueur utilisant la fusée.'
+      max-radius: 'Distance maximale d’apparition depuis le joueur utilisant la fusée.'
     required-players:
       toggle: 'Exiger un nombre minimal de joueurs pour une fusée.'
       amount: 'Nombre minimal de joueurs pour une fusée.'

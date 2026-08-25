@@ -21,9 +21,6 @@ envoys:
     - '{prefix}<red>Le largage est terminé. Merci d’avoir participé.</red>'
   wave-ended: '{prefix}<gray>La vague de largages est terminée. La prochaine commencera dans <gold>{time}</gold>.</gray>'
   wave-ended-manual: '{prefix}<gray>La vague de largages est terminée. La prochaine nécessite un démarrage manuel.</gray>'
-  wave-guide:
-    - '{prefix}<gray>Il s’agit uniquement d’une vague de caisses pendant l’événement en cours. Les règles du serveur ne changent pas.</gray>'
-    - '{prefix}<gray>Chaque caisse donne une récompense aléatoire. Les niveaux supérieurs sont plus rares et limités par vague.</gray>'
   not-enough-players: '{prefix}<gray>Il n’y a pas assez de joueurs en ligne : <gold>{amount}</gold>.</gray>'
   enter-editor-mode: '{prefix}<gray>Vous êtes entré en mode édition.</gray>'
   leave-editor-mode: '{prefix}<gray>Vous avez quitté le mode édition.</gray>'
@@ -49,7 +46,6 @@ envoys:
   drops-available: '{prefix}<gray>Largages disponibles :</gray>'
   drops-possibilities: '{prefix}<gray>Emplacements de largage configurés :</gray>'
   drops-hint: '{prefix}<gray>Utilisez <click:run_command:''/envoys drops''><hover:show_text:''<gray>Afficher les coordonnées actuelles.</gray>''><gold>/envoys drops</gold></hover></click> pour voir les coordonnées des caisses.</gray>'
-  spawn-area: '{prefix}<gray>Zone de recherche : jusqu’à <gold>{max}</gold> blocs sur X/Z depuis <gold>{world} ({x}, {z})</gold>. Aucun coffre n’apparaît à moins de <gold>{min}</gold> blocs du centre.</gray>'
   drops-page: '{prefix}<gray>Utilisez /crazyenvoys drops [page] pour en voir plus.</gray>'
   drops-format: '<gray>[<gold>{id}</gold>] : {world}, {x}, {y}, {z}</gray>'
   no-spawn-locations-found: '{prefix}<red>Aucun emplacement valide trouvé. L’événement a été annulé et son délai réinitialisé.</red>'

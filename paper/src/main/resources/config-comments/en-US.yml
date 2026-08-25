@@ -55,6 +55,11 @@ comments:
     warnings: 'Times before the next event at which warning messages are sent.'
     ignore-behaviour: 'Choose which broadcasts can be hidden with /envoys ignore.'
   flare:
+    generation:
+      min-drops-amount: 'Minimum number of crates spawned by a player flare.'
+      max-drops-amount: 'Maximum number of crates spawned by a player flare.'
+      min-radius: 'Minimum spawn distance from the player using the flare.'
+      max-radius: 'Maximum spawn distance from the player using the flare.'
     required-players:
       toggle: 'Require a minimum number of players to use a flare.'
       amount: 'Minimum number of online players required for a flare.'

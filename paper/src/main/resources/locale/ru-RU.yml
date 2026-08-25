@@ -22,9 +22,6 @@ envoys:
     - '{prefix}<gradient:#80cbc4:#64b5f6><bold>ВОЛНА ДРОПОВ ЗАВЕРШЕНА</bold></gradient> <gray>Судная неделя продолжается.</gray>'
   wave-ended: '{prefix}<gradient:#80cbc4:#64b5f6><bold>ВОЛНА ДРОПОВ ЗАВЕРШЕНА</bold></gradient> <gray>Следующая волна начнётся через <white>{time}</white>.</gray>'
   wave-ended-manual: '{prefix}<gradient:#80cbc4:#64b5f6><bold>ВОЛНА ДРОПОВ ЗАВЕРШЕНА</bold></gradient> <gray>Следующий завоз будет после ручного запуска.</gray>'
-  wave-guide:
-    - '{prefix}<gray>Это только волна тайников внутри продолжающейся Судной недели. Правила сервера не включаются и не выключаются.</gray>'
-    - '{prefix}<gray>Каждый тайник выдаёт одну случайную награду. Чем выше тир, тем реже такой тайник появляется в волне.</gray>'
   not-enough-players: '{prefix}<gray>В сети всего <white>{amount}</white>. Даже анархия просит приличную массовку.</gray>'
   enter-editor-mode: '{prefix}<#b388ff>Режим архитектора хаоса включён.</#b388ff> <gray>Ставь точки, но не наступай на грабли.</gray>'
   leave-editor-mode: '{prefix}<gray>Режим архитектора выключен. Чертежи хаоса сохранены.</gray>'
@@ -50,7 +47,6 @@ envoys:
   drops-available: '{prefix}<gradient:#ff6d00:#ff1744><bold>ТАЙНИКИ НА РАДАРЕ</bold></gradient>'
   drops-possibilities: '{prefix}<gradient:#7c4dff:#ff1744><bold>ВОЗМОЖНЫЕ ТОЧКИ ХАОСА</bold></gradient>'
   drops-hint: '{prefix}<click:run_command:''/envoys drops''><hover:show_text:''<gray>Нажми — штаб сольёт координаты.</gray>''><gradient:#ff6d00:#ff1744><bold>[ОТКРЫТЬ КАРТУ ТАЙНИКОВ]</bold></gradient></hover></click> <dark_gray>Бюджет на разведку освоен.</dark_gray>'
-  spawn-area: '{prefix}<gray>Зона поиска: до <white>{max}</white> блоков по X/Z от эпицентра <white>{world} ({x}, {z})</white>. Ближе <white>{min}</white> блоков тайники не появляются.</gray>'
   drops-page: '{prefix}<gray>Больше координат: <white>/envoys drops [страница]</white>. Да, карта сокровищ многостраничная.</gray>'
   drops-format: '<dark_gray>[</dark_gray><#ff6d00>{id}</#ff6d00><dark_gray>]</dark_gray> <gray>{world}</gray> <dark_gray>•</dark_gray> <white>{x}, {y}, {z}</white>'
   no-spawn-locations-found: '{prefix}<red>Мир отказался принимать тайники.</red> <gray>Событие отменено, перезарядка сброшена.</gray>'
