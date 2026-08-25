@@ -9,6 +9,9 @@ public enum PersistentKeys {
     no_firework_damage("firework"),
     falling_envoy_session("falling_envoy_session"),
     prize_item("prize_item"),
+    armor_set_id("armor_set_id"),
+    armor_set_piece("armor_set_piece"),
+    armor_breaker_projectile("armor_breaker_projectile"),
     envoy_flare("envoy_flare");
 
     private final @NotNull CrazyEnvoys plugin = CrazyEnvoys.get();

@@ -1,0 +1,75 @@
+name: '${name}'
+main: '${group}.${name}'
+bootstrapper: '${group}.bootstrap.ArmorBreakerBootstrap'
+
+authors: [ badbones69, ryderbelserion ]
+
+version: '${version}'
+api-version: '${minecraft}'
+description: '${description}'
+website: '${website}'
+
+folia-supported: true
+
+permissions:
+  envoy.bypass:
+    default: op
+  envoy.locations:
+    default: false
+  envoy.flare.use:
+    default: false
+
+dependencies:
+  server:
+    CMI:
+      load: BEFORE
+      required: false
+      join-classpath: true
+    DecentHolograms:
+      load: BEFORE
+      required: false
+      join-classpath: true
+    FancyHolograms:
+      load: BEFORE
+      required: false
+      join-classpath: true
+    PlaceholderAPI:
+      load: BEFORE
+      required: false
+      join-classpath: true
+    MVdWPlaceholderAPI:
+      load: BEFORE
+      required: false
+      join-classpath: true
+    Multiverse-Core:
+      load: BEFORE
+      required: false
+      join-classpath: true
+    MultiWorld:
+      load: BEFORE
+      required: false
+      join-classpath: true
+    MyWorlds:
+      load: BEFORE
+      required: false
+      join-classpath: true
+    WorldEdit:
+      load: BEFORE
+      required: false
+      join-classpath: true
+    WorldGuard:
+      load: BEFORE
+      required: false
+      join-classpath: true
+    Oraxen:
+      load: BEFORE
+      required: false
+      join-classpath: true
+    ItemsAdder:
+      load: BEFORE
+      required: false
+      join-classpath: true
+    Nexo:
+      load: BEFORE
+      required: false
+      join-classpath: true

@@ -10,24 +10,44 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class PrizeGui extends StaticInventory {
 
     private final Prize prize;
+    private final List<ItemStack> items;
 
     public PrizeGui(@NotNull final Player player, @NotNull final Tier tier, @NotNull final Prize prize, @NotNull final String title, final int size) {
+        this(player, tier, prize, prize.getItems(player), title, size);
+    }
+
+    public PrizeGui(
+            @NotNull final Player player,
+            @NotNull final Tier tier,
+            @NotNull final Prize prize,
+            @NotNull final List<ItemStack> items,
+            @NotNull final String title,
+            final int size
+    ) {
         super(player, tier, title, size);
 
         this.prize = prize;
+        this.items = items.stream().map(ItemStack::clone).toList();
     }
 
     @Override
     public void build() {
         final String id = this.prize.getPrizeID();
 
-        this.prize.getItemBuilders().forEach(builder -> {
-            builder.setPersistentString(PersistentKeys.prize_item.getNamespacedKey(), id);
+        this.items.forEach(source -> {
+            final ItemStack guiItem = source.clone();
+            guiItem.editPersistentDataContainer(container -> container.set(
+                    PersistentKeys.prize_item.getNamespacedKey(),
+                    org.bukkit.persistence.PersistentDataType.STRING,
+                    id
+            ));
 
-            this.gui.addSlotAction(builder.asItemStack(this.player), event -> {
+            this.gui.addSlotAction(guiItem, event -> {
                 final ItemStack itemStack = event.getCurrentItem();
 
                 if (itemStack == null || itemStack.isEmpty()) return;
@@ -38,11 +58,14 @@ public class PrizeGui extends StaticInventory {
 
                 final PlayerInventory inventory = this.player.getInventory();
 
-                itemStack.editPersistentDataContainer(box -> box.remove(PersistentKeys.prize_item.getNamespacedKey()));
+                final ItemStack reward = itemStack.clone();
+                reward.editPersistentDataContainer(box -> box.remove(PersistentKeys.prize_item.getNamespacedKey()));
 
-                inventory.setMaxStackSize(64);
+                event.setCurrentItem(null);
 
-                inventory.addItem(itemStack);
+                inventory.addItem(reward).values().forEach(leftover ->
+                        this.player.getWorld().dropItem(this.player.getLocation(), leftover)
+                );
             });
         });
 

@@ -1,6 +1,7 @@
 package com.badbones69.crazyenvoys;
 
 import com.badbones69.crazyenvoys.api.CrazyManager;
+import com.badbones69.crazyenvoys.api.ArmorBreakerManager;
 import com.badbones69.crazyenvoys.api.enums.Messages;
 import com.badbones69.crazyenvoys.api.events.EnvoyEndEvent;
 import com.badbones69.crazyenvoys.api.events.EnvoyEndEvent.EnvoyEndReason;
@@ -49,6 +50,7 @@ public class CrazyEnvoys extends JavaPlugin {
     private LocationSettings locationSettings;
 
     private CrazyManager crazyManager;
+    private ArmorBreakerManager armorBreakerManager;
 
     private PaperFileManager fileManager;
     private FusionPaper fusion;
@@ -75,6 +77,7 @@ public class CrazyEnvoys extends JavaPlugin {
         this.flareSettings = new FlareSettings();
 
         this.crazyManager = new CrazyManager();
+        this.armorBreakerManager = new ArmorBreakerManager(this);
         this.crazyManager.load();
 
         final PluginManager pluginManager = getServer().getPluginManager();
@@ -83,6 +86,7 @@ public class CrazyEnvoys extends JavaPlugin {
         pluginManager.registerEvents(new EnvoyClickListener(), this);
         pluginManager.registerEvents(new FlareClickListener(), this);
         pluginManager.registerEvents(new FireworkDamageListener(), this);
+        pluginManager.registerEvents(this.armorBreakerManager, this);
 
         if (this.fusion.isModReady(ModSupport.placeholder_api)) {
             new PlaceholderAPISupport().register();
@@ -141,5 +145,9 @@ public class CrazyEnvoys extends JavaPlugin {
 
     public final CrazyManager getCrazyManager() {
         return this.crazyManager;
+    }
+
+    public final ArmorBreakerManager getArmorBreakerManager() {
+        return this.armorBreakerManager;
     }
 }

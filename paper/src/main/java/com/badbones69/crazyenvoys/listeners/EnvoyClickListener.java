@@ -3,6 +3,7 @@ package com.badbones69.crazyenvoys.listeners;
 import ch.jalu.configme.SettingsManager;
 import com.badbones69.crazyenvoys.CrazyEnvoys;
 import com.badbones69.crazyenvoys.Methods;
+import com.badbones69.crazyenvoys.api.ArmorBreakerManager;
 import com.badbones69.crazyenvoys.api.CrazyManager;
 import com.badbones69.crazyenvoys.api.builders.gui.PrizeGui;
 import com.badbones69.crazyenvoys.api.enums.Messages;
@@ -14,6 +15,7 @@ import com.badbones69.crazyenvoys.api.objects.misc.Tier;
 import com.badbones69.crazyenvoys.config.beans.GuiProperty;
 import com.badbones69.crazyenvoys.support.holograms.HologramManager;
 import com.badbones69.crazyenvoys.util.MiscUtils;
+import com.badbones69.crazyenvoys.util.WeightedSelector;
 import com.ryderbelserion.fusion.core.api.constants.ModSupport;
 import com.ryderbelserion.fusion.paper.FusionPaper;
 import org.bukkit.GameMode;
@@ -56,6 +58,7 @@ public class EnvoyClickListener implements Listener {
 
     private @NotNull final CoolDownSettings coolDownSettings = this.plugin.getCoolDownSettings();
     private @NotNull final CrazyManager crazyManager = this.plugin.getCrazyManager();
+    private @NotNull final ArmorBreakerManager armorBreakerManager = this.plugin.getArmorBreakerManager();
     
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerClick(PlayerInteractEvent event) {
@@ -111,7 +114,7 @@ public class EnvoyClickListener implements Listener {
             }
         }
         if (tier.getPrizes().isEmpty()) {
-            final var warning = this.fusion.asComponent(Messages.empty_tier_warning.getMessage(Map.of("{tier}", tier.getName())));
+            final var warning = this.fusion.asComponent(Messages.empty_tier_warning.getMessage(Map.of("{tier}", tier.getDisplayName())));
             this.crazyManager.getScheduler().supplyGlobal("snapshot recipients for empty tier warning", () -> {
                 this.server.getConsoleSender().sendMessage(warning);
                 return List.copyOf(this.server.getOnlinePlayers());
@@ -149,13 +152,14 @@ public class EnvoyClickListener implements Listener {
 
         final Map<String, String> placeholders = new HashMap<>();
 
-        if (this.config.getProperty(ConfigKeys.envoys_announce_player_pickup)) placeholders.put("{tier}", tier.getName());
+        if (this.config.getProperty(ConfigKeys.envoys_announce_player_pickup)) placeholders.put("{tier}", tier.getDisplayName());
 
         final String playerName = player.getName();
+        int armorBreakerLevel = 0;
 
         for (Prize prize : envoyOpenEvent.getPrizes()) {
             final String displayName = prize.getDisplayName();
-            final String tierName = tier.getName();
+            final String tierName = tier.getDisplayName();
 
             final Map<String, String> values = Map.of(
                     "{player}", playerName,
@@ -190,7 +194,14 @@ public class EnvoyClickListener implements Listener {
                 for (final String command : commands) this.server.dispatchCommand(this.server.getConsoleSender(), command);
             });
 
-            final List<ItemStack> items = prize.getItems();
+            final ArmorBreakerManager.MaterializedPrize materialized = this.armorBreakerManager.materialize(
+                    prize,
+                    player,
+                    tier.getArmorBreakerDefinition(),
+                    ThreadLocalRandom.current()
+            );
+            final List<ItemStack> items = materialized.items();
+            if (materialized.awarded()) armorBreakerLevel = Math.max(armorBreakerLevel, materialized.level());
 
             final World world = block.getWorld();
             final Location location = block.getLocation();
@@ -203,13 +214,9 @@ public class EnvoyClickListener implements Listener {
                         continue;
                     }
 
-                    if (player.getInventory().isEmpty()) {
-                        world.dropItem(location, item);
-
-                        continue;
-                    }
-
-                    Methods.addItem(player, item);
+                    player.getInventory().addItem(item).values().forEach(leftover ->
+                            world.dropItem(location, leftover)
+                    );
                 }
                 player.updateInventory();
             } else {
@@ -221,9 +228,16 @@ public class EnvoyClickListener implements Listener {
                         title = Messages.envoy_menu_title.getString();
                     }
 
-                    new PrizeGui(player, tier, prize, title, property.getSize()).build();
+                    new PrizeGui(player, tier, prize, items, title, property.getSize()).build();
                 }
             }
+        }
+
+        if (armorBreakerLevel > 0) {
+            Messages.armor_breaker_awarded.sendMessage(player, Map.of(
+                    "{enchantment}", Messages.armor_breaker_name.getString(),
+                    "{level}", ArmorBreakerManager.romanLevel(armorBreakerLevel)
+            ));
         }
 
         if (!claimResult.lastCrate()) {
@@ -239,7 +253,7 @@ public class EnvoyClickListener implements Listener {
             this.pluginManager.callEvent(envoyEndEvent);
 
             this.crazyManager.endEnvoyEventAsync().whenComplete((unused, throwable) ->
-                    Messages.ended.broadcast(this.config.getProperty(ConfigKeys.envoys_ignore_behaviour_ended))
+                    this.crazyManager.broadcastWaveEnded()
             );
         }
     }
@@ -286,19 +300,17 @@ public class EnvoyClickListener implements Listener {
     }
     
     private List<Prize> pickPrizesByChance(Tier tier) {
-        List<Prize> prizes = new ArrayList<>();
-
-        int maxBulk = tier.getBulkToggle() ? tier.getBulkMax() : 1;
-
-        for (int i = 0; prizes.size() < maxBulk && i < 500; i++) {
-            for (Prize prize : tier.getPrizes()) {
-                if (!prizes.contains(prize) && Methods.isSuccessful(prize.getChance(), 100)) prizes.add(prize);
-
-                if (prizes.size() == maxBulk) break;
-            }
+        final int maximum = tier.getBulkToggle() ? tier.getBulkMax() : 1;
+        final List<WeightedSelector.Entry<Prize>> entries = tier.getPrizes().stream()
+                .map(prize -> new WeightedSelector.Entry<>(prize, prize.getChance(), 1))
+                .toList();
+        if (maximum == 1) {
+            return WeightedSelector.selectOneOrRandom(entries, ThreadLocalRandom.current()).stream().toList();
         }
 
-        return prizes;
+        final List<Prize> selected = WeightedSelector.select(entries, maximum, ThreadLocalRandom.current());
+
+        return selected.isEmpty() ? pickRandomPrizes(tier) : selected;
     }
     
 }
