@@ -5,6 +5,7 @@ import com.badbones69.crazyenvoys.api.enums.Messages;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.Path;
@@ -19,7 +20,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public final class TierTemplateManager {
 
     static final List<String> TEMPLATES = List.of("Basic.yml", "Lucky.yml", "Titan.yml", "Cursed.yml", "Doom.yml");
-    static final int TEMPLATE_VERSION = 2;
+    static final int TEMPLATE_VERSION = 3;
 
     private static final DateTimeFormatter BACKUP_TIME = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
 
@@ -73,9 +74,7 @@ public final class TierTemplateManager {
                 .toList();
         if (managedFiles.isEmpty()) return;
 
-        final boolean upgradeRequired = managedFiles.stream().anyMatch(path ->
-                YamlConfiguration.loadConfiguration(path.toFile()).getInt("Settings.Template-Version", 0) < TEMPLATE_VERSION
-        );
+        final boolean upgradeRequired = managedFiles.stream().anyMatch(path -> templateVersion(path) < TEMPLATE_VERSION);
         if (!upgradeRequired) return;
 
         final Path backupDirectory = nextBackupDirectory(dataDirectory.resolve("backups"));
@@ -84,7 +83,36 @@ public final class TierTemplateManager {
             Files.copy(source, backupDirectory.resolve(source.getFileName()), StandardCopyOption.COPY_ATTRIBUTES);
         }
 
-        writeTemplates(tierDirectory, templates);
+        final boolean fullUpgradeRequired = managedFiles.stream().anyMatch(path -> templateVersion(path) < 2);
+        if (fullUpgradeRequired) {
+            writeTemplates(tierDirectory, templates);
+            return;
+        }
+
+        migrateBalancedMaces(managedFiles);
+    }
+
+    private static int templateVersion(final Path path) {
+        return YamlConfiguration.loadConfiguration(path.toFile()).getInt("Settings.Template-Version", 0);
+    }
+
+    private static void migrateBalancedMaces(final List<Path> managedFiles) throws IOException {
+        for (final Path path : managedFiles) {
+            if (templateVersion(path) >= TEMPLATE_VERSION) continue;
+
+            String content = Files.readString(path, StandardCharsets.UTF_8);
+
+            content = content.replace("density:10, breach:6, wind_burst:3", "density:3, breach:2, wind_burst:1");
+            content = content.replace("density:15, breach:10, wind_burst:5", "density:4, breach:3, wind_burst:2");
+            content = content.replace("density:20, breach:15, wind_burst:10", "density:5, breach:4, wind_burst:3");
+            content = content.replace("density:25, breach:20, wind_burst:15", "density:7, breach:5, wind_burst:3");
+            content = content.replaceFirst(
+                    "(?m)^(\\s*Template-Version:\\s*)2(\\s*(?:#.*)?)$",
+                    "$1" + TEMPLATE_VERSION + "$2"
+            );
+
+            Files.writeString(path, content, StandardCharsets.UTF_8);
+        }
     }
 
     private static Map<String, byte[]> loadTemplates(final Function<String, InputStream> resources) throws IOException {

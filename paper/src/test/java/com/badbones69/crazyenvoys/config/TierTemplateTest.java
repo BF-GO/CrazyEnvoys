@@ -161,6 +161,48 @@ class TierTemplateTest {
     }
 
     @Test
+    void versionTwoMaceBalanceMigrationPreservesCustomTierContent() throws Exception {
+        final Path tiers = this.temporaryDirectory.resolve("tiers");
+        Files.createDirectories(tiers);
+        final Map<String, String> oldMaceEnchantments = Map.of(
+                "Titan.yml", "density:10, breach:6, wind_burst:3",
+                "Cursed.yml", "density:15, breach:10, wind_burst:5",
+                "Doom.yml", "density:25, breach:20, wind_burst:15"
+        );
+
+        for (final String template : TierTemplateManager.TEMPLATES) {
+            final String enchantments = oldMaceEnchantments.getOrDefault(template, "sharpness:1");
+            Files.writeString(tiers.resolve(template), """
+                    Settings:
+                      Template-Version: 2
+                    custom: keep-%s
+                    Items:
+                      - '%s'
+                    """.formatted(template, enchantments));
+        }
+
+        TierTemplateManager.installLocalizedDefaults(tiers, "ru-RU", path ->
+                TierTemplateTest.class.getClassLoader().getResourceAsStream(path)
+        );
+
+        for (final String template : TierTemplateManager.TEMPLATES) {
+            final String content = Files.readString(tiers.resolve(template));
+            assertTrue(content.contains("custom: keep-" + template));
+            assertEquals(TierTemplateManager.TEMPLATE_VERSION,
+                    YamlConfiguration.loadConfiguration(tiers.resolve(template).toFile())
+                            .getInt("Settings.Template-Version"));
+        }
+
+        assertTrue(Files.readString(tiers.resolve("Titan.yml")).contains("density:3, breach:2, wind_burst:1"));
+        assertTrue(Files.readString(tiers.resolve("Cursed.yml")).contains("density:4, breach:3, wind_burst:2"));
+        assertTrue(Files.readString(tiers.resolve("Doom.yml")).contains("density:7, breach:5, wind_burst:3"));
+
+        try (var backups = Files.list(this.temporaryDirectory.resolve("backups"))) {
+            assertEquals(1, backups.count());
+        }
+    }
+
+    @Test
     void russianTemplatesHaveValidWeightsItemsAndMiniMessage() throws Exception {
         int totalSpawnWeight = 0;
         int totalPrizes = 0;
@@ -263,7 +305,11 @@ class TierTemplateTest {
         assertTrue(items.contains("name:<gradient:#e040fb:#d50000><bold>кирка жкх «мы уже выехали»</bold></gradient>"));
         assertTrue(items.contains("efficiency:18, fortune:8, sharpness:10"));
         assertTrue(items.contains("name:<gradient:#e040fb:#d50000><bold>лопата участкового</bold></gradient>"));
-        assertTrue(items.contains("density:25, breach:20, wind_burst:15"));
+        assertTrue(items.contains("density:3, breach:2, wind_burst:1"));
+        assertTrue(items.contains("density:4, breach:3, wind_burst:2"));
+        assertTrue(items.contains("density:5, breach:4, wind_burst:3"));
+        assertTrue(items.contains("density:7, breach:5, wind_burst:3"));
+        assertFalse(items.contains("density:25, breach:20, wind_burst:15"));
         assertTrue(items.contains("item:shears"));
         assertTrue(items.contains("sharpness:25, efficiency:20, looting:10, fire_aspect:10"));
         assertFalse(items.contains("unbreakable-item"));

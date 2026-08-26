@@ -1,6 +1,6 @@
 # Проклятый тир: баланс покинул сервер, но обещал написать.
 Settings:
-  Template-Version: 2
+  Template-Version: 3
   Display-Name: '<gradient:#e040fb:#d50000><bold>ПРОКЛЯТЫЙ</bold></gradient>'
   Max-Per-Event: 2
   Rare-Enchantments:
@@ -122,7 +122,7 @@ Prizes:
     Messages:
       - '<gray>Получена <gradient:#e040fb:#d50000>{reward}</gradient>. Причина сверху — последствия внизу.</gray>'
     Items:
-      - 'item:mace, amount:1, name:<gradient:#e040fb:#d50000><bold>Кувалда причин и следствий</bold></gradient>, lore:<gray>Физика подписала отказ от ответственности.</gray>, density:15, breach:10, wind_burst:5, unbreaking:8, mending:1'
+      - 'item:mace, amount:1, name:<gradient:#e040fb:#d50000><bold>Кувалда причин и следствий</bold></gradient>, lore:<gray>Физика подписала отказ от ответственности.</gray>, density:4, breach:3, wind_burst:2, unbreaking:8, mending:1'
   '8':
     DisplayName: 'Вилка Посейдона'
     Chance: 6

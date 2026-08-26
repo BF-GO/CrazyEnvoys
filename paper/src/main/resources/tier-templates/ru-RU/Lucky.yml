@@ -1,6 +1,6 @@
 # Мародёрский тир: добыча уже приличная, алиби всё ещё сомнительное.
 Settings:
-  Template-Version: 2
+  Template-Version: 3
   Display-Name: '<gradient:#ffd740:#ff6d00><bold>МАРОДЁРСКИЙ</bold></gradient>'
   Max-Per-Event: 5
   Rare-Enchantments:

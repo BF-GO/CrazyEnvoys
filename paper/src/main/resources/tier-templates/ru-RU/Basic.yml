@@ -1,6 +1,6 @@
 # Нищий тир: доступная добыча для тех, кто пришёл на Судную ночь с пустыми карманами.
 Settings:
-  Template-Version: 2
+  Template-Version: 3
   Display-Name: '<gradient:#90a4ae:#546e7a><bold>НИЩИЙ</bold></gradient>'
   Max-Per-Event: 0
   Rare-Enchantments:

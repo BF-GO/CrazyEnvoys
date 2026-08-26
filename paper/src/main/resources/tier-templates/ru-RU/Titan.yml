@@ -1,6 +1,6 @@
 # Военный тир: тяжёлое снаряжение и лёгкое отношение к балансу.
 Settings:
-  Template-Version: 2
+  Template-Version: 3
   Display-Name: '<gradient:#66ff99:#00bfa5><bold>ВОЕННЫЙ</bold></gradient>'
   Max-Per-Event: 3
   Rare-Enchantments:
@@ -130,7 +130,7 @@ Prizes:
     Messages:
       - '<gray>Получена <gradient:#66ff99:#00bfa5>{reward}</gradient>. Решение обжалованию не подлежит.</gray>'
     Items:
-      - 'item:mace, amount:1, name:<gradient:#66ff99:#00bfa5><bold>Печать окончательного решения</bold></gradient>, lore:<gray>Подпись ставится сверху вниз.</gray>, density:10, breach:6, wind_burst:3, unbreaking:7, mending:1'
+      - 'item:mace, amount:1, name:<gradient:#66ff99:#00bfa5><bold>Печать окончательного решения</bold></gradient>, lore:<gray>Подпись ставится сверху вниз.</gray>, density:3, breach:2, wind_burst:1, unbreaking:7, mending:1'
   '9':
     DisplayName: 'Крылья эвакуационной комиссии'
     Chance: 6

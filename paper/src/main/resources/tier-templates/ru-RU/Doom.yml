@@ -1,6 +1,6 @@
 # Судный тир: максимум один на событие. Если увидел — дружба официально приостановлена.
 Settings:
-  Template-Version: 2
+  Template-Version: 3
   Display-Name: '<gradient:#ff1744:#651fff><bold>СУДНЫЙ</bold></gradient>'
   Max-Per-Event: 1
   Rare-Enchantments:
@@ -105,7 +105,7 @@ Prizes:
     Messages:
       - '<gray>Получен <gradient:#ff1744:#651fff>{reward}</gradient>. После удара включается музыка и список актёров.</gray>'
     Items:
-      - 'item:mace, amount:1, name:<gradient:#ff1744:#651fff><bold>Молот финальных титров</bold></gradient>, lore:<gray>Продолжение зависит от высоты падения.</gray>, density:20, breach:15, wind_burst:10, unbreaking:12, mending:1'
+      - 'item:mace, amount:1, name:<gradient:#ff1744:#651fff><bold>Молот финальных титров</bold></gradient>, lore:<gray>Продолжение зависит от высоты падения.</gray>, density:5, breach:4, wind_burst:3, unbreaking:12, mending:1'
   '6':
     DisplayName: 'Красная линия горизонта'
     Chance: 8
@@ -150,7 +150,7 @@ Prizes:
     Messages:
       - '<gradient:#ff1744:#651fff><bold>ВЫПАЛ {reward}</bold></gradient> <gray>Апелляция отклонена ещё до первого удара.</gray>'
     Items:
-      - 'item:mace, amount:1, name:<gradient:#ff1744:#651fff><bold>Банхаммер без права апелляции</bold></gradient>, lore:<gray>Одно нажатие — и обсуждение закрыто навсегда.</gray>, density:25, breach:20, wind_burst:15, unbreaking:15, mending:1'
+      - 'item:mace, amount:1, name:<gradient:#ff1744:#651fff><bold>Банхаммер без права апелляции</bold></gradient>, lore:<gray>Одно нажатие — и обсуждение закрыто навсегда.</gray>, density:7, breach:5, wind_burst:3, unbreaking:15, mending:1'
   '11':
     DisplayName: 'Ножницы бюджетного секвестра'
     Chance: 1
