@@ -130,7 +130,7 @@ public class ConfigKeys implements SettingsHolder {
     public static final Property<Boolean> envoys_run_time_toggle = newProperty("envoys.schedule.run-time.toggle", true);
 
     @Comment("This option decides how long the envoy event should last.")
-    public static final Property<String> envoys_run_time = newProperty("envoys.schedule.run-time.value", "5m");
+    public static final Property<String> envoys_run_time = newProperty("envoys.schedule.run-time.value", "10m");
 
     @Comment("This option decides if the envoy event has a cooldown i.e 59 minutes or activates at a specific time of day.")
     public static final Property<Boolean> envoys_countdown = newProperty("envoys.schedule.countdown.toggle", true);

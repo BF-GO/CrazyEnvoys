@@ -191,6 +191,7 @@ public class CrazyManager {
 
         this.blacklistedBlocks.clear();
         final FileConfiguration users = Files.users.getConfiguration();
+        migrateDefaultRunTime(users);
 
         this.envoyTimeLeft = Calendar.getInstance();
 
@@ -1178,26 +1179,24 @@ public class CrazyManager {
                 .thenCompose(players -> {
                     if (players.isEmpty()) return CompletableFuture.completedFuture(List.of());
 
-                    final List<EventSession.PlayerPosition> positions = new CopyOnWriteArrayList<>();
                     final List<CompletableFuture<EventSession.PlayerPosition>> futures = new ArrayList<>();
 
                     for (final Player player : players) {
                         final CompletableFuture<EventSession.PlayerPosition> future = this.scheduler.supplyEntity(
                                 player, "snapshot player position", () -> EventSession.PlayerPosition.from(player)
-                        );
-                        future.whenComplete((position, throwable) -> {
-                            if (throwable == null && position != null) positions.add(position);
-                        });
+                        ).exceptionally(throwable -> null);
                         futures.add(future);
                     }
 
                     return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new))
-                            .handle((unused, throwable) -> List.copyOf(positions));
+                            .thenApply(unused -> futures.stream()
+                                    .map(future -> future.getNow(null))
+                                    .filter(Objects::nonNull)
+                                    .toList());
                 });
     }
 
     private CompletableFuture<Integer> spawnResolvedLocations(final EventSession session, final List<Block> locations, final List<EventSession.PlayerPosition> players) {
-        final java.util.concurrent.atomic.AtomicInteger spawned = new java.util.concurrent.atomic.AtomicInteger();
         final List<CompletableFuture<Boolean>> futures = new ArrayList<>();
         final List<Block> shuffledLocations = new ArrayList<>(locations);
         Collections.shuffle(shuffledLocations, ThreadLocalRandom.current());
@@ -1223,14 +1222,34 @@ public class CrazyManager {
                     block.getLocation(), "spawn envoy crate for session " + session.id(),
                     () -> spawnEnvoy(session, block, tier, players)
             );
-            future.whenComplete((success, throwable) -> {
-                if (throwable == null && Boolean.TRUE.equals(success)) spawned.incrementAndGet();
-            });
             futures.add(future);
         }
 
-        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new))
-                .handle((unused, throwable) -> spawned.get());
+        return countSuccessfulSpawns(futures);
+    }
+
+    static CompletableFuture<Integer> countSuccessfulSpawns(final List<CompletableFuture<Boolean>> futures) {
+        final List<CompletableFuture<Boolean>> safeFutures = futures.stream()
+                .map(future -> future.exceptionally(throwable -> false))
+                .toList();
+
+        return CompletableFuture.allOf(safeFutures.toArray(CompletableFuture[]::new))
+                .thenApply(unused -> (int) safeFutures.stream()
+                        .filter(future -> Boolean.TRUE.equals(future.getNow(false)))
+                        .count());
+    }
+
+    private void migrateDefaultRunTime(final FileConfiguration users) {
+        final String migrationPath = "Migrations.Runtime-10m";
+        if (users.getBoolean(migrationPath, false)) return;
+
+        if ("5m".equalsIgnoreCase(this.config.getProperty(ConfigKeys.envoys_run_time).trim())) {
+            this.config.setProperty(ConfigKeys.envoys_run_time, "10m");
+            this.config.save();
+        }
+
+        users.set(migrationPath, true);
+        Files.users.save();
     }
 
     private boolean spawnEnvoy(final EventSession session, final Block block, final Tier tier, final List<EventSession.PlayerPosition> players) {

@@ -58,11 +58,11 @@ public class MessageKeys implements SettingsHolder {
     public static final Property<String> envoy_warning = newProperty("envoys.warning", "{prefix}<red>[<dark_red>ALERT<red>] <gray>There is an envoy event happening in <gold>{time}.");
 
     public static final Property<List<String>> envoy_started = newListProperty("envoys.started.list", List.of(
-            "{prefix}<gray>An envoy event has just started. <gold>{amount} <gray>crates have spawned around spawn for 5m."
+            "{prefix}<gray>An envoy event has just started. <gold>{amount} <gray>crates have spawned around spawn."
     ));
 
     public static final Property<List<String>> envoy_started_player = newListProperty("envoys.started-player.list", List.of(
-            "{prefix}<gray>An envoy event has just been started by {starter}. <gold>{amount} <gray>crates have spawned around spawn for 5m."
+            "{prefix}<gray>An envoy event has just been started by {starter}. <gold>{amount} <gray>crates have spawned around spawn."
     ));
 
     public static final Property<List<String>> envoys_remaining = newListProperty("envoys.left", List.of(

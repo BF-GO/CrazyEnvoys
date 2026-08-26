@@ -4,9 +4,11 @@ import com.badbones69.crazyenvoys.api.objects.EventSession;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -55,5 +57,20 @@ class FlareGenerationTest {
         assertThrows(IllegalArgumentException.class, () ->
                 new EventSession(3, "player", EventSession.StartMode.FLARE, null)
         );
+    }
+
+    @Test
+    void spawnCountWaitsForEveryRegionResultAndCountsOnlySuccesses() {
+        final CompletableFuture<Boolean> first = new CompletableFuture<>();
+        final CompletableFuture<Boolean> second = new CompletableFuture<>();
+        final CompletableFuture<Boolean> third = new CompletableFuture<>();
+        final CompletableFuture<Integer> count = CrazyManager.countSuccessfulSpawns(List.of(first, second, third));
+
+        first.complete(true);
+        second.complete(false);
+        assertFalse(count.isDone());
+
+        third.complete(true);
+        assertEquals(2, count.getNow(-1));
     }
 }
